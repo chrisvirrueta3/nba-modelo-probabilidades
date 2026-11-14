@@ -1,5 +1,6 @@
 # Publica la carpeta web/ en GitHub Pages cada vez que cambia (por ejemplo,
 # cuando rutina.bat sube los datos del día). Gratis y sin límite de publicaciones.
+# Activado el 14-nov-2026.
 name: Publicar página
 
 on:
