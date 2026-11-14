@@ -25,6 +25,8 @@ echo (si se abre una ventana para iniciar sesion en GitHub, aceptala)
 git fetch -q origin main || goto error
 git reset -q --mixed origin/main || goto error
 git branch -q --set-upstream-to=origin/main main
+rem Archivos del repositorio que falten en esta carpeta (por ejemplo .github) se descargan:
+for /f "delims=" %%f in ('git ls-files -d') do git checkout -q -- "%%f"
 echo.
 echo Diferencias entre tu carpeta y GitHub (deberian ser solo datos o nada):
 git status -s
