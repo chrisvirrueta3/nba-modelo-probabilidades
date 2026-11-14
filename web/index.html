@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d10">
+<meta name="robots" content="noindex">
+<title>NBA · Modelo de probabilidades</title>
+<style>
+  :root {
+    --bg: #0b0d10; --panel: #13161b; --panel2: #1a1e25; --line: #252a33;
+    --txt: #e8eaee; --dim: #8a919d; --faint: #5b6270;
+    --verde: #3ddc84; --verde-bg: rgba(61,220,132,.12);
+    --ambar: #f5b84a; --ambar-bg: rgba(245,184,74,.12);
+    --rojo: #ff6b6b; --azul: #6aa8ff;
+    --r: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg); color: var(--txt);
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font-variant-numeric: tabular-nums;
+    padding: env(safe-area-inset-top) 0 calc(76px + env(safe-area-inset-bottom));
+    -webkit-tap-highlight-color: transparent;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+
+  header { padding: 22px 0 10px; }
+  h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+  .sub { color: var(--dim); font-size: 13px; margin-top: 2px; }
+  .aviso {
+    margin: 14px 0 4px; padding: 10px 12px; border-radius: 10px;
+    background: var(--panel); border: 1px solid var(--line); color: var(--dim); font-size: 12.5px;
+  }
+  .aviso b { color: var(--txt); font-weight: 600; }
+
+  .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 14px 0; }
+  @media (min-width: 560px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
+  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+  .kpi .l { color: var(--dim); font-size: 11.5px; text-transform: uppercase; letter-spacing: .06em; }
+  .kpi .v { font-size: 22px; font-weight: 700; margin-top: 2px; letter-spacing: -.02em; }
+  .kpi .n { color: var(--faint); font-size: 12px; }
+
+  h2 { font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin: 22px 0 10px; }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
+  .card-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 4px; color: var(--dim); font-size: 12.5px; }
+  .lado { padding: 10px 14px 12px; border-top: 1px solid var(--line); }
+  .card-h + .lado { border-top: none; }
+  .fila { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .eq { font-weight: 650; font-size: 16px; display: flex; align-items: center; gap: 8px; min-width: 0; }
+  .eq small { color: var(--faint); font-weight: 500; font-size: 12px; }
+  .nombre { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .momio { font-weight: 650; font-size: 16px; }
+  .casa { color: var(--faint); font-size: 11.5px; text-align: right; }
+
+  .barras { margin-top: 8px; display: grid; grid-template-columns: 58px 1fr 44px; gap: 4px 8px; align-items: center; font-size: 12px; color: var(--dim); }
+  .barra { height: 6px; border-radius: 3px; background: var(--panel2); overflow: hidden; }
+  .barra i { display: block; height: 100%; border-radius: 3px; }
+  .b-mod i { background: var(--azul); }
+  .b-mer i { background: var(--faint); }
+  .pct { text-align: right; color: var(--txt); }
+
+  .chips { display: flex; gap: 6px; margin-top: 9px; flex-wrap: wrap; align-items: center; }
+  .chip { font-size: 11.5px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--panel2); color: var(--dim); }
+  .chip.valor { background: var(--verde-bg); color: var(--verde); }
+  .chip.sosp { background: var(--ambar-bg); color: var(--ambar); }
+  .chip.pos { color: var(--verde); }
+  .chip.neg { color: var(--rojo); }
+
+  .bajas { margin-top: 8px; font-size: 12.5px; color: var(--dim); }
+  .bajas b { color: var(--txt); font-weight: 600; }
+  .bajas .fuera { color: var(--rojo); } .bajas .duda { color: var(--ambar); }
+  .calc { margin-top: 9px; display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--dim); flex-wrap: wrap; }
+  .calc input {
+    width: 84px; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--txt); font: inherit; font-size: 16px; /* 16px: evita zoom en iPhone */
+  }
+  .calc input:focus { outline: none; border-color: var(--azul); }
+  .calc .res { color: var(--txt); font-weight: 600; }
+
+  .vacio { color: var(--dim); text-align: center; padding: 28px 16px; background: var(--panel); border: 1px dashed var(--line); border-radius: var(--r); font-size: 14px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .tabla { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow-x: auto; }
+  th { color: var(--faint); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+  td.num, th.num { text-align: right; }
+  @media (max-width: 520px) { .hide-m { display: none; } td, th { padding: 10px 9px; } }
+  .gan { color: var(--verde); } .per { color: var(--rojo); } .pen { color: var(--dim); }
+
+  .elo-bar { display: inline-block; height: 6px; border-radius: 3px; background: var(--azul); vertical-align: middle; opacity: .8; }
+
+  .texto p { color: var(--dim); margin-bottom: 12px; font-size: 14px; }
+  .texto b { color: var(--txt); }
+
+  nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
+    background: rgba(11,13,16,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
+  }
+  nav .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
+  nav button {
+    background: none; border: 0; color: var(--faint); font: inherit; font-size: 12px; font-weight: 600;
+    padding: 12px 0 13px; cursor: pointer; touch-action: manipulation;
+  }
+  nav button.on { color: var(--txt); }
+  nav button span { display: block; font-size: 18px; line-height: 1; margin-bottom: 4px; }
+  .vista { display: none; } .vista.on { display: block; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>NBA · Probabilidades</h1>
+    <div class="sub" id="actualizado">Cargando…</div>
+    <div class="aviso"><b>Modo práctica.</b> Todas las apuestas son simuladas. El modelo ya considera las lesiones del reporte de ESPN, pero si dice algo muy distinto al mercado, desconfía del modelo.</div>
+  </header>
+
+  <section class="vista on" id="v-hoy">
+    <h2>Próximos partidos</h2>
+    <div id="partidos"></div>
+  </section>
+
+  <section class="vista" id="v-apuestas">
+    <div class="kpis" id="kpis"></div>
+    <h2>Bitácora de apuestas simuladas</h2>
+    <div id="historial"></div>
+  </section>
+
+  <section class="vista" id="v-ranking">
+    <h2>Ranking Elo actual</h2>
+    <div class="tabla"><table><thead><tr><th>#</th><th>Equipo</th><th class="num">Elo</th><th></th></tr></thead><tbody id="ratings"></tbody></table></div>
+  </section>
+
+  <section class="vista texto" id="v-info">
+    <h2>Cómo leer esto</h2>
+    <p><b>Modelo vs. mercado.</b> La barra azul es la probabilidad del modelo (Elo + descanso + back-to-backs + forma reciente + lesiones). La gris es la probabilidad "justa" de Pinnacle, quitándole su margen.</p>
+    <p><b>EV (valor esperado).</b> Cuánto ganarías en promedio por cada $100 apostados si el modelo tuviera razón. Solo se marca <span class="chip valor">Valor</span> si el EV es de al menos <span id="umbral"></span>.</p>
+    <p><b>Sospechosa.</b> El modelo difiere del mercado por más de <span id="dif"></span> puntos. Puede ser una baja de último minuto o algo que el modelo no conoce. No se apuesta.</p>
+    <p><b>🩹 Lesiones.</b> Jugadores de la rotación que aparecen en el reporte de ESPN, con la probabilidad estimada de que jueguen. El modelo resta su aporte (Game Score promedio) según esa probabilidad.</p>
+    <p><b>Calculadora.</b> Escribe el momio que ves en Caliente (o tu casa) y te dice el EV y cuánto apostar con ese momio.</p>
+    <p><b>Monto sugerido.</b> Kelly fraccional (<span id="kelly"></span>) con tope de <span id="tope"></span> del bankroll por apuesta.</p>
+    <p><b>CLV.</b> Si el momio que tomaste es mejor que la línea de cierre de Pinnacle. Es la mejor señal de que el modelo tiene ventaja real; el ROI necesita cientos de apuestas para dejar de ser suerte.</p>
+  </section>
+</div>
+
+<nav><div class="wrap">
+  <button class="on" data-v="hoy"><span>🏀</span>Hoy</button>
+  <button data-v="apuestas"><span>📒</span>Apuestas</button>
+  <button data-v="ranking"><span>📊</span>Ranking</button>
+  <button data-v="info"><span>ℹ️</span>Guía</button>
+</div></nav>
+
+<script>
+const EQUIPOS = {ATL:"Hawks",BOS:"Celtics",BKN:"Nets",CHA:"Hornets",CHI:"Bulls",CLE:"Cavaliers",DAL:"Mavericks",DEN:"Nuggets",DET:"Pistons",GSW:"Warriors",HOU:"Rockets",IND:"Pacers",LAC:"Clippers",LAL:"Lakers",MEM:"Grizzlies",MIA:"Heat",MIL:"Bucks",MIN:"Timberwolves",NOP:"Pelicans",NYK:"Knicks",OKC:"Thunder",ORL:"Magic",PHI:"76ers",PHX:"Suns",POR:"Trail Blazers",SAC:"Kings",SAS:"Spurs",TOR:"Raptors",UTA:"Jazz",WAS:"Wizards"};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmtMomio = m => m == null ? "–" : (m > 0 ? "+" + m : String(m));
+const fmtMoney = v => (v < 0 ? "−$" : "$") + Math.abs(v).toLocaleString("es-MX", {maximumFractionDigits: 0});
+const signo = v => (v > 0 ? "+" : "") + v.toFixed(1) + "%";
+const aDecimal = m => m > 0 ? 1 + m / 100 : 1 + 100 / -m;
+const hora = iso => new Date(iso).toLocaleString("es-MX", {weekday: "short", day: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "America/Mexico_City"});
+
+let CFG = {};
+
+function lado(l) {
+  const chip = l.estado === "valor" ? `<span class="chip valor">Valor · apostar ${fmtMoney(l.monto)}</span>`
+             : l.estado === "sospechosa" ? `<span class="chip sosp">Sospechosa</span>` : "";
+  const evCls = l.ev >= 0 ? "pos" : "neg";
+  return `<div class="lado">
+    <div class="fila">
+      <div class="eq"><span class="nombre">${esc(EQUIPOS[l.equipo] || l.equipo)}</span><small>${l.local ? "local" : "visita"}</small></div>
+      <div><div class="momio">${fmtMomio(l.momio)}</div><div class="casa">${esc(l.casa)}</div></div>
+    </div>
+    <div class="barras">
+      <span>Modelo</span><div class="barra b-mod"><i style="width:${l.modelo}%"></i></div><span class="pct">${l.modelo.toFixed(1)}%</span>
+      <span>Mercado</span><div class="barra b-mer"><i style="width:${l.mercado ?? 0}%"></i></div><span class="pct">${l.mercado == null ? "–" : l.mercado.toFixed(1) + "%"}</span>
+    </div>
+    ${bajas(l.bajas)}
+    <div class="chips">${chip}<span class="chip ${evCls}">EV ${signo(l.ev)}</span>${l.pinnacle != null ? `<span class="chip">Pinnacle ${fmtMomio(l.pinnacle)}</span>` : ""}</div>
+    <div class="calc">Tu momio: <input inputmode="numeric" placeholder="ej. -150" data-p="${l.modelo / 100}" data-sosp="${l.estado === "sospechosa"}" aria-label="Momio en tu casa de apuestas para ${esc(l.equipo)}"><span class="res"></span></div>
+  </div>`;
+}
+
+function bajas(lista) {
+  if (!lista || !lista.length) return "";
+  const items = lista.slice(0, 5).map(b => {
+    const cls = b.prob === 0 ? "fuera" : "duda";
+    const txt = b.prob === 0 ? "fuera" : `${b.prob}% juega`;
+    return `<b>${esc(b.jugador)}</b> <span class="${cls}">${txt}</span>`;
+  });
+  return `<div class="bajas">🩹 ${items.join(" · ")}${lista.length > 5 ? " · …" : ""}</div>`;
+}
+
+function calcular(input) {
+  const m = parseFloat(input.value.replace(/[^\d.-]/g, ""));
+  const out = input.nextElementSibling;
+  if (!isFinite(m) || Math.abs(m) < 100) { out.textContent = ""; return; }
+  const p = parseFloat(input.dataset.p), d = aDecimal(m);
+  const ev = p * d - 1;
+  const kelly = (p * d - 1) / (d - 1);
+  const monto = CFG.bankroll * Math.min(Math.max(kelly, 0) * CFG.kelly, CFG.tope);
+  if (input.dataset.sosp === "true") out.innerHTML = `EV ${signo(100 * ev)} · <span style="color:var(--ambar)">no apostar (sospechosa)</span>`;
+  else if (ev >= CFG.umbral_ev) out.innerHTML = `EV ${signo(100 * ev)} · <span style="color:var(--verde)">apostar ${fmtMoney(monto)}</span>`;
+  else out.innerHTML = `EV ${signo(100 * ev)} · <span style="color:var(--dim)">sin valor</span>`;
+}
+
+function render(d) {
+  CFG = d.config;
+  $("#actualizado").textContent = "Actualizado: " + new Date(d.actualizado).toLocaleString("es-MX", {dateStyle: "medium", timeStyle: "short", timeZone: "America/Mexico_City"});
+  $("#umbral").textContent = (CFG.umbral_ev * 100) + "%";
+  $("#dif").textContent = Math.round(CFG.dif_sospechosa * 100);
+  $("#kelly").textContent = (CFG.kelly * 100) + "% de Kelly";
+  $("#tope").textContent = (CFG.tope * 100) + "%";
+
+  // Partidos
+  $("#partidos").innerHTML = d.proximos.length ? d.proximos.map(p => {
+    const [v, l] = p.lados;
+    return `<div class="card"><div class="card-h"><span>${esc(v.equipo)} @ ${esc(l.equipo)}</span><span>${hora(p.inicio)}</span></div>${lado(v)}${lado(l)}</div>`;
+  }).join("") : `<div class="vacio">No hay partidos próximos con momios.<br>Corre <code>descargar_momios.py</code> y <code>exportar_web.py</code>.</div>`;
+  document.querySelectorAll(".calc input").forEach(i => i.addEventListener("input", () => calcular(i)));
+
+  // KPIs
+  const r = d.resumen || {};
+  const kpi = (l, v, n, cls = "") => `<div class="kpi"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="n">${n}</div></div>`;
+  const gan = r.ganancia || 0;
+  $("#kpis").innerHTML = [
+    kpi("Bankroll", fmtMoney(r.bankroll ?? CFG.bankroll), `inicial ${fmtMoney(r.bankroll_inicial ?? CFG.bankroll)}`),
+    kpi("Ganancia", fmtMoney(gan), r.roi == null ? "ROI –" : "ROI " + signo(r.roi), gan > 0 ? "gan" : gan < 0 ? "per" : ""),
+    kpi("Récord", `${r.ganadas ?? 0}–${r.perdidas ?? 0}`, `${(r.apuestas ?? 0) - (r.liquidadas ?? 0)} pendientes`),
+    kpi("CLV prom.", r.clv_promedio == null ? "–" : signo(r.clv_promedio), r.clv_positivo == null ? "sin datos de cierre" : `${r.clv_positivo}% le gana al cierre`, (r.clv_promedio ?? 0) > 0 ? "gan" : (r.clv_promedio ?? 0) < 0 ? "per" : ""),
+  ].join("");
+
+  // Historial
+  $("#historial").innerHTML = d.historial.length ? `<div class="tabla"><table>
+    <thead><tr><th>Fecha</th><th>Apuesta</th><th class="num">Momio</th><th class="num">Monto</th><th class="num">Result.</th><th class="num">CLV</th></tr></thead>
+    <tbody>${d.historial.map(h => {
+      const cls = h.resultado === "GANADA" ? "gan" : h.resultado === "PERDIDA" ? "per" : "pen";
+      const res = h.resultado === "PENDIENTE" ? "Pendiente" : fmtMoney(h.ganancia);
+      return `<tr><td>${esc(String(h.fecha).split(" ")[0])}<span class="hide-m"> ${esc(String(h.fecha).split(" ")[1] || "")}</span></td><td><b>${esc(h.apuesta)}</b> <span class="hide-m" style="color:var(--faint)">${esc(h.partido)}</span></td>
+        <td class="num">${fmtMomio(h.momio)}</td><td class="num">${fmtMoney(h.monto)}</td>
+        <td class="num ${cls}">${res}</td><td class="num">${h.clv == null ? "–" : signo(h.clv)}</td></tr>`;
+    }).join("")}</tbody></table></div>`
+    : `<div class="vacio">Todavía no hay apuestas simuladas.</div>`;
+
+  // Ranking
+  const max = Math.max(...d.ratings.map(x => x.elo)), min = Math.min(...d.ratings.map(x => x.elo));
+  $("#ratings").innerHTML = d.ratings.map(x => `<tr><td style="color:var(--faint)">${x.rank}</td><td><b>${esc(EQUIPOS[x.equipo] || x.equipo)}</b> <span style="color:var(--faint)">${esc(x.equipo)}</span></td>
+    <td class="num">${x.elo}</td><td style="width:35%"><span class="elo-bar" style="width:${8 + 92 * (x.elo - min) / (max - min || 1)}%"></span></td></tr>`).join("");
+}
+
+document.querySelectorAll("nav button").forEach(b => b.addEventListener("click", () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.toggle("on", x === b));
+  document.querySelectorAll(".vista").forEach(v => v.classList.toggle("on", v.id === "v-" + b.dataset.v));
+  window.scrollTo(0, 0);
+}));
+
+fetch("datos.json?t=" + Date.now()).then(r => {
+  if (!r.ok) throw new Error(r.status);
+  return r.json();
+}).then(render).catch(e => {
+  $("#actualizado").textContent = "No se pudieron cargar los datos (" + e.message + ").";
+});
+</script>
+</body>
+</html>
