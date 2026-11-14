@@ -1,6 +1,6 @@
 # 🏀 NBA · Modelo de probabilidades
 
-> **EN:** An end-to-end NBA win-probability model. It ingests official box scores, builds an Elo rating system, adds rest, form and injury features, and compares its probabilities against the betting market (Pinnacle's no-vig line) to find positive expected-value spots. Validation is strictly out-of-sample (trained on 2023-25, tested on 1,413 unseen games). Performance is tracked through Closing Line Value and paper trading, and everything is published as a mobile dashboard. Built in Python (pandas, scikit-learn) with a static front end on Netlify.
+> **EN:** An end-to-end NBA prediction model (moneyline, spreads and totals). It ingests official box scores, builds an Elo rating system, adds rest, form and injury features, and compares its probabilities against the betting market (Pinnacle's no-vig line) to find positive expected-value spots. Validation is strictly out-of-sample (trained on 2023-25, tested on 1,413 unseen games). Performance is tracked through Closing Line Value and paper trading, and everything is published as a mobile dashboard. Built in Python (pandas, scikit-learn) with a static front end on Netlify.
 
 **Página en vivo:** [nba-modelo-probabilidades.netlify.app](https://nba-modelo-probabilidades.netlify.app)
 
@@ -30,6 +30,19 @@ Todo se mide en **datos de prueba que el modelo nunca vio**: se entrena con 2023
 - **Un modelo más complejo no siempre es mejor.** Gradient Boosting salió *peor* que una regresión logística, porque con unos 2,000 partidos de entrenamiento se sobreajusta.
 - **El acierto engaña.** El modelo final acierta un poco menos que el Elo, pero sus probabilidades son mejores. Para apostar importa la probabilidad, no el acierto.
 
+### Spreads y totales
+
+Para el hándicap y el over/under, el modelo proyecta **por cuántos puntos** gana cada equipo y **cuántos puntos** se anotan, y supone un error con distribución normal. Así calcula la probabilidad de cubrir cualquier línea.
+
+| Mercado | Referencia | Modelo | Error típico (σ) | Dentro de ±1σ |
+|---|---|---|---|---|
+| Margen | Elo solo: 14.79 pts | **14.33 pts** | 14.0 | 68% |
+| Total | Promedio de liga: 19.88 pts | **19.28 pts** | 18.9 | 68% |
+
+- **La distribución normal funciona.** El 68% de los resultados cae dentro de ±1σ, exactamente lo que predice la teoría.
+- **Para los totales, lo simple ganó.** Una fórmula directa (ritmo × eficiencia ofensiva y defensiva) superó a una regresión con más variables (19.3 contra 19.6 puntos de error), así que el proyecto usa la fórmula.
+- **Las casas son más precisas en puntos.** Sus líneas suelen equivocarse unos 12 puntos en el margen. Por eso, en spreads y totales, el sistema exige más ventaja (EV ≥ 5%) y desconfía de cualquier proyección que se aleje más de 3 puntos (spread) o 5 puntos (total) de la línea de Pinnacle.
+
 <p align="center">
   <img src="docs/img/calibracion.png" width="400" alt="Curva de calibración">
   <img src="docs/img/pesos.png" width="480" alt="Peso de cada variable">
@@ -57,16 +70,18 @@ Cada equipo tiene una calificación que se actualiza después de cada partido se
 
 Para partidos futuros, las bajas se calculan con el reporte de lesiones: cada baja se pondera por la probabilidad de que el jugador juegue (fuera = 0%, en duda = 50%…).
 
+Para spreads y totales se agregan el **ritmo** (posesiones por partido) y la **eficiencia** (puntos anotados y recibidos por cada 100 posesiones) de cada equipo. Al inicio de la temporada se encogen hacia el promedio de la liga.
+
 ### 4. Del modelo a la decisión
 1. **Probabilidad justa del mercado:** se toma el momio de Pinnacle y se le quita el margen de la casa.
-2. **Valor esperado:** `EV = p_modelo × momio_decimal − 1`, usando el mejor momio disponible.
+2. **Valor esperado:** `EV = P(ganar) × (momio_decimal − 1) − P(perder)`, usando el mejor momio disponible. En spreads y totales se evalúa cada línea de cada casa (−5.5 en una, −6 en otra) y se elige la de mayor EV. Si la línea es un número entero, se considera el empate exacto (*push*), que devuelve la apuesta.
 3. **Filtros:** solo se marca una apuesta con EV ≥ 3%. Si el modelo difiere del mercado por más de 10 puntos, se marca como *sospechosa* y no se apuesta, porque casi siempre significa que el mercado sabe algo que el modelo no.
 4. **Monto:** Kelly fraccional (¼) con tope de 2% del bankroll.
 
 ### 5. Evaluación en vivo
 - **Paper trading:** cada apuesta sugerida se registra y se liquida automáticamente.
-- **CLV (Closing Line Value):** compara el momio tomado contra la probabilidad justa de cierre. Es la métrica más confiable de habilidad, porque el ROI necesita cientos de apuestas para dejar de ser ruido.
-- **Modelo vs. mercado (Brier):** en *todos* los partidos predichos, no solo en los apostados.
+- **CLV (Closing Line Value):** compara el momio tomado contra la probabilidad justa de cierre (en spreads y totales, en puntos de línea). Es la métrica más confiable de habilidad, porque el ROI necesita cientos de apuestas para dejar de ser ruido.
+- **Modelo vs. mercado:** en *todos* los partidos predichos, no solo en los apostados. Para el ganador se usa el Brier score; para spreads y totales, el error en puntos frente a la línea de Pinnacle.
 
 ---
 
@@ -82,6 +97,7 @@ src/
   elo.py                 modelo Elo + búsqueda de parámetros + validación
   caracteristicas.py     variables sin fuga de información
   modelo.py              regresión logística vs. gradient boosting
+  puntos.py              margen y total esperados + probabilidad de cubrir
   descargar_momios.py    snapshots de momios (The Odds API)
   lesiones.py            reporte de ESPN -> bajas esperadas
   valor.py               EV, Kelly y registro de apuestas simuladas
@@ -104,7 +120,7 @@ copy .env.example .env           # y pega tu clave en .env
 
 python src/descargar_partidos.py && python src/limpiar_partidos.py
 python src/descargar_jugadores.py && python src/bajas.py
-python src/elo.py && python src/modelo.py
+python src/elo.py && python src/modelo.py && python src/puntos.py
 python src/descargar_momios.py && python src/valor.py
 ```
 
@@ -117,7 +133,7 @@ Rutina diaria: `rutina.bat`, o los mismos comandos con `--actual`, y luego `liqu
 - **Lesiones de último minuto:** en el histórico se sabe quién no jugó al final. En vivo, el reporte es incierto, así que el efecto real es menor que en el backtest.
 - **Game Score** es una medida simple del valor de un jugador y no captura bien la defensa.
 - **Sin momios históricos gratuitos:** la comparación contra el mercado se hace con los momios que el proyecto guarda desde noviembre de 2026.
-- **Solo moneyline** por ahora (sin spreads ni totales).
+- **Spreads y totales sin backtest contra el mercado:** el modelo de puntos se validó contra resultados reales, pero no contra líneas históricas. Si de verdad le gana a las casas, se sabrá con el CLV de las próximas semanas.
 
 ## Aviso
 

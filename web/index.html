@@ -72,6 +72,17 @@
   .bajas { margin-top: 8px; font-size: 12.5px; color: var(--dim); }
   .bajas b { color: var(--txt); font-weight: 600; }
   .bajas .fuera { color: var(--rojo); } .bajas .duda { color: var(--ambar); }
+  .pts { border-top: 1px solid var(--line); padding: 10px 14px 12px; }
+  .proy { font-size: 12.5px; color: var(--dim); margin-bottom: 8px; }
+  .proy b { color: var(--txt); font-weight: 600; }
+  .pts-tit { font-size: 11px; color: var(--faint); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; margin: 8px 0 4px; }
+  .pfila { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 6px 0; border-top: 1px dashed var(--line); font-size: 13.5px; }
+  .pfila:first-of-type { border-top: none; }
+  .pfila .t { font-weight: 600; }
+  .pfila .m { text-align: right; font-weight: 600; }
+  .pfila .d { color: var(--faint); font-size: 12px; }
+  .pfila .c { text-align: right; }
+  .tag { font-size: 10.5px; font-weight: 600; color: var(--faint); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; margin-left: 4px; }
   .calc { margin-top: 9px; display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--dim); flex-wrap: wrap; }
   .calc input {
     width: 84px; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line);
@@ -141,9 +152,10 @@
     <p><b>EV (valor esperado).</b> Cuánto ganarías en promedio por cada $100 apostados si el modelo tuviera razón. Solo se marca <span class="chip valor">Valor</span> si el EV es de al menos <span id="umbral"></span>.</p>
     <p><b>Sospechosa.</b> El modelo difiere del mercado por más de <span id="dif"></span> puntos. Puede ser una baja de último minuto o algo que el modelo no conoce. No se apuesta.</p>
     <p><b>🩹 Lesiones.</b> Jugadores de la rotación que aparecen en el reporte de ESPN, con la probabilidad estimada de que jueguen. El modelo resta su aporte (Game Score promedio) según esa probabilidad.</p>
+    <p><b>Spread y total.</b> El modelo proyecta el margen y los puntos totales de cada partido, y calcula la probabilidad de cubrir cada línea (suponiendo un error típico de ~14 puntos en el margen y ~19 en el total). Se compara contra todas las líneas disponibles y se muestra la mejor. Como el modelo de puntos es menos preciso que las casas, exige un EV de al menos <span id="umbral_pts"></span> y marca como sospechosa cualquier proyección muy lejos de la línea de Pinnacle.</p>
     <p><b>Calculadora.</b> Escribe el momio que ves en Caliente (o tu casa) y te dice el EV y cuánto apostar con ese momio.</p>
     <p><b>Monto sugerido.</b> Kelly fraccional (<span id="kelly"></span>) con tope de <span id="tope"></span> del bankroll por apuesta.</p>
-    <p><b>CLV.</b> Si el momio que tomaste es mejor que la línea de cierre de Pinnacle. Es la mejor señal de que el modelo tiene ventaja real; el ROI necesita cientos de apuestas para dejar de ser suerte.</p>
+    <p><b>CLV.</b> Si el momio que tomaste es mejor que la línea de cierre de Pinnacle (en spreads y totales se mide en puntos de línea). Es la mejor señal de que el modelo tiene ventaja real; el ROI necesita cientos de apuestas para dejar de ser suerte.</p>
   </section>
 </div>
 
@@ -208,10 +220,33 @@ function calcular(input) {
   else out.innerHTML = `EV ${signo(100 * ev)} · <span style="color:var(--dim)">sin valor</span>`;
 }
 
+function bloquePuntos(p) {
+  if (!p.puntos || !p.puntos.length) return "";
+  const pr = p.proyeccion || {};
+  const fav = pr.margen_local >= 0 ? p.local : p.visita;
+  const pin = pr.pin_spread_local == null ? "" : ` · Pinnacle: ${esc(p.local)} ${pr.pin_spread_local > 0 ? "+" : ""}${pr.pin_spread_local} · ${pr.pin_total ?? "–"}`;
+  const fila = x => {
+    const chip = x.estado === "valor" ? `<span class="chip valor">Valor · ${fmtMoney(x.monto)}</span>`
+               : x.estado === "sospechosa" ? `<span class="chip sosp">Sospechosa</span>` : "";
+    return `<div class="pfila">
+      <span class="t">${esc(x.texto)}</span><span class="m">${fmtMomio(x.momio)}</span>
+      <span class="d">Modelo ${x.modelo ?? "–"}% · Mercado ${x.mercado_pct ?? "–"}%</span><span class="d c">${esc(x.casa)}</span>
+      <span class="chips" style="margin-top:4px">${chip}<span class="chip ${x.ev >= 0 ? "pos" : "neg"}">EV ${signo(x.ev)}</span></span>
+    </div>`;
+  };
+  const sp = p.puntos.filter(x => x.mercado === "spreads"), tt = p.puntos.filter(x => x.mercado === "totals");
+  return `<div class="pts">
+    <div class="proy">Proyección: <b>${esc(fav)} por ${Math.abs(pr.margen_local).toFixed(1)}</b> · total <b>${pr.total?.toFixed(1)}</b>${pin}</div>
+    ${sp.length ? `<div class="pts-tit">Spread</div>${sp.map(fila).join("")}` : ""}
+    ${tt.length ? `<div class="pts-tit">Total (over/under)</div>${tt.map(fila).join("")}` : ""}
+  </div>`;
+}
+
 function render(d) {
   CFG = d.config;
   $("#actualizado").textContent = "Actualizado: " + new Date(d.actualizado).toLocaleString("es-MX", {dateStyle: "medium", timeStyle: "short", timeZone: "America/Mexico_City"});
   $("#umbral").textContent = (CFG.umbral_ev * 100) + "%";
+  $("#umbral_pts").textContent = ((CFG.umbral_ev_puntos ?? 0.05) * 100) + "%";
   $("#dif").textContent = Math.round(CFG.dif_sospechosa * 100);
   $("#kelly").textContent = (CFG.kelly * 100) + "% de Kelly";
   $("#tope").textContent = (CFG.tope * 100) + "%";
@@ -219,7 +254,7 @@ function render(d) {
   // Partidos
   $("#partidos").innerHTML = d.proximos.length ? d.proximos.map(p => {
     const [v, l] = p.lados;
-    return `<div class="card"><div class="card-h"><span>${esc(v.equipo)} @ ${esc(l.equipo)}</span><span>${hora(p.inicio)}</span></div>${lado(v)}${lado(l)}</div>`;
+    return `<div class="card"><div class="card-h"><span>${esc(v.equipo)} @ ${esc(l.equipo)}</span><span>${hora(p.inicio)}</span></div>${lado(v)}${lado(l)}${bloquePuntos(p)}</div>`;
   }).join("") : `<div class="vacio">No hay partidos próximos con momios.<br>Corre <code>descargar_momios.py</code> y <code>exportar_web.py</code>.</div>`;
   document.querySelectorAll(".calc input").forEach(i => i.addEventListener("input", () => calcular(i)));
 
@@ -230,8 +265,11 @@ function render(d) {
   $("#kpis").innerHTML = [
     kpi("Bankroll", fmtMoney(r.bankroll ?? CFG.bankroll), `inicial ${fmtMoney(r.bankroll_inicial ?? CFG.bankroll)}`),
     kpi("Ganancia", fmtMoney(gan), r.roi == null ? "ROI –" : "ROI " + signo(r.roi), gan > 0 ? "gan" : gan < 0 ? "per" : ""),
-    kpi("Récord", `${r.ganadas ?? 0}–${r.perdidas ?? 0}`, `${(r.apuestas ?? 0) - (r.liquidadas ?? 0)} pendientes`),
-    kpi("CLV prom.", r.clv_promedio == null ? "–" : signo(r.clv_promedio), r.clv_positivo == null ? "sin datos de cierre" : `${r.clv_positivo}% le gana al cierre`, (r.clv_promedio ?? 0) > 0 ? "gan" : (r.clv_promedio ?? 0) < 0 ? "per" : ""),
+    kpi("Récord", `${r.ganadas ?? 0}–${r.perdidas ?? 0}${r.push ? "–" + r.push : ""}`, `${(r.apuestas ?? 0) - (r.liquidadas ?? 0)} pendientes`),
+    kpi("CLV prom.", r.clv_promedio == null ? "–" : signo(r.clv_promedio),
+        (r.clv_pts == null ? (r.clv_positivo == null ? "sin datos de cierre" : `${r.clv_positivo}% le gana al cierre`)
+                           : `spreads/totales ${r.clv_pts > 0 ? "+" : ""}${r.clv_pts.toFixed(2)} pts`),
+        (r.clv_promedio ?? r.clv_pts ?? 0) > 0 ? "gan" : (r.clv_promedio ?? r.clv_pts ?? 0) < 0 ? "per" : ""),
   ].join("");
 
   // Historial
@@ -239,10 +277,13 @@ function render(d) {
     <thead><tr><th>Fecha</th><th>Apuesta</th><th class="num">Momio</th><th class="num">Monto</th><th class="num">Result.</th><th class="num">CLV</th></tr></thead>
     <tbody>${d.historial.map(h => {
       const cls = h.resultado === "GANADA" ? "gan" : h.resultado === "PERDIDA" ? "per" : "pen";
-      const res = h.resultado === "PENDIENTE" ? "Pendiente" : fmtMoney(h.ganancia);
-      return `<tr><td>${esc(String(h.fecha).split(" ")[0])}<span class="hide-m"> ${esc(String(h.fecha).split(" ")[1] || "")}</span></td><td><b>${esc(h.apuesta)}</b> <span class="hide-m" style="color:var(--faint)">${esc(h.partido)}</span></td>
+      const res = h.resultado === "PENDIENTE" ? "Pend." : h.resultado === "PUSH" ? "Push" : fmtMoney(h.ganancia);
+      const esPts = h.mercado && h.mercado !== "h2h";
+      const tag = esPts ? `<span class="tag hide-m">${h.mercado === "spreads" ? "SPR" : "TOT"}</span>` : "";
+      const clv = h.clv == null ? "–" : esPts ? `${h.clv > 0 ? "+" : ""}${h.clv} pts` : signo(h.clv);
+      return `<tr><td>${esc(String(h.fecha).split(" ")[0])}<span class="hide-m"> ${esc(String(h.fecha).split(" ")[1] || "")}</span></td><td><b>${esc(h.apuesta)}</b>${tag} <span class="hide-m" style="color:var(--faint)">${esc(h.partido)}</span></td>
         <td class="num">${fmtMomio(h.momio)}</td><td class="num">${fmtMoney(h.monto)}</td>
-        <td class="num ${cls}">${res}</td><td class="num">${h.clv == null ? "–" : signo(h.clv)}</td></tr>`;
+        <td class="num ${cls}">${res}</td><td class="num">${clv}</td></tr>`;
     }).join("")}</tbody></table></div>`
     : `<div class="vacio">Todavía no hay apuestas simuladas.</div>`;
 

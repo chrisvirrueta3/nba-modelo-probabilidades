@@ -62,3 +62,10 @@ UMBRAL_EV = 0.03           # solo marcar apuestas con EV >= 3%
 DIF_SOSPECHOSA = 0.10      # si el modelo difiere >10 pts del mercado, desconfiar
 # Bolsas de apuestas: su momio no incluye la comisión, así que lo excluimos
 CASAS_EXCLUIDAS = ["betfair_ex_eu", "betfair_ex_uk", "betfair_ex_au", "matchbook"]
+
+# ---------- Spreads y totales ----------
+# El modelo de puntos es menos preciso que las líneas del mercado, así que
+# exigimos más ventaja y desconfiamos antes que en el mercado de ganador.
+UMBRAL_EV_PUNTOS = 0.05         # EV mínimo para marcar valor en spreads/totales
+DIF_SOSPECHOSA_SPREAD = 3.0     # puntos de diferencia vs. la línea de Pinnacle
+DIF_SOSPECHOSA_TOTAL = 5.0

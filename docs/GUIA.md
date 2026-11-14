@@ -37,6 +37,7 @@ Para actualizar después solo la temporada en curso: `python src/descargar_parti
 ```
 ..\.venv\Scripts\python src\elo.py           (recalcula ratings; correr tras actualizar partidos)
 ..\.venv\Scripts\python src\modelo.py        (reentrena el modelo)
+..\.venv\Scripts\python src\puntos.py        (modelo de spreads y totales)
 ..\.venv\Scripts\python src\predecir_hoy.py  (Elo vs. mercado)
 ..\.venv\Scripts\python src\valor.py         (EV, monto sugerido y registro de apuestas simuladas)
 ```
@@ -47,7 +48,7 @@ Hace todo lo de abajo en orden, abre la carpeta `web` y la página de Netlify pa
 Si prefieres hacerlo a mano:
 1. `python src\descargar_partidos.py --actual`, `python src\limpiar_partidos.py`,
    `python src\descargar_jugadores.py --actual` y `python src\bajas.py`
-2. `python src\elo.py` y `python src\modelo.py`
+2. `python src\elo.py`, `python src\modelo.py` y `python src\puntos.py`
 3. `python src\descargar_momios.py` y `python src\valor.py`
 4. Antes de los partidos, otra vez `python src\descargar_momios.py` (línea de cierre)
 5. Al día siguiente: `python src\liquidar.py` (resultados, ROI, CLV y modelo vs. mercado)
