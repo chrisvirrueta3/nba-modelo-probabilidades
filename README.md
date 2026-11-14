@@ -1,8 +1,8 @@
 # 🏀 NBA · Modelo de probabilidades
 
-> **EN:** An end-to-end NBA prediction model (moneyline, spreads and totals). It ingests official box scores, builds an Elo rating system, adds rest, form and injury features, and compares its probabilities against the betting market (Pinnacle's no-vig line) to find positive expected-value spots. Validation is strictly out-of-sample (trained on 2023-25, tested on 1,413 unseen games). Performance is tracked through Closing Line Value and paper trading, and everything is published as a mobile dashboard. Built in Python (pandas, scikit-learn) with a static front end on Netlify.
+> **EN:** An end-to-end NBA prediction model (moneyline, spreads and totals). It ingests official box scores, builds an Elo rating system, adds rest, form and injury features, and compares its probabilities against the betting market (Pinnacle's no-vig line) to find positive expected-value spots. Validation is strictly out-of-sample (trained on 2023-25, tested on 1,413 unseen games). Performance is tracked through Closing Line Value and paper trading, and everything is published as a mobile dashboard. Built in Python (pandas, scikit-learn) with a static front end on GitHub Pages, updated daily by a GitHub Actions workflow.
 
-**Página en vivo:** [nba-modelo-probabilidades.netlify.app](https://nba-modelo-probabilidades.netlify.app)
+**Página en vivo:** [chrisvirrueta3.github.io/nba-modelo-probabilidades](https://chrisvirrueta3.github.io/nba-modelo-probabilidades)
 
 Proyecto personal de ciencia de datos aplicada a mercados deportivos. La pregunta de fondo es económica: **¿se puede estimar la probabilidad de un partido mejor que un mercado de apuestas?** Si no, ¿qué tan cerca se queda un modelo construido solo con datos públicos?
 
@@ -104,8 +104,10 @@ src/
   liquidar.py            resultados, ROI, CLV y modelo vs. mercado
   exportar_web.py        genera web/datos.json
   graficas.py            gráficas de este README
-web/                     página estática (HTML/CSS/JS, sin frameworks)
-rutina.bat               rutina diaria completa en un doble clic (Windows)
+web/                     página estática (HTML/CSS/JS, sin frameworks), publicada con GitHub Actions
+.github/workflows/       publicación automática en GitHub Pages
+rutina.bat               rutina diaria completa en un doble clic (Windows); sube los datos a GitHub
+configurar_github.bat    conecta la carpeta con GitHub (una sola vez)
 ```
 
 ## Cómo correrlo

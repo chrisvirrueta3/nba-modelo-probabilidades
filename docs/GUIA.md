@@ -43,7 +43,7 @@ Para actualizar después solo la temporada en curso: `python src/descargar_parti
 ```
 
 ### Rutina diaria: doble clic en `rutina.bat`
-Hace todo lo de abajo en orden, abre la carpeta `web` y la página de Netlify para que la arrastres.
+Hace todo lo de abajo en orden y al final sube los datos a GitHub: la página se actualiza sola.
 
 Si prefieres hacerlo a mano:
 1. `python src\descargar_partidos.py --actual`, `python src\limpiar_partidos.py`,
@@ -56,13 +56,14 @@ Si prefieres hacerlo a mano:
 Parámetros de apuesta (bankroll, Kelly, umbral EV) en `src\config.py`.
 Todo es SIMULADO: se registra en `datos\apuestas_simuladas.csv`.
 
-## Fase 5 · Página web
-Página: https://nba-modelo-probabilidades.netlify.app
+## Página web
+Página: https://chrisvirrueta3.github.io/nba-modelo-probabilidades
 
-Para actualizarla:
-1. `python src\valor.py`, `python src\liquidar.py` y `python src\exportar_web.py`
-2. Entra a https://app.netlify.com/projects/nba-modelo-probabilidades → pestaña **Deploys**
-3. Arrastra la carpeta `web` al recuadro de abajo ("Drag and drop your project folder here").
+Se actualiza sola: al final de `rutina.bat` los datos se suben a GitHub y una
+GitHub Action publica la carpeta `web` en GitHub Pages (gratis, sin límite).
+
+Primera vez: doble clic en `configurar_github.bat` para conectar la carpeta con
+GitHub. Si se abre una ventana para iniciar sesión en GitHub, acéptala.
 
 ## Estructura
 ```

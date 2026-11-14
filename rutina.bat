@@ -28,15 +28,32 @@ call :paso "9/9 Liquidando y exportando web"  src\liquidar.py                   
 "%PY%" src\exportar_web.py || goto error
 
 echo.
+echo --- Publicando en GitHub Pages ---
+if not exist .git (
+  echo Esta carpeta no esta conectada a GitHub: corre configurar_github.bat una vez.
+  goto fin
+)
+git add -A
+git diff --cached --quiet || git commit -q -m "Actualizacion diaria %date%"
+git pull -q --rebase --autostash || goto error_git
+git push -q || goto error_git
+echo Subido. La pagina se actualiza en 1-2 minutos.
+
+:fin
+echo.
 echo ============================================
-echo   LISTO. Para actualizar la pagina:
-echo   arrastra la carpeta "web" (se abre ahora)
-echo   a la pestana Deploys de Netlify.
+echo   LISTO. Pagina: chrisvirrueta3.github.io/nba-modelo-probabilidades
 echo ============================================
-start "" explorer "%~dp0web"
-start "" "https://app.netlify.com/projects/nba-modelo-probabilidades/deploys"
+start "" "https://chrisvirrueta3.github.io/nba-modelo-probabilidades"
 pause
 exit /b 0
+
+:error_git
+echo.
+echo *** No se pudo subir a GitHub. Los datos SI se calcularon; solo falta publicarlos. ***
+echo *** Copia el error de arriba y pegaselo a Claude. ***
+pause
+exit /b 1
 
 :paso
 echo.
