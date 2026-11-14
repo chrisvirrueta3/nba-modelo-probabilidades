@@ -58,6 +58,11 @@ def cargar_jugadores() -> pd.DataFrame:
                    .transform(lambda s: s.rolling(VENTANA_VALOR, min_periods=1).mean()))
     j["MIN_PROM"] = (j.groupby(["PLAYER_ID", "TEMPORADA"])["MIN"]
                       .transform(lambda s: s.rolling(VENTANA_VALOR, min_periods=1).mean()))
+    # Producción por 36 minutos (para el +/− ajustado de apm.py)
+    g = j.groupby(["PLAYER_ID", "TEMPORADA"])
+    gmsc_sum = g["GMSC"].transform(lambda s: s.rolling(VENTANA_VALOR, min_periods=1).sum())
+    min_sum = g["MIN"].transform(lambda s: s.rolling(VENTANA_VALOR, min_periods=1).sum())
+    j["G36"] = 36 * gmsc_sum / min_sum.clip(lower=1)
     return j
 
 
@@ -87,7 +92,7 @@ def calcular() -> tuple[pd.DataFrame, pd.DataFrame]:
         k = fechas.searchsorted(pd.Timestamp(fecha).to_datetime64(), side="left") - 1
         return equipos[k] if k >= 0 else None
 
-    filas, rot_actual = [], []
+    filas, rot_actual, detalle = [], [], []
     for (equipo, temporada), j_eq in j.groupby(["TEAM_ABBREVIATION", "TEMPORADA"]):
         juegos_df = j_eq.drop_duplicates("GAME_ID").sort_values(["FECHA", "GAME_ID"])
         juegos = juegos_df["GAME_ID"].tolist()
@@ -99,6 +104,10 @@ def calcular() -> tuple[pd.DataFrame, pd.DataFrame]:
             filas.append({"GAME_ID": gid, "EQUIPO": equipo,
                           "BAJAS": round(float(fuera["VALOR"].clip(lower=0).sum()), 2),
                           "FUERA": ", ".join(fuera["PLAYER_NAME"].tolist())})
+            for pid, r in fuera.iterrows():
+                detalle.append({"GAME_ID": gid, "EQUIPO": equipo, "TEMPORADA": temporada, "PLAYER_ID": pid,
+                                "VALOR": round(float(r["VALOR"]), 2), "MIN_PROM": round(float(r["MIN_PROM"]), 1),
+                                "G36": round(float(r["G36"]), 2)})
 
         if temporada == config.TEMPORADA_ACTUAL:
             fin = pd.Timestamp.now() + pd.Timedelta(days=1)
@@ -106,8 +115,10 @@ def calcular() -> tuple[pd.DataFrame, pd.DataFrame]:
             for pid, r in rot.iterrows():
                 rot_actual.append({"EQUIPO": equipo, "PLAYER_ID": pid, "JUGADOR": r["PLAYER_NAME"],
                                    "NOMBRE_NORM": normalizar_nombre(r["PLAYER_NAME"]),
-                                   "VALOR": round(float(r["VALOR"]), 2), "MIN_PROM": round(float(r["MIN_PROM"]), 1)})
+                                   "VALOR": round(float(r["VALOR"]), 2), "MIN_PROM": round(float(r["MIN_PROM"]), 1),
+                                   "G36": round(float(r["G36"]), 2)})
 
+    pd.DataFrame(detalle).to_csv(config.PROCESADOS / "bajas_detalle.csv", index=False)
     return pd.DataFrame(filas), pd.DataFrame(rot_actual)
 
 

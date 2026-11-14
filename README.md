@@ -98,6 +98,7 @@ src/
   caracteristicas.py     variables sin fuga de información
   modelo.py              regresión logística vs. gradient boosting
   puntos.py              margen y total esperados + probabilidad de cubrir
+  apm.py                 (experimento) +/− ajustado de cada jugador
   descargar_momios.py    snapshots de momios (The Odds API)
   lesiones.py            reporte de ESPN -> bajas esperadas
   valor.py               EV, Kelly y registro de apuestas simuladas
@@ -129,6 +130,24 @@ python src/descargar_momios.py && python src/valor.py
 Rutina diaria: `rutina.bat`, o los mismos comandos con `--actual`, y luego `liquidar.py` y `exportar_web.py`. Guía paso a paso en [docs/GUIA.md](docs/GUIA.md).
 
 ---
+
+## Experimentos que no pasaron la prueba
+
+Documentar lo que **no** funcionó también es parte del método.
+
+**+/− ajustado (APM) como valor de los jugadores.** El Game Score casi no mide la defensa, así que probé un +/− ajustado: una regresión Ridge sobre el margen de cada partido, con los minutos de cada jugador, con el Game Score por 36 minutos como base y valores calculados solo con temporadas anteriores (`src/apm.py`).
+
+| Variables de lesiones | Log loss | Error en margen |
+|---|---|---|
+| Game Score (actual) | 0.5865 | 14.33 |
+| Solo APM | 0.5889 | 14.44 |
+| Ambas | 0.5850 | 14.31 |
+
+Combinado mejora un poco, pero un bootstrap de 5,000 muestras da un intervalo de confianza que incluye el cero (la mejora es positiva solo en el 72% de las muestras). No es suficiente evidencia para justificar la complejidad, así que el modelo sigue con Game Score. La escala del APM sí salió bien calibrada (−1.19 puntos de margen por punto de impacto, contra −1 teórico), y debería mejorar con más temporadas de datos: queda para volver a probar.
+
+**Regresión para los totales.** Una regresión con ritmo, lesiones y cansancio salió peor (19.6 puntos de error) que la fórmula directa ritmo × eficiencia (19.3).
+
+**Gradient Boosting para el ganador.** Peor que la regresión logística (log loss 0.597 contra 0.587): con unos 2,000 partidos de entrenamiento se sobreajusta.
 
 ## Limitaciones
 
