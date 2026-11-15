@@ -3,189 +3,251 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0b0d10">
+<meta name="theme-color" content="#f4f5f7" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0e1013" media="(prefers-color-scheme: dark)">
 <meta name="robots" content="noindex">
 <title>NBA · Probabilidades</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0b0d10; --panel: #13161b; --panel2: #1a1e25; --line: #252a33; --line2: #2f3540;
-    --txt: #e8eaee; --dim: #9aa1ad; --faint: #7f8796;
-    --verde: #3ddc84; --verde-bg: rgba(61,220,132,.12); --verde-line: rgba(61,220,132,.35);
-    --ambar: #f5b84a; --ambar-bg: rgba(245,184,74,.12);
-    --rojo: #ff6b6b; --azul: #6aa8ff;
+    color-scheme: light dark;
+    --bg: #f4f5f7; --surface: #ffffff; --surface2: #f1f2f5; --line: #e3e6eb; --line2: #d3d7de;
+    --txt: #111418; --dim: #545b68; --faint: #687180;
+    --acc: #1652f0; --acc-bg: #e8eefe;
+    --pos: #0d7f45; --pos-bg: #e5f4eb; --pos-line: #b9e2c9;
+    --neg: #c4302a; --warn: #9a5400; --warn-bg: #fff2d9;
+    --sombra: 0 1px 2px rgba(16,24,40,.05), 0 2px 6px rgba(16,24,40,.05);
+    --num: "Barlow Semi Condensed", "Roboto Condensed", "Arial Narrow", system-ui, sans-serif;
     --r: 14px;
   }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0e1013; --surface: #171a1f; --surface2: #20242b; --line: #2a2f37; --line2: #363c46;
+      --txt: #eef0f3; --dim: #a6adb9; --faint: #8f97a5;
+      --acc: #7aa2ff; --acc-bg: rgba(122,162,255,.14);
+      --pos: #3ccb80; --pos-bg: rgba(60,203,128,.13); --pos-line: rgba(60,203,128,.32);
+      --neg: #ff6f66; --warn: #f2b24e; --warn-bg: rgba(242,178,78,.13);
+      --sombra: none;
+    }
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; color-scheme: dark; }
-  ::selection { background: rgba(106,168,255,.35); color: var(--txt); }
+  html { -webkit-text-size-adjust: 100%; }
+  ::selection { background: var(--acc-bg); color: var(--txt); }
   body {
     background: var(--bg); color: var(--txt);
-    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
     font-variant-numeric: tabular-nums;
-    padding: env(safe-area-inset-top) 0 calc(78px + env(safe-area-inset-bottom));
+    padding: 0 0 calc(74px + env(safe-area-inset-bottom));
     -webkit-tap-highlight-color: transparent;
-    caret-color: var(--azul);
+    caret-color: var(--acc);
     scrollbar-color: var(--line2) var(--bg);
   }
-  :focus-visible { outline: 2px solid var(--azul); outline-offset: 2px; border-radius: 6px; }
+  :focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; border-radius: 8px; }
   .wrap { max-width: 720px; margin: 0 auto; padding: 0 16px; }
+  .n { font-family: var(--num); font-variant-numeric: tabular-nums; letter-spacing: 0; }
 
-  header { padding: 22px 0 6px; }
-  h1 { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
-  .sub { color: var(--dim); font-size: 13px; margin-top: 2px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; }
-  .modo { font-size: 12px; font-weight: 600; color: var(--dim); border: 1px solid var(--line2); border-radius: 999px; padding: 1px 8px; }
-  .alerta { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--ambar-bg); color: var(--ambar); font-size: 13px; }
+  /* ---------- Barra superior ---------- */
+  .top { background: var(--surface); border-bottom: 1px solid var(--line); padding-top: env(safe-area-inset-top); }
+  .top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; }
+  .marca { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .logo { width: 30px; height: 30px; border-radius: 8px; background: var(--acc); color: #fff; display: grid; place-items: center; flex-shrink: 0; }
+  .logo svg { width: 18px; height: 18px; }
+  h1 { font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.15; }
+  #actualizado { display: block; font-size: 12px; color: var(--faint); font-weight: 500; }
+  .modo { font-size: 11.5px; font-weight: 600; color: var(--acc); background: var(--acc-bg); border-radius: 999px; padding: 4px 9px; white-space: nowrap; }
+  .alerta { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: var(--warn-bg); color: var(--warn); font-size: 13px; }
 
-  h2 { font-size: 13px; color: var(--dim); text-transform: uppercase; letter-spacing: .08em; font-weight: 600; margin: 26px 0 10px; }
+  .sec-h { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 28px 0 10px; }
+  h2 { font-size: 19px; font-weight: 700; letter-spacing: -.015em; }
+  .sec-h .lado-d { color: var(--faint); font-size: 13px; }
+  .intro { color: var(--dim); font-size: 13.5px; margin: -2px 0 12px; max-width: 62ch; }
+  .intro b { color: var(--txt); font-weight: 600; }
+
+  .caja { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--sombra); overflow: hidden; }
+
+  /* ---------- Escudo de equipo (sin logos: abreviatura) ---------- */
+  .eq { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--surface2); border: 1px solid var(--line);
+        font-family: var(--num); font-weight: 700; font-size: 13px; color: var(--txt); flex-shrink: 0; letter-spacing: .01em; }
+  .eq.ch { width: 24px; height: 24px; font-size: 10.5px; }
 
   /* ---------- Hoy conviene ---------- */
-  .conviene { margin-top: 16px; }
-  .conviene h2.grande { font-size: 20px; color: var(--txt); text-transform: none; letter-spacing: -.01em; font-weight: 700; margin: 0 0 2px; }
-  .resumen { color: var(--dim); font-size: 13.5px; margin-bottom: 12px; }
+  .resumen { color: var(--dim); font-size: 13.5px; margin: -4px 0 12px; }
   .resumen b { color: var(--txt); font-weight: 600; }
-  .grupo { background: var(--panel); border: 1px solid var(--verde-line); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
-  .grupo-h { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; padding: 10px 14px; font-size: 12.5px; color: var(--dim); border-bottom: 1px solid var(--line); }
-  .grupo-h .exp { color: var(--ambar); }
-  .pick { padding: 12px 14px 14px; }
+  .grupo { margin-bottom: 12px; border-color: var(--pos-line); }
+  .grupo-h { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--line); font-size: 13px; }
+  .grupo-h .vs { display: flex; align-items: center; gap: 6px; font-weight: 600; }
+  .grupo-h .vs i { font-style: normal; color: var(--faint); font-weight: 500; }
+  .grupo-h .hr { margin-left: auto; color: var(--dim); }
+  .grupo-h .exp { flex-basis: 100%; color: var(--warn); font-size: 12.5px; }
+  .pick { padding: 14px; }
   .pick + .pick { border-top: 1px solid var(--line); }
-  .pick-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-  .pick-nom { font-size: 17px; font-weight: 650; line-height: 1.25; }
-  .pick-meta { color: var(--faint); font-size: 12.5px; margin-top: 2px; }
-  .minimo { text-align: right; flex-shrink: 0; }
-  .minimo .l { display: block; font-size: 11.5px; color: var(--dim); }
-  .minimo .v { display: block; font-size: 24px; font-weight: 700; letter-spacing: -.02em; color: var(--verde); line-height: 1.1; }
-  .pick-det { color: var(--dim); font-size: 12.5px; margin-top: 6px; }
-  .vacio-hero { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 24px 18px; }
-  .vacio-hero .t { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+  .pick-top { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+  .pick-nom { font-size: 16.5px; font-weight: 650; line-height: 1.28; letter-spacing: -.005em; }
+  .pick-meta { color: var(--faint); font-size: 12.5px; margin-top: 3px; }
+  .precio-btn { min-width: 104px; text-align: center; border: 1px solid var(--pos-line); background: var(--pos-bg); border-radius: 12px; padding: 7px 10px 6px; }
+  .precio-btn .l { display: block; font-size: 11px; color: var(--dim); font-weight: 600; line-height: 1.2; }
+  .precio-btn .v { display: block; font-family: var(--num); font-size: 30px; font-weight: 700; color: var(--pos); line-height: 1.05; }
+  .precio-btn .o { display: block; font-size: 11px; color: var(--dim); line-height: 1.2; }
+  .pick-det { color: var(--dim); font-size: 13px; margin-top: 10px; }
+  .pick-det b { color: var(--txt); font-weight: 650; }
+  .vacio-hero { padding: 24px 18px; }
+  .vacio-hero .t { font-size: 21px; font-weight: 700; letter-spacing: -.02em; }
   .vacio-hero .s { color: var(--dim); font-size: 14px; margin-top: 6px; max-width: 46ch; }
 
-  .como { background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r); padding: 14px 16px; margin-top: 14px; }
-  .como h3 { font-size: 15px; font-weight: 650; margin-bottom: 6px; }
-  .como ol { padding-left: 20px; color: var(--dim); font-size: 14px; display: grid; gap: 4px; }
+  .como { padding: 16px; margin-top: 16px; }
+  .como h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 8px; }
+  .como ol { list-style: none; counter-reset: paso; display: grid; gap: 8px; font-size: 14px; color: var(--dim); }
+  .como li { counter-increment: paso; position: relative; padding: 1px 0 0 34px; min-height: 24px; }
+  .como li::before { content: counter(paso); position: absolute; left: 0; top: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--acc-bg); color: var(--acc); font: 700 13px/24px var(--num); text-align: center; }
   .como ol b { color: var(--txt); font-weight: 600; }
-  .como .momios { margin-top: 10px; font-size: 13px; color: var(--dim); border-top: 1px solid var(--line); padding-top: 10px; }
+  .como .momios { margin-top: 12px; font-size: 13px; color: var(--dim); border-top: 1px solid var(--line); padding-top: 12px; }
   .como .momios b { color: var(--txt); }
-  .como button { margin-top: 12px; background: var(--panel2); color: var(--txt); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 14px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
-  .intro { color: var(--dim); font-size: 13.5px; margin: -4px 0 12px; max-width: 60ch; }
+  .btn { display: inline-block; margin-top: 14px; background: var(--acc); color: #fff; border: 0; border-radius: 10px; padding: 10px 16px; font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; }
+  .btn:hover { filter: brightness(1.06); }
+  .btn.sec { background: var(--surface2); color: var(--txt); border: 1px solid var(--line2); }
+  @media (prefers-color-scheme: dark) { .btn:not(.sec) { color: #0e1013; } }
   .codigo { display: block; color: var(--faint); font-size: 12.5px; font-weight: 500; margin-top: 2px; }
-  .minimo .o { display: block; font-size: 11.5px; color: var(--dim); }
+
   /* ---------- Calculadora ---------- */
-  .calc { margin-top: 10px; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
-  .calc-l { font-size: 12.5px; color: var(--dim); grid-column: 1 / -1; }
-  .calc-in { display: flex; align-items: stretch; border: 1px solid var(--line2); border-radius: 10px; background: var(--bg); overflow: hidden; width: 136px; }
-  .calc-in:focus-within { border-color: var(--azul); }
-  .sign { width: 44px; border: 0; border-right: 1px solid var(--line2); background: var(--panel2); color: var(--txt); font: inherit; font-size: 20px; font-weight: 600; cursor: pointer; touch-action: manipulation; }
-  .sign:active { background: var(--line2); }
-  .calc input { width: 100%; min-width: 0; padding: 10px; border: 0; background: transparent; color: var(--txt); font: inherit; font-size: 17px; outline: none; }
-  .calc input::placeholder { color: var(--faint); }
+  .calc { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line2); display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; }
+  .calc-l { font-size: 12.5px; color: var(--dim); font-weight: 600; grid-column: 1 / -1; }
+  .calc-in { display: flex; align-items: stretch; border: 1px solid var(--line2); border-radius: 10px; background: var(--surface); overflow: hidden; width: 140px; }
+  .calc-in:focus-within { border-color: var(--acc); box-shadow: 0 0 0 3px var(--acc-bg); }
+  .sign { width: 44px; border: 0; border-right: 1px solid var(--line2); background: var(--surface2); color: var(--txt); font: 600 20px/1 var(--num); cursor: pointer; touch-action: manipulation; }
+  .sign:active { background: var(--line); }
+  .calc input { width: 100%; min-width: 0; padding: 9px 10px; border: 0; background: transparent; color: var(--txt); font: 600 19px/1.2 var(--num); outline: none; }
+  .calc input::placeholder { color: var(--faint); font-weight: 500; }
   .calc-r { font-size: 13px; color: var(--dim); min-height: 2.6em; display: flex; align-items: center; line-height: 1.3; }
   .calc-r b { font-weight: 650; }
-  .ok { color: var(--verde); } .warn { color: var(--ambar); }
+  .ok { color: var(--pos); } .warn { color: var(--warn); }
 
   /* ---------- Tarjetas de partido ---------- */
-  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 10px; overflow: hidden; }
-  .card.empezado { opacity: .62; }
-  .card-h { display: flex; justify-content: space-between; align-items: center; padding: 12px 14px 8px; color: var(--dim); font-size: 12.5px; gap: 8px; }
-  .card-h .tag-live { color: var(--ambar); font-weight: 600; }
-  .proy { padding: 0 14px 10px; font-size: 12.5px; color: var(--dim); display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; }
-  .proy b { color: var(--txt); font-weight: 600; }
+  .juego { margin-bottom: 12px; }
+  .juego.empezado { opacity: .6; }
+  .j-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 11px 14px; font-size: 12.5px; color: var(--dim); border-bottom: 1px solid var(--line); }
+  .j-h b { color: var(--txt); font-weight: 650; }
+  .tag-live { color: var(--warn); font-weight: 650; }
+  .wp { padding: 12px 14px 4px; }
+  .wp-t { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin-bottom: 6px; }
+  .wp-t b { font: 700 15px/1 var(--num); color: var(--txt); margin-right: 4px; }
+  .wp-bar { display: flex; height: 8px; border-radius: 4px; overflow: hidden; gap: 2px; background: var(--surface); }
+  .wp-bar i { display: block; height: 100%; }
+  .wp-bar .v { background: var(--line2); border-radius: 4px 0 0 4px; }
+  .wp-bar .l { background: var(--line2); border-radius: 0 4px 4px 0; }
+  .wp-bar .fav { background: var(--acc); }
+  .wp-nota { font-size: 11.5px; color: var(--faint); margin-top: 5px; text-align: center; }
 
   details.lado { border-top: 1px solid var(--line); }
-  details.lado > summary { list-style: none; cursor: pointer; padding: 11px 14px; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; }
+  details.lado:first-of-type { margin-top: 10px; }
+  details.lado > summary { list-style: none; cursor: pointer; padding: 11px 14px; display: grid; grid-template-columns: auto 1fr auto; gap: 2px 10px; align-items: center; }
   details.lado > summary::-webkit-details-marker { display: none; }
+  details.lado > summary:hover, details.pfila > summary:hover { background: var(--surface2); }
+  .s-eq { grid-row: span 2; }
   .s-nom { font-weight: 650; font-size: 15.5px; display: flex; align-items: center; gap: 8px; min-width: 0; }
   .s-nom small { color: var(--faint); font-weight: 500; font-size: 12px; }
-  .s-num { color: var(--dim); font-size: 12.5px; grid-column: 1 / -1; }
+  .s-num { color: var(--dim); font-size: 12.5px; grid-column: 2 / -1; }
   .s-der { text-align: right; display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
-  .flecha { width: 16px; height: 16px; color: var(--faint); transition: transform .2s cubic-bezier(.2,.8,.2,1); flex-shrink: 0; }
+  .flecha { width: 16px; height: 16px; color: var(--faint); transition: transform .22s cubic-bezier(.2,.8,.2,1); flex-shrink: 0; }
   details[open] > summary .flecha { transform: rotate(180deg); }
-  .lado-body { padding: 0 14px 14px; }
+  .lado-body { padding: 2px 14px 14px 58px; }
 
-  .barras { display: grid; grid-template-columns: 58px 1fr 44px; gap: 4px 8px; align-items: center; font-size: 12px; color: var(--dim); }
-  .barra { height: 6px; border-radius: 3px; background: var(--panel2); overflow: hidden; }
+  .barras { display: grid; grid-template-columns: 62px 1fr 48px; gap: 6px 8px; align-items: center; font-size: 12px; color: var(--dim); }
+  .barra { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
   .barra i { display: block; height: 100%; border-radius: 3px; }
-  .b-mod i { background: var(--azul); }
+  .b-mod i { background: var(--acc); }
   .b-mer i { background: var(--faint); }
-  .pct { text-align: right; color: var(--txt); }
-  .precio { margin-top: 8px; font-size: 12.5px; color: var(--dim); }
-  .precio b { color: var(--txt); font-weight: 600; }
+  .pct { text-align: right; color: var(--txt); font: 600 14px/1 var(--num); }
+  .precio { margin-top: 10px; font-size: 12.5px; color: var(--dim); }
+  .precio b { color: var(--txt); font: 700 14px/1 var(--num); }
 
-  .chip { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: var(--panel2); color: var(--dim); white-space: nowrap; }
-  .chip.valor { background: var(--verde-bg); color: var(--verde); }
-  .chip.sosp { background: var(--ambar-bg); color: var(--ambar); }
-  .ev-pos { color: var(--verde); }
+  .chip { font-size: 12px; font-weight: 650; padding: 4px 9px; border-radius: 999px; background: var(--surface2); color: var(--dim); white-space: nowrap; }
+  .chip.valor { background: var(--pos-bg); color: var(--pos); }
+  .chip.sosp { background: var(--warn-bg); color: var(--warn); }
+  .ev-pos { color: var(--pos); font-weight: 600; }
   .ev-no { color: var(--faint); }
-  .ev-sosp { color: var(--faint); text-decoration: line-through; text-decoration-color: rgba(127,135,150,.6); }
+  .ev-sosp { color: var(--faint); text-decoration: line-through; }
 
-  .bajas { margin-top: 8px; font-size: 12.5px; color: var(--dim); }
-  .bajas svg { width: 12px; height: 12px; display: inline-block; vertical-align: -1px; margin-right: 4px; color: var(--faint); }
+  .bajas { margin-top: 10px; font-size: 12.5px; color: var(--dim); }
+  .bajas svg { width: 12px; height: 12px; display: inline-block; vertical-align: -1px; margin-right: 4px; color: var(--neg); }
   .bajas b { color: var(--txt); font-weight: 600; }
   .bajas .estado { color: var(--faint); }
 
-  .pts { border-top: 1px solid var(--line); padding: 8px 14px 4px; }
-  .pts-tit { font-size: 12px; color: var(--dim); font-weight: 600; margin: 6px 0 2px; }
-  details.pfila { border-top: 1px dashed var(--line); }
-  details.pfila:first-of-type { border-top: none; }
-  details.pfila > summary { list-style: none; cursor: pointer; padding: 9px 0; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; font-size: 14px; }
+  .proy { border-top: 1px solid var(--line); padding: 10px 14px; font-size: 12.5px; color: var(--dim); display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; }
+  .proy b { color: var(--txt); font-weight: 600; }
+
+  .pts { border-top: 1px solid var(--line); padding: 4px 0 0; }
+  .pts-tit { font-size: 12px; color: var(--dim); font-weight: 650; padding: 10px 14px 2px; }
+  details.pfila { border-top: 1px solid var(--line); }
+  .pts-tit + details.pfila { border-top: none; }
+  details.pfila > summary { list-style: none; cursor: pointer; padding: 9px 14px; display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; align-items: center; font-size: 14px; }
   details.pfila > summary::-webkit-details-marker { display: none; }
   .pfila .t { font-weight: 600; }
   .pfila .d { color: var(--faint); font-size: 12.5px; grid-column: 1 / -1; }
-  .pfila-body { padding: 0 0 12px; font-size: 12.5px; color: var(--dim); }
+  .pfila-body { padding: 0 14px 12px; font-size: 12.5px; color: var(--dim); }
+  .pfila-body b { color: var(--txt); font-family: var(--num); font-size: 14px; }
 
-  .vacio { color: var(--dim); text-align: center; padding: 28px 16px; background: var(--panel); border: 1px dashed var(--line2); border-radius: var(--r); font-size: 14px; }
+  .vacio { color: var(--dim); text-align: center; padding: 28px 16px; background: var(--surface); border: 1px dashed var(--line2); border-radius: var(--r); font-size: 14px; }
 
   /* ---------- Apuestas ---------- */
-  .kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 16px 0; }
-  @media (min-width: 560px) { .kpis { grid-template-columns: repeat(4, 1fr); } }
-  .kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); margin: 16px 0; }
+  @media (min-width: 560px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .kpi { padding: 14px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .kpi:nth-child(2n) { border-right: 0; }
+  .kpi:nth-child(n+3) { border-bottom: 0; }
+  @media (min-width: 560px) { .kpi { border-bottom: 0; border-right: 1px solid var(--line); } .kpi:nth-child(2n) { border-right: 1px solid var(--line); } .kpi:last-child { border-right: 0; } }
   .kpi .l { color: var(--dim); font-size: 12px; font-weight: 600; }
-  .kpi .v { font-size: 22px; font-weight: 700; margin-top: 2px; letter-spacing: -.02em; }
-  .kpi .v.vacio-v { font-size: 15px; font-weight: 600; color: var(--dim); letter-spacing: 0; padding: 5px 0 4px; }
-  .kpi .n { color: var(--faint); font-size: 12px; }
-  .gan { color: var(--verde); } .per { color: var(--rojo); } .pen { color: var(--dim); }
+  .kpi .v { font: 700 27px/1.15 var(--num); margin-top: 3px; }
+  .kpi .v.vacio-v { font: 600 15px/1.3 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; color: var(--dim); padding: 6px 0 4px; }
+  .kpi .n { color: var(--faint); font-size: 12px; margin-top: 2px; }
+  .gan { color: var(--pos); } .per { color: var(--neg); } .pen { color: var(--dim); }
 
-  .log { list-style: none; background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
-  .log li { padding: 11px 14px; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
+  .log { list-style: none; }
+  .log li { padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; align-items: center; }
   .log li + li { border-top: 1px solid var(--line); }
   .log .a { font-weight: 650; }
-  .log .mk { font-size: 11px; font-weight: 600; color: var(--faint); border: 1px solid var(--line2); border-radius: 4px; padding: 0 5px; margin-left: 6px; position: relative; top: -1px; }
-  .log .r { text-align: right; font-weight: 600; }
+  .log .r { justify-self: end; font: 700 13.5px/1 var(--num); padding: 5px 9px; border-radius: 999px; background: var(--surface2); white-space: nowrap; }
+  .log .r.gan { background: var(--pos-bg); }
+  .log .r.per { background: color-mix(in srgb, var(--neg) 12%, transparent); }
   .log .m { color: var(--faint); font-size: 12.5px; }
   .log .c { text-align: right; color: var(--faint); font-size: 12.5px; }
 
   /* ---------- Ranking ---------- */
-  .tabla { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 4px 0; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
-  th { color: var(--faint); font-weight: 600; font-size: 12px; text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
-  td { padding: 9px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--faint); font-weight: 600; font-size: 12px; text-align: left; padding: 10px 14px; background: var(--surface2); border-bottom: 1px solid var(--line); white-space: nowrap; }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
   @media (max-width: 520px) { th, td { padding-left: 10px; padding-right: 10px; } .abrev { display: none; } }
   tr:last-child td { border-bottom: none; }
   td.num, th.num { text-align: right; }
+  td.num { font: 600 15px/1 var(--num); }
+  .t-eq { display: flex; align-items: center; gap: 10px; }
+  .rk { color: var(--faint); font: 600 14px/1 var(--num); width: 22px; }
   .elo { position: relative; height: 8px; }
-  .elo::before { content: ""; position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: var(--line2); }
-  .elo i { position: absolute; top: 0; height: 100%; border-radius: 3px; }
-  .elo i.arriba { left: 50%; background: var(--azul); }
-  .elo i.abajo { right: 50%; background: var(--faint); }
+  .elo::before { content: ""; position: absolute; left: 50%; top: -4px; bottom: -4px; width: 1px; background: var(--line2); }
+  .elo i { position: absolute; top: 0; height: 100%; }
+  .elo i.arriba { left: 50%; background: var(--acc); border-radius: 0 3px 3px 0; }
+  .elo i.abajo { right: 50%; background: var(--faint); border-radius: 3px 0 0 3px; opacity: .7; }
 
-  .texto { max-width: 65ch; }
-  .texto p { color: var(--dim); margin-bottom: 12px; font-size: 14.5px; }
-  .texto b { color: var(--txt); }
+  /* ---------- Guía ---------- */
+  .texto { max-width: 680px; }
+  .bloque { padding: 4px 16px; margin-bottom: 4px; }
+  .bloque p { color: var(--dim); font-size: 14.5px; padding: 12px 0; max-width: 65ch; }
+  .bloque p + p { border-top: 1px solid var(--line); }
+  .bloque b { color: var(--txt); font-weight: 650; }
 
-  nav {
-    position: fixed; bottom: 0; left: 0; right: 0; z-index: 10;
-    background: rgba(11,13,16,.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom);
-  }
+  /* ---------- Barra de pestañas ---------- */
+  nav { position: fixed; bottom: 0; left: 0; right: 0; z-index: 10; background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom); }
   nav .wrap { display: grid; grid-template-columns: repeat(4, 1fr); }
-  nav button {
-    background: none; border: 0; color: var(--faint); font: inherit; font-size: 12px; font-weight: 600;
-    padding: 10px 0 12px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; gap: 4px;
-  }
-  nav button svg { width: 22px; height: 22px; }
-  nav button[aria-current="page"] { color: var(--txt); }
-  .vista { display: none; } .vista.on { display: block; }
+  nav button { position: relative; background: none; border: 0; color: var(--faint); font: inherit; font-size: 11.5px; font-weight: 600;
+    padding: 9px 0 10px; cursor: pointer; touch-action: manipulation; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  nav button svg { width: 23px; height: 23px; }
+  nav button[aria-current="page"] { color: var(--acc); }
+  nav button[aria-current="page"]::before { content: ""; position: absolute; top: -1px; left: 30%; right: 30%; height: 2px; border-radius: 0 0 2px 2px; background: var(--acc); }
+  .vista { display: none; } .vista.on { display: block; animation: entra .28s cubic-bezier(.16,1,.3,1); }
+  @keyframes entra { from { opacity: .4; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-  @media (prefers-reduced-motion: reduce) { .flecha { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .flecha { transition: none; } .vista.on { animation: none; } }
 </style>
 </head>
 <body>
@@ -196,61 +258,75 @@
   <symbol id="i-guia" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></symbol>
   <symbol id="i-flecha" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6l4 4 4-4"/></symbol>
   <symbol id="i-baja" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-balon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3v18M5.6 5.6c3.2 3.2 3.2 9.6 0 12.8M18.4 5.6c-3.2 3.2-3.2 9.6 0 12.8"/></symbol>
 </svg>
 
+<header class="top"><div class="wrap">
+  <div class="marca">
+    <span class="logo" aria-hidden="true"><svg><use href="#i-balon"/></svg></span>
+    <div><h1>NBA · Probabilidades</h1><span id="actualizado">Cargando…</span></div>
+  </div>
+  <span class="modo">Práctica</span>
+</div></header>
+
 <main class="wrap">
-  <header>
-    <h1>NBA · Probabilidades</h1>
-    <div class="sub"><span id="actualizado">Cargando…</span><span class="modo">Modo práctica · apuestas simuladas</span></div>
-    <div id="alerta"></div>
-  </header>
+  <div id="alerta"></div>
 
   <section class="vista on" id="v-hoy" aria-label="Hoy">
     <div id="como"></div>
-    <div class="conviene" id="conviene"></div>
-    <h2>Todos los partidos (detalle)</h2>
+    <div id="conviene"></div>
+    <div class="sec-h"><h2>Todos los partidos</h2></div>
     <p class="intro">Aquí está todo, incluso lo que no conviene. Si solo quieres decidir, con la lista de arriba basta.</p>
     <div id="partidos"></div>
   </section>
 
   <section class="vista" id="v-apuestas" aria-label="Apuestas">
-    <div class="kpis" id="kpis"></div>
+    <div class="sec-h"><h2>Apuestas de práctica</h2></div>
+    <div class="caja stats" id="kpis"></div>
     <p class="intro"><b>¿Le ganamos al cierre?</b> compara el momio que tomamos contra el último momio antes del partido. Si casi siempre tomamos mejores momios, el modelo sí tiene ventaja aunque un día perdamos.</p>
-    <h2>Historial de apuestas de práctica</h2>
+    <div class="sec-h"><h2>Historial</h2></div>
     <div id="historial"></div>
   </section>
 
   <section class="vista" id="v-ranking" aria-label="Ranking">
-    <h2>Qué tan fuerte es cada equipo</h2>
+    <div class="sec-h"><h2>Qué tan fuerte es cada equipo</h2></div>
     <p class="intro">Calificación Elo: 1500 es un equipo promedio. Mientras más alta, más fuerte. Sube cuando un equipo gana, sobre todo si le gana a uno fuerte.</p>
-    <div class="tabla"><table><thead><tr><th>#</th><th>Equipo</th><th class="num">Elo</th><th style="width:34%">vs. promedio</th></tr></thead><tbody id="ratings"></tbody></table></div>
+    <div class="caja"><table><thead><tr><th>#</th><th>Equipo</th><th class="num">Elo</th><th style="width:34%">vs. promedio</th></tr></thead><tbody id="ratings"></tbody></table></div>
   </section>
 
   <section class="vista texto" id="v-info" aria-label="Guía">
-    <h2>Cómo usar la página</h2>
-    <p><b>1. Mira "Hoy conviene".</b> Ahí están solo las apuestas que vale la pena considerar hoy. Si dice "Hoy no hay valor", no apuestes.</p>
-    <p><b>2. Busca esa misma apuesta en Caliente.</b> Debajo de cada apuesta dice cómo se llama ahí (ganador, hándicap o total de puntos).</p>
-    <p><b>3. Compara el momio.</b> Si Caliente paga el número verde o uno más alto, conviene: apuesta el monto sugerido. Si paga menos, no. También puedes escribir el momio de Caliente en la cajita y la página te dice "Sí conviene" o "No conviene".</p>
-    <p><button type="button" id="ver-como" class="chip" style="cursor:pointer;border:1px solid var(--line2)">Mostrar otra vez la guía rápida en "Hoy"</button></p>
+    <div class="sec-h"><h2>Cómo usar la página</h2></div>
+    <div class="caja bloque">
+      <p><b>1. Mira "Hoy conviene".</b> Ahí están solo las apuestas que vale la pena considerar hoy. Si dice "Hoy no hay valor", no apuestes.</p>
+      <p><b>2. Busca esa misma apuesta en Caliente.</b> Debajo de cada apuesta dice cómo se llama ahí (ganador, hándicap o total de puntos).</p>
+      <p><b>3. Compara el momio.</b> Si Caliente paga el número verde o uno más alto, conviene: apuesta el monto sugerido. Si paga menos, no. También puedes escribir el momio de Caliente en la cajita y la página te dice "Sí conviene" o "No conviene".</p>
+    </div>
+    <button type="button" id="ver-como" class="btn sec">Mostrar otra vez la guía rápida en "Hoy"</button>
 
-    <h2>Cómo leer un momio</h2>
-    <p><b>+170</b>: si apuestas $100 y ganas, te pagan $170 de ganancia. <b>−130</b>: tienes que apostar $130 para ganar $100. El número más alto siempre te conviene más: +180 es mejor que +170, y −120 es mejor que −130.</p>
+    <div class="sec-h"><h2>Cómo leer un momio</h2></div>
+    <div class="caja bloque">
+      <p><b>+170</b>: si apuestas $100 y ganas, te pagan $170 de ganancia. <b>−130</b>: tienes que apostar $130 para ganar $100. El número más alto siempre te conviene más: +180 es mejor que +170, y −120 es mejor que −130.</p>
+    </div>
 
-    <h2>Los tres tipos de apuesta</h2>
-    <p><b>Ganador:</b> apuestas a qué equipo gana el partido.</p>
-    <p><b>Hándicap (spread):</b> a un equipo le "quitan" o "regalan" puntos. "Nuggets −12.5" significa que tienen que ganar por 13 o más. "Pelicans +12.5" significa que ganas si los Pelicans ganan, o si pierden por 12 o menos.</p>
-    <p><b>Puntos totales (más / menos):</b> apuestas a si entre los dos equipos anotan más o menos de cierta cantidad de puntos.</p>
-    <p>Si la línea es un número exacto (por ejemplo −4) y el resultado queda justo ahí, te devuelven tu dinero.</p>
+    <div class="sec-h"><h2>Los tres tipos de apuesta</h2></div>
+    <div class="caja bloque">
+      <p><b>Ganador:</b> apuestas a qué equipo gana el partido.</p>
+      <p><b>Hándicap (spread):</b> a un equipo le "quitan" o "regalan" puntos. "Nuggets −12.5" significa que tienen que ganar por 13 o más. "Pelicans +12.5" significa que ganas si los Pelicans ganan, o si pierden por 12 o menos.</p>
+      <p><b>Puntos totales (más / menos):</b> apuestas a si entre los dos equipos anotan más o menos de cierta cantidad de puntos.</p>
+      <p>Si la línea es un número exacto (por ejemplo −4) y el resultado queda justo ahí, te devuelven tu dinero.</p>
+    </div>
 
-    <h2>Palabras que vas a ver</h2>
-    <p><b>Nosotros / las casas:</b> la probabilidad que calcula nuestro modelo contra la que calculan las casas de apuestas (usamos Pinnacle, la más precisa, sin su comisión).</p>
-    <p><b>Conviene:</b> nuestro modelo cree que la probabilidad es suficientemente más alta que lo que paga la casa. Se exige al menos <span id="umbral"></span> de ganancia esperada en ganador y <span id="umbral_pts"></span> en hándicap y totales.</p>
-    <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
-    <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
-    <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
-    <p><b>Lesiones:</b> jugadores importantes en el reporte de ESPN y la probabilidad de que jueguen. El modelo ya las toma en cuenta.</p>
-    <p><b>¿Le ganamos al cierre? (CLV):</b> si el momio que tomamos fue mejor que el último momio antes del partido. Es la señal más confiable de que el modelo sirve; ganar o perder unos días es casi pura suerte.</p>
-    <p><b>Modo práctica:</b> todas las apuestas son simuladas. La idea es medir durante unas semanas si el modelo de verdad le gana a las casas antes de usar dinero real.</p>
+    <div class="sec-h"><h2>Palabras que vas a ver</h2></div>
+    <div class="caja bloque">
+      <p><b>Nosotros / las casas:</b> la probabilidad que calcula nuestro modelo contra la que calculan las casas de apuestas (usamos Pinnacle, la más precisa, sin su comisión).</p>
+      <p><b>Conviene:</b> nuestro modelo cree que la probabilidad es suficientemente más alta que lo que paga la casa. Se exige al menos <span id="umbral"></span> de ganancia esperada en ganador y <span id="umbral_pts"></span> en hándicap y totales.</p>
+      <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
+      <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
+      <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
+      <p><b>Lesiones:</b> jugadores importantes en el reporte de ESPN y la probabilidad de que jueguen. El modelo ya las toma en cuenta.</p>
+      <p><b>¿Le ganamos al cierre? (CLV):</b> si el momio que tomamos fue mejor que el último momio antes del partido. Es la señal más confiable de que el modelo sirve; ganar o perder unos días es casi pura suerte.</p>
+      <p><b>Modo práctica:</b> todas las apuestas son simuladas. La idea es medir durante unas semanas si el modelo de verdad le gana a las casas antes de usar dinero real.</p>
+    </div>
   </section>
 </main>
 
@@ -274,6 +350,7 @@ const hora = iso => new Date(iso).toLocaleTimeString("es-MX", {hour: "numeric", 
 const nombre = ab => EQUIPOS[ab] || ab;
 const guardar = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
 const leer = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
+const eqHTML = (ab, ch) => `<span class="eq${ch ? " ch" : ""}" aria-hidden="true">${esc(ab)}</span>`;
 const menos = t => String(t).replace(/(^|\s)-(\d)/g, "$1−$2");
 const fmtLinea = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x);
 
@@ -393,7 +470,7 @@ function renderConviene(d, {picks, sosp, empezados}) {
   if (sosp.length) notas.push(`${sosp.length} descartada${sosp.length > 1 ? "s" : ""} por sospechosa${sosp.length > 1 ? "s" : ""}`);
   if (empezados.size) notas.push(`${empezados.size} partido${empezados.size > 1 ? "s" : ""} ya empezó`);
   if (!picks.length) {
-    $("#conviene").innerHTML = `<div class="vacio-hero"><div class="t">Hoy no hay valor. No apuestes.</div>
+    $("#conviene").innerHTML = `<div class="sec-h"><h2>Hoy conviene</h2></div><div class="caja vacio-hero"><div class="t">Hoy no hay valor. No apuestes.</div>
       <div class="s">Ninguna apuesta de los partidos que faltan tiene suficiente ventaja${notas.length ? " (" + notas.join(" · ") + ")" : ""}. No apostar también es una buena decisión.</div></div>`;
     return;
   }
@@ -403,17 +480,17 @@ function renderConviene(d, {picks, sosp, empezados}) {
   const grupos = [...porJuego.values()].sort((a, b) => new Date(a[0].juego.inicio) - new Date(b[0].juego.inicio)).map(lista => {
     const j = lista[0].juego, sub = lista.reduce((s, x) => s + x.monto, 0);
     const exp = lista.length > 1 ? `<span class="exp">${lista.length} apuestas en el mismo partido (${fmtMoney(sub)}): si el partido sale raro, pueden fallar juntas</span>` : "";
-    return `<div class="grupo"><div class="grupo-h"><span>${esc(nombre(j.visita))} @ ${esc(nombre(j.local))} · ${hora(j.inicio)}</span>${exp}</div>
+    return `<div class="caja grupo"><div class="grupo-h"><span class="vs">${eqHTML(j.visita, 1)} ${esc(nombre(j.visita))} <i>@</i> ${eqHTML(j.local, 1)} ${esc(nombre(j.local))}</span><span class="hr">${hora(j.inicio)}</span>${exp}</div>
       ${lista.map(x => `<div class="pick">
         <div class="pick-top">
           <div><div class="pick-nom">${esc(explica(x.mercado, x.texto).frase)}</div><div class="pick-meta">${esc(explica(x.mercado, x.texto).codigo)}</div></div>
-          <div class="minimo"><span class="l">Apuesta si Caliente paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
+          <div class="precio-btn"><span class="l">Apuesta si Caliente paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
         </div>
         <div class="pick-det">Nuestro modelo le da ${Math.round(x.p * 100)}% de probabilidad; las casas, ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}. Monto sugerido: <b>${fmtMoney(x.monto)}</b>.</div>
         ${calcHTML(x.id, x.minimo)}
       </div>`).join("")}</div>`;
   }).join("");
-  $("#conviene").innerHTML = `<h2 class="grande">Hoy conviene</h2>
+  $("#conviene").innerHTML = `<div class="sec-h"><h2>Hoy conviene</h2></div>
     <div class="resumen"><b>${picks.length} apuesta${picks.length > 1 ? "s" : ""} que convienen</b> · hasta <b>${fmtMoney(total)}</b> en total${notas.length ? " · " + notas.join(" · ") : ""}</div>
     ${grupos}`;
 }
@@ -429,7 +506,7 @@ function ladoHTML(l, iniciado) {
   const mostrarPin = l.pinnacle != null && l.casa !== "pinnacle";
   return `<details class="lado"${abierto ? " open" : ""}>
     <summary>
-      <span class="s-nom">${esc(nombre(l.equipo))}<small>${l.local ? "local" : "visita"}</small></span>
+      <span class="s-eq">${eqHTML(l.equipo)}</span><span class="s-nom">${esc(nombre(l.equipo))}<small>${l.local ? "local" : "visita"}</small></span>
       <span class="s-der">${iniciado ? "" : chipEstado(l.estado, l.monto)}<svg class="flecha" aria-hidden="true"><use href="#i-flecha"/></svg></span>
       <span class="s-num">Nosotros ${Math.round(l.modelo)}% · casas ${l.mercado == null ? "–" : Math.round(l.mercado) + "%"} · ${evTexto(l.ev, l.estado)}</span>
     </summary>
@@ -479,10 +556,15 @@ function renderPartidos(d, empezados) {
   $("#partidos").innerHTML = d.proximos.map(p => {
     const iniciado = empezados.has(p.id);
     const [v, l] = p.lados;
-    return `<article class="card${iniciado ? " empezado" : ""}">
-      <div class="card-h"><span>${esc(nombre(p.visita))} @ ${esc(nombre(p.local))}</span><span>${iniciado ? '<span class="tag-live">Ya empezó</span>' : hora(p.inicio)}</span></div>
-      ${proyHTML(p)}
+    const wp = v && l ? `<div class="wp">
+        <div class="wp-t"><span><b>${Math.round(v.modelo)}%</b>${esc(v.equipo)}</span><span>${esc(l.equipo)} <b style="margin:0 0 0 4px">${Math.round(l.modelo)}%</b></span></div>
+        <div class="wp-bar" role="img" aria-label="Probabilidad de ganar: ${esc(nombre(v.equipo))} ${Math.round(v.modelo)}%, ${esc(nombre(l.equipo))} ${Math.round(l.modelo)}%"><i class="v${v.modelo >= l.modelo ? " fav" : ""}" style="width:${v.modelo}%"></i><i class="l${l.modelo > v.modelo ? " fav" : ""}" style="width:${l.modelo}%"></i></div>
+        <div class="wp-nota">Probabilidad de ganar según nuestro modelo</div></div>` : "";
+    return `<article class="caja juego${iniciado ? " empezado" : ""}">
+      <div class="j-h"><span><b>${esc(nombre(p.visita))}</b> @ <b>${esc(nombre(p.local))}</b></span><span>${iniciado ? '<span class="tag-live">Ya empezó</span>' : hora(p.inicio)}</span></div>
+      ${wp}
       ${v ? ladoHTML(v, iniciado) : ""}${l ? ladoHTML(l, iniciado) : ""}
+      ${proyHTML(p)}
       ${puntosHTML(p, iniciado)}
     </article>`;
   }).join("");
@@ -506,7 +588,7 @@ function renderApuestas(d) {
             ((clv ?? clvp) > 0) ? "gan" : ((clv ?? clvp) < 0 ? "per" : "")),
   ].join("");
 
-  $("#historial").innerHTML = d.historial.length ? `<ul class="log">${d.historial.map(h => {
+  $("#historial").innerHTML = d.historial.length ? `<ul class="caja log">${d.historial.map(h => {
     const cls = h.resultado === "GANADA" ? "gan" : h.resultado === "PERDIDA" ? "per" : "pen";
     const res = h.resultado === "PENDIENTE" ? "Pendiente" : h.resultado === "PUSH" ? "Devuelta" : h.resultado === "GANADA" ? "Ganó +" + fmtMoney(h.ganancia) : "Perdió " + fmtMoney(h.ganancia);
     const esPts = h.mercado && h.mercado !== "h2h";
@@ -522,14 +604,14 @@ function renderRanking(d) {
   const maxDev = Math.max(...d.ratings.map(x => Math.abs(x.elo - 1500)), 1);
   $("#ratings").innerHTML = d.ratings.map(x => {
     const dev = x.elo - 1500, w = 50 * Math.abs(dev) / maxDev;
-    return `<tr><td style="color:var(--faint)">${x.rank}</td><td><b>${esc(nombre(x.equipo))}</b> <span class="abrev" style="color:var(--faint)">${esc(x.equipo)}</span></td>
+    return `<tr><td class="rk">${x.rank}</td><td><span class="t-eq">${eqHTML(x.equipo, 1)}<b>${esc(nombre(x.equipo))}</b></span></td>
       <td class="num">${x.elo}</td><td><div class="elo" role="img" aria-label="${dev >= 0 ? "+" : "−"}${Math.abs(dev)} vs. promedio"><i class="${dev >= 0 ? "arriba" : "abajo"}" style="width:${w}%"></i></div></td></tr>`;
   }).join("");
 }
 
 function renderComo() {
   if (leer("como-ok") === "1") { $("#como").innerHTML = ""; return; }
-  $("#como").innerHTML = `<div class="como">
+  $("#como").innerHTML = `<div class="caja como">
     <h3>Cómo usar esta página</h3>
     <ol>
       <li>Mira la lista <b>Hoy conviene</b>.</li>
@@ -537,7 +619,7 @@ function renderComo() {
       <li>Si Caliente paga <b>el número verde o más</b>, apuesta el monto sugerido. Si no, sáltala.</li>
     </ol>
     <div class="momios"><b>+170</b> = por cada $100 ganas $170 · <b>−130</b> = apuestas $130 para ganar $100 · el número más alto siempre es mejor.</div>
-    <button type="button" id="como-ok">Entendido</button>
+    <button type="button" class="btn" id="como-ok">Entendido</button>
   </div>`;
   $("#como-ok").addEventListener("click", () => { guardar("como-ok", "1"); renderComo(); });
 }
