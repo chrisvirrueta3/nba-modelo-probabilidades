@@ -59,6 +59,16 @@
   .vacio-hero .t { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
   .vacio-hero .s { color: var(--dim); font-size: 14px; margin-top: 6px; max-width: 46ch; }
 
+  .como { background: var(--panel); border: 1px solid var(--line2); border-radius: var(--r); padding: 14px 16px; margin-top: 14px; }
+  .como h3 { font-size: 15px; font-weight: 650; margin-bottom: 6px; }
+  .como ol { padding-left: 20px; color: var(--dim); font-size: 14px; display: grid; gap: 4px; }
+  .como ol b { color: var(--txt); font-weight: 600; }
+  .como .momios { margin-top: 10px; font-size: 13px; color: var(--dim); border-top: 1px solid var(--line); padding-top: 10px; }
+  .como .momios b { color: var(--txt); }
+  .como button { margin-top: 12px; background: var(--panel2); color: var(--txt); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 14px; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .intro { color: var(--dim); font-size: 13.5px; margin: -4px 0 12px; max-width: 60ch; }
+  .codigo { display: block; color: var(--faint); font-size: 12.5px; font-weight: 500; margin-top: 2px; }
+  .minimo .o { display: block; font-size: 11.5px; color: var(--dim); }
   /* ---------- Calculadora ---------- */
   .calc { margin-top: 10px; display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; align-items: center; }
   .calc-l { font-size: 12.5px; color: var(--dim); grid-column: 1 / -1; }
@@ -191,38 +201,56 @@
 <main class="wrap">
   <header>
     <h1>NBA · Probabilidades</h1>
-    <div class="sub"><span id="actualizado">Cargando…</span><span class="modo">Modo práctica · todo es simulado</span></div>
+    <div class="sub"><span id="actualizado">Cargando…</span><span class="modo">Modo práctica · apuestas simuladas</span></div>
     <div id="alerta"></div>
   </header>
 
   <section class="vista on" id="v-hoy" aria-label="Hoy">
+    <div id="como"></div>
     <div class="conviene" id="conviene"></div>
-    <h2>Todos los partidos</h2>
+    <h2>Todos los partidos (detalle)</h2>
+    <p class="intro">Aquí está todo, incluso lo que no conviene. Si solo quieres decidir, con la lista de arriba basta.</p>
     <div id="partidos"></div>
   </section>
 
   <section class="vista" id="v-apuestas" aria-label="Apuestas">
     <div class="kpis" id="kpis"></div>
-    <h2>Bitácora de apuestas simuladas</h2>
+    <p class="intro"><b>¿Le ganamos al cierre?</b> compara el momio que tomamos contra el último momio antes del partido. Si casi siempre tomamos mejores momios, el modelo sí tiene ventaja aunque un día perdamos.</p>
+    <h2>Historial de apuestas de práctica</h2>
     <div id="historial"></div>
   </section>
 
   <section class="vista" id="v-ranking" aria-label="Ranking">
-    <h2>Ranking Elo actual</h2>
-    <div class="tabla"><table><thead><tr><th>#</th><th>Equipo</th><th class="num">Elo</th><th style="width:34%">vs. 1500</th></tr></thead><tbody id="ratings"></tbody></table></div>
+    <h2>Qué tan fuerte es cada equipo</h2>
+    <p class="intro">Calificación Elo: 1500 es un equipo promedio. Mientras más alta, más fuerte. Sube cuando un equipo gana, sobre todo si le gana a uno fuerte.</p>
+    <div class="tabla"><table><thead><tr><th>#</th><th>Equipo</th><th class="num">Elo</th><th style="width:34%">vs. promedio</th></tr></thead><tbody id="ratings"></tbody></table></div>
   </section>
 
   <section class="vista texto" id="v-info" aria-label="Guía">
-    <h2>Cómo leer esto</h2>
-    <p><b>Hoy conviene.</b> Arriba están solo las apuestas con valor de los partidos que no han empezado. El número verde es el <b>momio mínimo</b> que necesitas en Caliente: si ahí pagan ese momio o uno más alto, la apuesta conviene. En spreads y totales vale solo para esa misma línea.</p>
-    <p><b>Calculadora.</b> Escribe el momio que ves en Caliente; el botón <b>±</b> cambia el signo (−150 / +150). Te dice el EV y cuánto apostar con ese momio. Si el momio no se parece al del mercado, te avisa por si hay un error de dedo.</p>
-    <p><b>Modelo vs. mercado.</b> La barra azul es la probabilidad del modelo (Elo, descanso, back-to-backs, forma reciente y lesiones). La gris es la probabilidad "justa" de Pinnacle, sin su margen.</p>
-    <p><b>EV (valor esperado).</b> Cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Se marca <span class="chip valor">Valor</span> desde <span id="umbral"></span> en ganador y <span id="umbral_pts"></span> en spreads y totales.</p>
-    <p><b>Sospechosa.</b> El modelo difiere demasiado del mercado (más de <span id="dif"></span> puntos de probabilidad, o la proyección está lejos de la línea de Pinnacle). Casi siempre es una baja de último minuto o algo que el modelo no sabe. Su EV se muestra tachado: no es confiable y no se apuesta.</p>
-    <p><b>Spread y total.</b> El modelo proyecta el margen y los puntos totales (con un error típico de ~14 y ~19 puntos) y calcula la probabilidad de cubrir cada línea.</p>
-    <p><b>Lesiones.</b> Jugadores de la rotación en el reporte de ESPN, con la probabilidad estimada de que jueguen.</p>
-    <p><b>Monto sugerido.</b> Kelly fraccional (<span id="kelly"></span>) con tope de <span id="tope"></span> del bankroll por apuesta.</p>
-    <p><b>CLV.</b> Si el momio que tomaste es mejor que la línea de cierre de Pinnacle (en spreads y totales se mide en puntos de línea). Es la mejor señal de que el modelo tiene ventaja real; el ROI necesita cientos de apuestas para dejar de ser suerte.</p>
+    <h2>Cómo usar la página</h2>
+    <p><b>1. Mira "Hoy conviene".</b> Ahí están solo las apuestas que vale la pena considerar hoy. Si dice "Hoy no hay valor", no apuestes.</p>
+    <p><b>2. Busca esa misma apuesta en Caliente.</b> Debajo de cada apuesta dice cómo se llama ahí (ganador, hándicap o total de puntos).</p>
+    <p><b>3. Compara el momio.</b> Si Caliente paga el número verde o uno más alto, conviene: apuesta el monto sugerido. Si paga menos, no. También puedes escribir el momio de Caliente en la cajita y la página te dice "Sí conviene" o "No conviene".</p>
+    <p><button type="button" id="ver-como" class="chip" style="cursor:pointer;border:1px solid var(--line2)">Mostrar otra vez la guía rápida en "Hoy"</button></p>
+
+    <h2>Cómo leer un momio</h2>
+    <p><b>+170</b>: si apuestas $100 y ganas, te pagan $170 de ganancia. <b>−130</b>: tienes que apostar $130 para ganar $100. El número más alto siempre te conviene más: +180 es mejor que +170, y −120 es mejor que −130.</p>
+
+    <h2>Los tres tipos de apuesta</h2>
+    <p><b>Ganador:</b> apuestas a qué equipo gana el partido.</p>
+    <p><b>Hándicap (spread):</b> a un equipo le "quitan" o "regalan" puntos. "Nuggets −12.5" significa que tienen que ganar por 13 o más. "Pelicans +12.5" significa que ganas si los Pelicans ganan, o si pierden por 12 o menos.</p>
+    <p><b>Puntos totales (más / menos):</b> apuestas a si entre los dos equipos anotan más o menos de cierta cantidad de puntos.</p>
+    <p>Si la línea es un número exacto (por ejemplo −4) y el resultado queda justo ahí, te devuelven tu dinero.</p>
+
+    <h2>Palabras que vas a ver</h2>
+    <p><b>Nosotros / las casas:</b> la probabilidad que calcula nuestro modelo contra la que calculan las casas de apuestas (usamos Pinnacle, la más precisa, sin su comisión).</p>
+    <p><b>Conviene:</b> nuestro modelo cree que la probabilidad es suficientemente más alta que lo que paga la casa. Se exige al menos <span id="umbral"></span> de ganancia esperada en ganador y <span id="umbral_pts"></span> en hándicap y totales.</p>
+    <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
+    <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
+    <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
+    <p><b>Lesiones:</b> jugadores importantes en el reporte de ESPN y la probabilidad de que jueguen. El modelo ya las toma en cuenta.</p>
+    <p><b>¿Le ganamos al cierre? (CLV):</b> si el momio que tomamos fue mejor que el último momio antes del partido. Es la señal más confiable de que el modelo sirve; ganar o perder unos días es casi pura suerte.</p>
+    <p><b>Modo práctica:</b> todas las apuestas son simuladas. La idea es medir durante unas semanas si el modelo de verdad le gana a las casas antes de usar dinero real.</p>
   </section>
 </main>
 
@@ -252,6 +280,28 @@ const fmtLinea = x => (x > 0 ? "+" : x < 0 ? "−" : "") + Math.abs(x);
 let CFG = {};
 const PICKS = new Map();  // id -> datos para la calculadora
 
+/* ---------- Lenguaje sencillo ---------- */
+const pts = n => `${n} punto${n === 1 ? "" : "s"}`;
+function explica(mercado, texto, juego) {
+  if (mercado === "h2h") return { frase: `Ganan los ${texto.replace(/ gana$/, "")}`, codigo: "En Caliente: ganador del partido" };
+  const m = String(texto).trim().match(/^(\S+)\s+([+-]?[\d.]+)$/);
+  if (!m) return { frase: texto, codigo: "" };
+  const [, a, b] = m, x = parseFloat(b), entero = Number.isInteger(x);
+  if (mercado === "totals") {
+    const mas = /^over$/i.test(a);
+    const n = entero ? x : (mas ? Math.ceil(x) : Math.floor(x));
+    const frase = entero ? `Entre los dos equipos anotan ${mas ? "más" : "menos"} de ${pts(x)}`
+                         : `Entre los dos equipos anotan ${pts(n)} o ${mas ? "más" : "menos"}`;
+    return { frase, codigo: `En Caliente: ${mas ? "Más" : "Menos"} de ${x} (total de puntos)${entero ? ` · si quedan ${x} exactos, te devuelven tu dinero` : ""}` };
+  }
+  const eq = nombre(a), n = Math.abs(x);
+  let frase;
+  if (x < 0) frase = entero ? `Los ${eq} ganan por más de ${pts(n)}` : `Los ${eq} ganan por ${pts(Math.ceil(n))} o más`;
+  else if (x > 0) frase = entero ? `Los ${eq} ganan, o pierden por menos de ${pts(n)}` : `Los ${eq} ganan, o pierden por ${pts(Math.floor(n))} o menos`;
+  else frase = `Los ${eq} ganan`;
+  return { frase, codigo: `En Caliente: ${a} ${menos(b)} (hándicap)${entero ? ` · si queda justo en ${n}, te devuelven tu dinero` : ""}` };
+}
+
 /* ---------- Utilidades de apuesta ---------- */
 function minimoMomio(p, u) { return aAmericano((1 + u) / p); }
 function stake(p, d) {
@@ -259,13 +309,13 @@ function stake(p, d) {
   return CFG.bankroll * Math.min(Math.max(k, 0) * CFG.kelly, CFG.tope);
 }
 function evTexto(ev, estado) {
-  if (estado === "sospechosa") return `<span class="ev-sosp" title="No confiable">EV ${signo(ev)}</span>`;
-  if (estado === "valor") return `<span class="ev-pos">EV ${signo(ev)}</span>`;
-  return `<span class="ev-no">EV ${signo(ev)}</span>`;
+  if (estado === "sospechosa") return `<span class="ev-sosp" title="Ganancia esperada no confiable">ganancia esperada ${signo(ev)}</span>`;
+  if (estado === "valor") return `<span class="ev-pos">conviene (ganancia esperada ${signo(ev)})</span>`;
+  return `<span class="ev-no">no conviene</span>`;
 }
 function chipEstado(estado, monto) {
-  if (estado === "valor") return `<span class="chip valor">Valor · ${fmtMoney(monto)}</span>`;
-  if (estado === "sospechosa") return `<span class="chip sosp">Sospechosa</span>`;
+  if (estado === "valor") return `<span class="chip valor">Conviene · ${fmtMoney(monto)}</span>`;
+  if (estado === "sospechosa") return `<span class="chip sosp">Sospechosa · no apostar</span>`;
   return "";
 }
 
@@ -275,7 +325,7 @@ function calcHTML(id, minimo) {
   const neg = guardado ? guardado.startsWith("-") : minimo < 0;
   const val = guardado.replace("-", "");
   return `<div class="calc" data-id="${esc(id)}">
-    <label class="calc-l" for="c-${esc(id)}">Tu momio en Caliente</label>
+    <label class="calc-l" for="c-${esc(id)}">¿Cuánto paga Caliente? Escríbelo para confirmar</label>
     <div class="calc-in"><button type="button" class="sign" aria-label="Cambiar signo">${neg ? "−" : "+"}</button><input id="c-${esc(id)}" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="${Math.abs(minimo)}" value="${esc(val)}"></div>
     <output class="calc-r" aria-live="polite"></output>
   </div>`;
@@ -287,18 +337,18 @@ function calcular(box) {
   const digitos = input.value.replace(/\D/g, "");
   input.value = digitos;
   guardar("calc:" + box.dataset.id, digitos ? (neg ? "-" : "") + digitos : "");
-  if (!digitos) { out.textContent = "Escribe el momio que ves en Caliente."; return; }
+  if (!digitos) { out.textContent = "Usa ± para el signo (−150 o +150)."; return; }
   const v = parseInt(digitos, 10);
   if (v < 100) { out.innerHTML = `<span class="warn">Escribe al menos 3 dígitos, ej. ${Math.abs(info.minimo)}</span>`; return; }
   const m = neg ? -v : v, d = aDecimal(m), ev = info.p * d - 1;
   const impl = 1 / d;
   if (info.mkt != null && Math.abs(impl - info.mkt) > 0.15) {
-    out.innerHTML = `<span class="warn">¿Seguro que es ${fmtMomio(m)}? El mercado da ${Math.round(info.mkt * 100)}%. Revisa el signo.</span>`;
+    out.innerHTML = `<span class="warn">¿Seguro que es ${fmtMomio(m)}? Se ve muy distinto a las demás casas. Revisa el signo con ±.</span>`;
     return;
   }
-  if (info.sosp) { out.innerHTML = `<span class="warn">Sospechosa: no apostar, aunque el EV dé ${signo(100 * ev)}.</span>`; return; }
-  if (ev >= info.u) out.innerHTML = `<span class="ok"><b>Apuesta ${fmtMoney(stake(info.p, d))}</b> · EV ${signo(100 * ev)}</span>`;
-  else out.innerHTML = `<span>Sin valor a ${fmtMomio(m)} · EV ${signo(100 * ev)}</span>`;
+  if (info.sosp) { out.innerHTML = `<span class="warn">No apuestes: es sospechosa (el modelo puede no saber algo).</span>`; return; }
+  if (ev >= info.u) out.innerHTML = `<span class="ok"><b>Sí conviene: apuesta ${fmtMoney(stake(info.p, d))}</b></span>`;
+  else out.innerHTML = `<span>No conviene a ${fmtMomio(m)}. Mejor no apuestes.</span>`;
 }
 function activarCalcs(raiz) {
   raiz.querySelectorAll(".calc").forEach(box => {
@@ -340,32 +390,31 @@ function prepararPicks(d) {
 
 function renderConviene(d, {picks, sosp, empezados}) {
   const notas = [];
-  if (sosp.length) notas.push(`${sosp.length} sospechosa${sosp.length > 1 ? "s" : ""} descartada${sosp.length > 1 ? "s" : ""}`);
+  if (sosp.length) notas.push(`${sosp.length} descartada${sosp.length > 1 ? "s" : ""} por sospechosa${sosp.length > 1 ? "s" : ""}`);
   if (empezados.size) notas.push(`${empezados.size} partido${empezados.size > 1 ? "s" : ""} ya empezó`);
   if (!picks.length) {
     $("#conviene").innerHTML = `<div class="vacio-hero"><div class="t">Hoy no hay valor. No apuestes.</div>
-      <div class="s">Ninguna apuesta de los partidos pendientes pasa los filtros${notas.length ? " (" + notas.join(" · ") + ")" : ""}. No apostar también es una buena decisión.</div></div>`;
+      <div class="s">Ninguna apuesta de los partidos que faltan tiene suficiente ventaja${notas.length ? " (" + notas.join(" · ") + ")" : ""}. No apostar también es una buena decisión.</div></div>`;
     return;
   }
   const total = picks.reduce((s, x) => s + x.monto, 0);
   const porJuego = new Map();
   for (const x of picks) { if (!porJuego.has(x.juego.id)) porJuego.set(x.juego.id, []); porJuego.get(x.juego.id).push(x); }
-  const mkNombre = {h2h: "Ganador", spreads: "Spread", totals: "Total"};
   const grupos = [...porJuego.values()].sort((a, b) => new Date(a[0].juego.inicio) - new Date(b[0].juego.inicio)).map(lista => {
     const j = lista[0].juego, sub = lista.reduce((s, x) => s + x.monto, 0);
-    const exp = lista.length > 1 ? `<span class="exp">${lista.length} apuestas · ${fmtMoney(sub)} en el mismo partido</span>` : "";
-    return `<div class="grupo"><div class="grupo-h"><span>${esc(j.visita)} @ ${esc(j.local)} · ${hora(j.inicio)}</span>${exp}</div>
+    const exp = lista.length > 1 ? `<span class="exp">${lista.length} apuestas en el mismo partido (${fmtMoney(sub)}): si el partido sale raro, pueden fallar juntas</span>` : "";
+    return `<div class="grupo"><div class="grupo-h"><span>${esc(nombre(j.visita))} @ ${esc(nombre(j.local))} · ${hora(j.inicio)}</span>${exp}</div>
       ${lista.map(x => `<div class="pick">
         <div class="pick-top">
-          <div><div class="pick-nom">${esc(menos(x.texto))}</div><div class="pick-meta">${mkNombre[x.mercado]} · modelo ${Math.round(x.p * 100)}% vs. mercado ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}</div></div>
-          <div class="minimo"><span class="l">Mínimo en Caliente</span><span class="v">${fmtMomio(x.minimo)}</span></div>
+          <div><div class="pick-nom">${esc(explica(x.mercado, x.texto).frase)}</div><div class="pick-meta">${esc(explica(x.mercado, x.texto).codigo)}</div></div>
+          <div class="minimo"><span class="l">Apuesta si Caliente paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
         </div>
-        <div class="pick-det">Referencia: ${fmtMomio(x.momio)} en ${esc(x.casa)} → apostarías ${fmtMoney(x.monto)}</div>
+        <div class="pick-det">Nuestro modelo le da ${Math.round(x.p * 100)}% de probabilidad; las casas, ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}. Monto sugerido: <b>${fmtMoney(x.monto)}</b>.</div>
         ${calcHTML(x.id, x.minimo)}
       </div>`).join("")}</div>`;
   }).join("");
   $("#conviene").innerHTML = `<h2 class="grande">Hoy conviene</h2>
-    <div class="resumen"><b>${picks.length} apuesta${picks.length > 1 ? "s" : ""}</b> · hasta <b>${fmtMoney(total)}</b> en total${notas.length ? " · " + notas.join(" · ") : ""}</div>
+    <div class="resumen"><b>${picks.length} apuesta${picks.length > 1 ? "s" : ""} que convienen</b> · hasta <b>${fmtMoney(total)}</b> en total${notas.length ? " · " + notas.join(" · ") : ""}</div>
     ${grupos}`;
 }
 
@@ -382,14 +431,14 @@ function ladoHTML(l, iniciado) {
     <summary>
       <span class="s-nom">${esc(nombre(l.equipo))}<small>${l.local ? "local" : "visita"}</small></span>
       <span class="s-der">${iniciado ? "" : chipEstado(l.estado, l.monto)}<svg class="flecha" aria-hidden="true"><use href="#i-flecha"/></svg></span>
-      <span class="s-num">Modelo ${l.modelo.toFixed(1)}% · mercado ${l.mercado == null ? "–" : l.mercado.toFixed(1) + "%"} · ${evTexto(l.ev, l.estado)}</span>
+      <span class="s-num">Nosotros ${Math.round(l.modelo)}% · casas ${l.mercado == null ? "–" : Math.round(l.mercado) + "%"} · ${evTexto(l.ev, l.estado)}</span>
     </summary>
     <div class="lado-body">
       <div class="barras">
-        <span>Modelo</span><div class="barra b-mod"><i style="width:${l.modelo}%"></i></div><span class="pct">${l.modelo.toFixed(1)}%</span>
-        <span>Mercado</span><div class="barra b-mer"><i style="width:${l.mercado ?? 0}%"></i></div><span class="pct">${l.mercado == null ? "–" : l.mercado.toFixed(1) + "%"}</span>
+        <span>Nosotros</span><div class="barra b-mod"><i style="width:${l.modelo}%"></i></div><span class="pct">${l.modelo.toFixed(1)}%</span>
+        <span>Casas</span><div class="barra b-mer"><i style="width:${l.mercado ?? 0}%"></i></div><span class="pct">${l.mercado == null ? "–" : l.mercado.toFixed(1) + "%"}</span>
       </div>
-      <div class="precio">Mejor precio de referencia: <b>${fmtMomio(l.momio)}</b> en ${esc(l.casa)}${mostrarPin ? ` · Pinnacle ${fmtMomio(l.pinnacle)}` : ""}</div>
+      <div class="precio">Mejor pago encontrado: <b>${fmtMomio(l.momio)}</b> (${esc(l.casa)})${mostrarPin ? ` · Pinnacle, la casa de referencia: ${fmtMomio(l.pinnacle)}` : ""}</div>
       ${bajasHTML(l.bajas)}
     </div>
   </details>`;
@@ -402,23 +451,23 @@ function proyHTML(p) {
   let pin = "–";
   if (pr.pin_spread_local != null) {
     const favP = pr.pin_spread_local <= 0 ? p.local : p.visita;
-    pin = `<b>${esc(favP)} ${fmtLinea(-Math.abs(pr.pin_spread_local))}</b> · ${pr.pin_total ?? "–"} pts`;
+    pin = `<b>${esc(nombre(favP))} por ${Math.abs(pr.pin_spread_local)}</b> · ${pr.pin_total ?? "–"} puntos en total`;
   }
-  return `<div class="proy"><span>Modelo</span><span><b>${esc(favM)} ${fmtLinea(-Math.abs(pr.margen_local))}</b> · ${pr.total?.toFixed(1)} pts</span>
-    <span>Pinnacle</span><span>${pin}</span></div>`;
+  return `<div class="proy"><span>Pronóstico</span><span><b>${esc(nombre(favM))} por ${Math.abs(pr.margen_local).toFixed(1)}</b> · ${pr.total?.toFixed(0)} puntos en total</span>
+    <span>Las casas</span><span>${pin}</span></div>`;
 }
 
 function puntosHTML(p, iniciado) {
   if (!p.puntos || !p.puntos.length) return "";
   const fila = x => `<details class="pfila"${!iniciado && x.estado !== "nada" ? " open" : ""}>
-    <summary><span class="t">${esc(menos(x.texto))}</span><span class="s-der">${iniciado ? "" : chipEstado(x.estado, x.monto)}<svg class="flecha" aria-hidden="true"><use href="#i-flecha"/></svg></span>
-      <span class="d">Modelo ${x.modelo ?? "–"}% · mercado ${x.mercado_pct ?? "–"}% · ${evTexto(x.ev, x.estado)}</span></summary>
-    <div class="pfila-body">Mejor precio de referencia: <b>${fmtMomio(x.momio)}</b> en ${esc(x.casa)}</div>
+    <summary><span class="t">${esc(explica(x.mercado, x.texto).frase)}</span><span class="s-der">${iniciado ? "" : chipEstado(x.estado, x.monto)}<svg class="flecha" aria-hidden="true"><use href="#i-flecha"/></svg></span>
+      <span class="d">Nosotros ${x.modelo == null ? "–" : Math.round(x.modelo) + "%"} · casas ${x.mercado_pct == null ? "–" : Math.round(x.mercado_pct) + "%"} · ${evTexto(x.ev, x.estado)}</span></summary>
+    <div class="pfila-body">${esc(explica(x.mercado, x.texto).codigo)} · mejor pago encontrado: <b>${fmtMomio(x.momio)}</b> (${esc(x.casa)})</div>
   </details>`;
   const sp = p.puntos.filter(x => x.mercado === "spreads"), tt = p.puntos.filter(x => x.mercado === "totals");
   return `<div class="pts">
-    ${sp.length ? `<div class="pts-tit">Spread</div>${sp.map(fila).join("")}` : ""}
-    ${tt.length ? `<div class="pts-tit">Total (over/under)</div>${tt.map(fila).join("")}` : ""}
+    ${sp.length ? `<div class="pts-tit">Por cuántos puntos gana (hándicap)</div>${sp.map(fila).join("")}` : ""}
+    ${tt.length ? `<div class="pts-tit">Puntos totales del partido (más / menos)</div>${tt.map(fila).join("")}` : ""}
   </div>`;
 }
 
@@ -431,7 +480,7 @@ function renderPartidos(d, empezados) {
     const iniciado = empezados.has(p.id);
     const [v, l] = p.lados;
     return `<article class="card${iniciado ? " empezado" : ""}">
-      <div class="card-h"><span>${esc(p.visita)} @ ${esc(p.local)}</span><span>${iniciado ? '<span class="tag-live">Ya empezó</span>' : hora(p.inicio)}</span></div>
+      <div class="card-h"><span>${esc(nombre(p.visita))} @ ${esc(nombre(p.local))}</span><span>${iniciado ? '<span class="tag-live">Ya empezó</span>' : hora(p.inicio)}</span></div>
       ${proyHTML(p)}
       ${v ? ladoHTML(v, iniciado) : ""}${l ? ladoHTML(l, iniciado) : ""}
       ${puntosHTML(p, iniciado)}
@@ -445,27 +494,26 @@ function renderApuestas(d) {
   const liq = r.liquidadas ?? 0, pend = (r.apuestas ?? 0) - liq, gan = r.ganancia || 0;
   const clv = r.clv_promedio, clvp = r.clv_pts;
   $("#kpis").innerHTML = [
-    kpi("Bankroll", fmtMoney(r.bankroll ?? CFG.bankroll), `inicial ${fmtMoney(r.bankroll_inicial ?? CFG.bankroll)}`),
-    liq ? kpi("Ganancia", fmtMoney(gan), r.roi == null ? "ROI –" : "ROI " + signo(r.roi), gan > 0 ? "gan" : gan < 0 ? "per" : "")
-        : kpi("Ganancia", "Aún sin liquidar", `${pend} pendiente${pend === 1 ? "" : "s"}`, "vacio-v"),
-    kpi("Récord", `${r.ganadas ?? 0}–${r.perdidas ?? 0}${r.push ? "–" + r.push : ""}`, `${pend} pendiente${pend === 1 ? "" : "s"}`),
+    kpi("Dinero de práctica", fmtMoney(r.bankroll ?? CFG.bankroll), `empezaste con ${fmtMoney(r.bankroll_inicial ?? CFG.bankroll)}`),
+    liq ? kpi("Ganado / perdido", (gan > 0 ? "+" : "") + fmtMoney(gan), r.roi == null ? "" : `${signo(r.roi)} sobre lo apostado`, gan > 0 ? "gan" : gan < 0 ? "per" : "")
+        : kpi("Ganado / perdido", "Aún sin resultados", `${pend} pendiente${pend === 1 ? "" : "s"}`, "vacio-v"),
+    kpi("Aciertos", `${r.ganadas ?? 0} de ${liq}`, `${r.perdidas ?? 0} falladas${r.push ? ` · ${r.push} devueltas` : ""} · ${pend} pendiente${pend === 1 ? "" : "s"}`),
     (clv == null && clvp == null)
-      ? kpi("CLV", "Sin cierre aún", "se mide al empezar cada partido", "vacio-v")
-      : kpi("CLV", clv == null ? `${clvp > 0 ? "+" : ""}${clvp.toFixed(2)} pts` : signo(clv),
-            [clv != null && r.clv_positivo != null ? `${r.clv_positivo}% le gana al cierre` : "",
+      ? kpi("¿Le ganamos al cierre?", "Sin datos aún", "se mide al empezar cada partido", "vacio-v")
+      : kpi("¿Le ganamos al cierre?", clv == null ? `${clvp > 0 ? "+" : ""}${clvp.toFixed(2)} pts` : signo(clv),
+            [clv != null && r.clv_positivo != null ? `le ganamos en ${r.clv_positivo}% de las apuestas` : "",
              clv != null && clvp != null ? `puntos ${clvp > 0 ? "+" : ""}${clvp.toFixed(2)}` : ""].filter(Boolean).join(" · ") || `${liq} liquidadas`,
             ((clv ?? clvp) > 0) ? "gan" : ((clv ?? clvp) < 0 ? "per" : "")),
   ].join("");
 
-  const mk = {spreads: "SPR", totals: "TOT"};
   $("#historial").innerHTML = d.historial.length ? `<ul class="log">${d.historial.map(h => {
     const cls = h.resultado === "GANADA" ? "gan" : h.resultado === "PERDIDA" ? "per" : "pen";
-    const res = h.resultado === "PENDIENTE" ? "Pendiente" : h.resultado === "PUSH" ? "Push" : fmtMoney(h.ganancia);
+    const res = h.resultado === "PENDIENTE" ? "Pendiente" : h.resultado === "PUSH" ? "Devuelta" : h.resultado === "GANADA" ? "Ganó +" + fmtMoney(h.ganancia) : "Perdió " + fmtMoney(h.ganancia);
     const esPts = h.mercado && h.mercado !== "h2h";
-    const clvT = h.clv == null ? "CLV –" : "CLV " + (esPts ? `${h.clv > 0 ? "+" : ""}${h.clv} pts` : signo(h.clv));
+    const clvT = h.clv == null ? "" : "vs. cierre " + (esPts ? `${fmtLinea(h.clv)} pts` : signo(h.clv));
     return `<li>
-      <span class="a">${esc(esPts ? h.apuesta : nombre(h.apuesta) + " gana")}${esPts ? `<span class="mk">${mk[h.mercado]}</span>` : ""}</span><span class="r ${cls}">${res}</span>
-      <span class="m">${esc(h.partido)} · ${esc(String(h.fecha))} · ${fmtMomio(h.momio)} · ${fmtMoney(h.monto)}</span><span class="c">${clvT}</span>
+      <span class="a">${esc(explica(h.mercado || "h2h", esPts ? h.apuesta : nombre(h.apuesta) + " gana").frase)}</span><span class="r ${cls}">${res}</span>
+      <span class="m">${esc(h.partido)} · ${esc(String(h.fecha))} · momio ${fmtMomio(h.momio)} · apostaste ${fmtMoney(h.monto)}</span><span class="c">${clvT}</span>
     </li>`;
   }).join("")}</ul>` : `<div class="vacio">Todavía no hay apuestas simuladas.</div>`;
 }
@@ -477,6 +525,21 @@ function renderRanking(d) {
     return `<tr><td style="color:var(--faint)">${x.rank}</td><td><b>${esc(nombre(x.equipo))}</b> <span class="abrev" style="color:var(--faint)">${esc(x.equipo)}</span></td>
       <td class="num">${x.elo}</td><td><div class="elo" role="img" aria-label="${dev >= 0 ? "+" : "−"}${Math.abs(dev)} vs. promedio"><i class="${dev >= 0 ? "arriba" : "abajo"}" style="width:${w}%"></i></div></td></tr>`;
   }).join("");
+}
+
+function renderComo() {
+  if (leer("como-ok") === "1") { $("#como").innerHTML = ""; return; }
+  $("#como").innerHTML = `<div class="como">
+    <h3>Cómo usar esta página</h3>
+    <ol>
+      <li>Mira la lista <b>Hoy conviene</b>.</li>
+      <li>Busca <b>la misma apuesta en Caliente</b>.</li>
+      <li>Si Caliente paga <b>el número verde o más</b>, apuesta el monto sugerido. Si no, sáltala.</li>
+    </ol>
+    <div class="momios"><b>+170</b> = por cada $100 ganas $170 · <b>−130</b> = apuestas $130 para ganar $100 · el número más alto siempre es mejor.</div>
+    <button type="button" id="como-ok">Entendido</button>
+  </div>`;
+  $("#como-ok").addEventListener("click", () => { guardar("como-ok", "1"); renderComo(); });
 }
 
 function render(d) {
@@ -491,6 +554,11 @@ function render(d) {
   $("#kelly").textContent = Math.round(CFG.kelly * 100) + "% de Kelly";
   $("#tope").textContent = Math.round(CFG.tope * 100) + "%";
 
+  renderComo();
+  $("#ver-como").addEventListener("click", () => {
+    guardar("como-ok", "0"); renderComo();
+    document.querySelector('nav button[data-v="hoy"]').click(); window.scrollTo(0, 0);
+  });
   const prep = prepararPicks(d);
   renderConviene(d, prep);
   renderPartidos(d, prep.empezados);
