@@ -22,7 +22,7 @@ call :paso "4/9 Calculando bajas"             src\bajas.py                      
 call :paso "5/9 Recalculando Elo"             src\elo.py                         || goto error
 call :paso "6/9 Reentrenando modelo"          src\modelo.py                      || goto error
 call :paso "6b  Modelo de spreads y totales"   src\puntos.py                      || goto error
-call :paso "7/9 Momios (si son viejos)"       src\descargar_momios.py --si-viejo 240 || goto error
+call :paso "7/9 Momios (si son viejos)"       src\descargar_momios.py --si-viejo 90 || goto error
 call :paso "8/9 Valor y apuestas simuladas"   src\valor.py                       || goto error
 call :paso "9/9 Liquidando y exportando web"  src\liquidar.py                    || goto error
 "%PY%" src\exportar_web.py || goto error
