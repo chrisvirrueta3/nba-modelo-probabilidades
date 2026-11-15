@@ -43,7 +43,7 @@ def main():
     prueba = datos["TEMPORADA"].isin(["2025-26", "2026-27"]).to_numpy()
     # Las primeras semanas de 2023-24 tienen Elo "frío" (todos en 1500): las quitamos del entrenamiento
     calentando = (datos["FECHA"] < "2023-12-01").to_numpy()
-    entren &= ~calentando
+    entren = entren & ~calentando
 
     modelos = {
         "Regresión logística": make_pipeline(StandardScaler(), LogisticRegression(C=1.0, max_iter=1000)),

@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-15T03:56+00:00",
+ "actualizado": "2026-11-15T17:38+00:00",
  "config": {
   "bankroll": 1000,
   "kelly": 0.25,
@@ -9,7 +9,936 @@
   "dif_sospechosa": 0.1,
   "hca": 30.0
  },
- "proximos": [],
+ "proximos": [
+  {
+   "id": "de475830b5df0d1aae4fcd8f9bbaead9",
+   "inicio": "2026-11-15T18:10:00+00:00",
+   "local": "PHI",
+   "visita": "IND",
+   "lados": [
+    {
+     "equipo": "IND",
+     "local": false,
+     "modelo": 27.7,
+     "mercado": 28.3,
+     "momio": 260,
+     "casa": "williamhill",
+     "pinnacle": 244,
+     "ev": -0.4,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Andrew Nembhard",
+       "prob": 0,
+       "valor": 13.13
+      }
+     ]
+    },
+    {
+     "equipo": "PHI",
+     "local": true,
+     "modelo": 72.3,
+     "mercado": 71.7,
+     "momio": -277,
+     "casa": "lowvig",
+     "pinnacle": -282,
+     "ev": -1.5,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Joel Embiid",
+       "prob": 0,
+       "valor": 13.05
+      },
+      {
+       "jugador": "Adem Bona",
+       "prob": 0,
+       "valor": 2.13
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "IND +7.5",
+     "modelo": 50.7,
+     "mercado_pct": 49.8,
+     "momio": -101,
+     "casa": "lowvig",
+     "ev": 0.9,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "PHI -7.5",
+     "modelo": 49.3,
+     "mercado_pct": 50.2,
+     "momio": -106,
+     "casa": "pinnacle",
+     "ev": -4.2,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 225.5",
+     "modelo": 50.6,
+     "mercado_pct": 51.8,
+     "momio": -105,
+     "casa": "coolbet",
+     "ev": -3.3,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 225",
+     "modelo": 49.4,
+     "mercado_pct": 48.2,
+     "momio": 102,
+     "casa": "pinnacle",
+     "ev": -0.2,
+     "estado": "nada",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": 7.2,
+    "total": 225.3,
+    "pin_spread_local": -7.5,
+    "pin_total": 225.0
+   }
+  },
+  {
+   "id": "29b8bbf05645162d89780189eed390c2",
+   "inicio": "2026-11-15T21:10:00+00:00",
+   "local": "PHX",
+   "visita": "LAL",
+   "lados": [
+    {
+     "equipo": "LAL",
+     "local": false,
+     "modelo": 57.4,
+     "mercado": 59.2,
+     "momio": -148,
+     "casa": "betrivers",
+     "pinnacle": -156,
+     "ev": -3.9,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Austin Reaves",
+       "prob": 0,
+       "valor": 18.09
+      },
+      {
+       "jugador": "Collin Sexton",
+       "prob": 50,
+       "valor": 6.67
+      }
+     ]
+    },
+    {
+     "equipo": "PHX",
+     "local": true,
+     "modelo": 42.6,
+     "mercado": 40.8,
+     "momio": 140,
+     "casa": "betanysports",
+     "pinnacle": 138,
+     "ev": 2.3,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": []
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "LAL -2.5",
+     "modelo": 45.7,
+     "mercado_pct": 50.7,
+     "momio": -111,
+     "casa": "coolbet",
+     "ev": -10.3,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "PHX +3",
+     "modelo": 54.3,
+     "mercado_pct": 49.3,
+     "momio": -103,
+     "casa": "pinnacle",
+     "ev": 6.9,
+     "estado": "valor",
+     "monto": 18
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 226",
+     "modelo": 61.2,
+     "mercado_pct": 48.4,
+     "momio": 100,
+     "casa": "pinnacle",
+     "ev": 21.9,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 226.5",
+     "modelo": 38.8,
+     "mercado_pct": 51.6,
+     "momio": -108,
+     "casa": "onexbet",
+     "ev": -22.8,
+     "estado": "sospechosa",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -1.5,
+    "total": 231.3,
+    "pin_spread_local": 3.0,
+    "pin_total": 226.0
+   }
+  },
+  {
+   "id": "db26abc3cfd070ab012227413abafeb2",
+   "inicio": "2026-11-15T21:40:00+00:00",
+   "local": "LAC",
+   "visita": "CHA",
+   "lados": [
+    {
+     "equipo": "CHA",
+     "local": false,
+     "modelo": 38.3,
+     "mercado": 50.0,
+     "momio": -102,
+     "casa": "fanduel",
+     "pinnacle": -106,
+     "ev": -24.2,
+     "estado": "sospechosa",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Dennis Schröder",
+       "prob": 0,
+       "valor": 5.9
+      }
+     ]
+    },
+    {
+     "equipo": "LAC",
+     "local": true,
+     "modelo": 61.7,
+     "mercado": 50.0,
+     "momio": -103,
+     "casa": "lowvig",
+     "pinnacle": -106,
+     "ev": 21.6,
+     "estado": "sospechosa",
+     "monto": 0,
+     "bajas": []
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "CHA +1.5",
+     "modelo": 36.5,
+     "mercado_pct": 49.1,
+     "momio": -114,
+     "casa": "fanduel",
+     "ev": -17.9,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "LAC +1",
+     "modelo": 63.5,
+     "mercado_pct": 50.9,
+     "momio": -106,
+     "casa": "lowvig",
+     "ev": 22.7,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 213",
+     "modelo": 67.8,
+     "mercado_pct": 48.4,
+     "momio": -107,
+     "casa": "lowvig",
+     "ev": 36.6,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 214",
+     "modelo": 32.2,
+     "mercado_pct": 51.6,
+     "momio": -105,
+     "casa": "coolbet",
+     "ev": -38.9,
+     "estado": "sospechosa",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": 3.7,
+    "total": 223.3,
+    "pin_spread_local": 1.0,
+    "pin_total": 214.5
+   }
+  },
+  {
+   "id": "b2ffb781fe21df092fae2cff6c4c8c89",
+   "inicio": "2026-11-15T22:10:00+00:00",
+   "local": "UTA",
+   "visita": "SAS",
+   "lados": [
+    {
+     "equipo": "SAS",
+     "local": false,
+     "modelo": 92.1,
+     "mercado": 89.4,
+     "momio": -1200,
+     "casa": "marathonbet",
+     "pinnacle": -1263,
+     "ev": -0.2,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": []
+    },
+    {
+     "equipo": "UTA",
+     "local": true,
+     "modelo": 7.9,
+     "mercado": 10.6,
+     "momio": 900,
+     "casa": "unibet_nl",
+     "pinnacle": 806,
+     "ev": -20.9,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Lauri Markkanen",
+       "prob": 0,
+       "valor": 12.75
+      },
+      {
+       "jugador": "Jaxson Hayes",
+       "prob": 0,
+       "valor": 9.19
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "SAS -15.5",
+     "modelo": 59.7,
+     "mercado_pct": 50.9,
+     "momio": -110,
+     "casa": "pinnacle",
+     "ev": 14.0,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "UTA +16.5",
+     "modelo": 40.3,
+     "mercado_pct": 49.1,
+     "momio": -107,
+     "casa": "unibet_nl",
+     "ev": -16.7,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 225.5",
+     "modelo": 50.9,
+     "mercado_pct": 48.6,
+     "momio": -102,
+     "casa": "onexbet",
+     "ev": 6.9,
+     "estado": "valor",
+     "monto": 18
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 227",
+     "modelo": 49.1,
+     "mercado_pct": 51.4,
+     "momio": -113,
+     "casa": "pinnacle",
+     "ev": -7.2,
+     "estado": "nada",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -19.0,
+    "total": 227.4,
+    "pin_spread_local": 15.5,
+    "pin_total": 227.0
+   }
+  },
+  {
+   "id": "956532b58659658093d93e24e83f5213",
+   "inicio": "2026-11-15T23:10:00+00:00",
+   "local": "BOS",
+   "visita": "DAL",
+   "lados": [
+    {
+     "equipo": "DAL",
+     "local": false,
+     "modelo": 14.5,
+     "mercado": 15.6,
+     "momio": 580,
+     "casa": "coolbet",
+     "pinnacle": 517,
+     "ev": -1.6,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Daniel Gafford",
+       "prob": 60,
+       "valor": 9.61
+      },
+      {
+       "jugador": "Max Christie",
+       "prob": 0,
+       "valor": 2.77
+      }
+     ]
+    },
+    {
+     "equipo": "BOS",
+     "local": true,
+     "modelo": 85.5,
+     "mercado": 84.4,
+     "momio": -694,
+     "casa": "marathonbet",
+     "pinnacle": -712,
+     "ev": -2.2,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": []
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "DAL +13.5",
+     "modelo": 48.1,
+     "mercado_pct": 51.5,
+     "momio": -104,
+     "casa": "lowvig",
+     "ev": -5.7,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "BOS -13.5",
+     "modelo": 51.9,
+     "mercado_pct": 48.5,
+     "momio": 100,
+     "casa": "pinnacle",
+     "ev": 3.8,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 219",
+     "modelo": 61.7,
+     "mercado_pct": 50.2,
+     "momio": -108,
+     "casa": "coolbet",
+     "ev": 20.7,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 219.5",
+     "modelo": 38.3,
+     "mercado_pct": 49.8,
+     "momio": -106,
+     "casa": "pinnacle",
+     "ev": -25.5,
+     "estado": "sospechosa",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": 14.2,
+    "total": 225.1,
+    "pin_spread_local": -13.5,
+    "pin_total": 219.5
+   }
+  },
+  {
+   "id": "78f61a78b70b9d79f38eb7648eac1a08",
+   "inicio": "2026-11-15T23:10:00+00:00",
+   "local": "TOR",
+   "visita": "NYK",
+   "lados": [
+    {
+     "equipo": "NYK",
+     "local": false,
+     "modelo": 62.4,
+     "mercado": 64.5,
+     "momio": -180,
+     "casa": "everygame",
+     "pinnacle": -199,
+     "ev": -2.9,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": []
+    },
+    {
+     "equipo": "TOR",
+     "local": true,
+     "modelo": 37.6,
+     "mercado": 35.5,
+     "momio": 180,
+     "casa": "tipico_de",
+     "pinnacle": 173,
+     "ev": 5.2,
+     "estado": "valor",
+     "monto": 7,
+     "bajas": [
+      {
+       "jugador": "Scottie Barnes",
+       "prob": 0,
+       "valor": 17.24
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "NYK -4.5",
+     "modelo": 46.8,
+     "mercado_pct": 49.3,
+     "momio": -110,
+     "casa": "everygame",
+     "ev": -5.3,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "TOR +5",
+     "modelo": 53.2,
+     "mercado_pct": 50.7,
+     "momio": -101,
+     "casa": "lowvig",
+     "ev": 3.1,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 218",
+     "modelo": 62.8,
+     "mercado_pct": 48.4,
+     "momio": 100,
+     "casa": "pinnacle",
+     "ev": 25.0,
+     "estado": "sospechosa",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 218",
+     "modelo": 37.2,
+     "mercado_pct": 51.6,
+     "momio": -110,
+     "casa": "betus",
+     "ev": -28.4,
+     "estado": "sospechosa",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -4.4,
+    "total": 224.1,
+    "pin_spread_local": 5.5,
+    "pin_total": 218.0
+   }
+  },
+  {
+   "id": "488c2bc1e099361f06015cf126f95fd6",
+   "inicio": "2026-11-16T00:10:00+00:00",
+   "local": "WAS",
+   "visita": "HOU",
+   "lados": [
+    {
+     "equipo": "HOU",
+     "local": false,
+     "modelo": 77.5,
+     "mercado": 73.3,
+     "momio": -312,
+     "casa": "marathonbet",
+     "pinnacle": -315,
+     "ev": 2.3,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Fred VanVleet",
+       "prob": 0,
+       "valor": 12.25
+      },
+      {
+       "jugador": "Marcus Smart",
+       "prob": 0,
+       "valor": 5.77
+      }
+     ]
+    },
+    {
+     "equipo": "WAS",
+     "local": true,
+     "modelo": 22.5,
+     "mercado": 26.7,
+     "momio": 290,
+     "casa": "betanysports",
+     "pinnacle": 261,
+     "ev": -12.2,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Alex Sarr",
+       "prob": 50,
+       "valor": 10.55
+      },
+      {
+       "jugador": "Tre Johnson",
+       "prob": 50,
+       "valor": 4.6
+      },
+      {
+       "jugador": "Bub Carrington",
+       "prob": 50,
+       "valor": 3.88
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "HOU -8",
+     "modelo": 54.0,
+     "mercado_pct": 49.4,
+     "momio": -104,
+     "casa": "pinnacle",
+     "ev": 5.8,
+     "estado": "valor",
+     "monto": 15
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "WAS +8.5",
+     "modelo": 46.0,
+     "mercado_pct": 50.6,
+     "momio": -108,
+     "casa": "fanduel",
+     "ev": -8.5,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 223.5",
+     "modelo": 55.7,
+     "mercado_pct": 50.7,
+     "momio": -110,
+     "casa": "mybookieag",
+     "ev": 8.0,
+     "estado": "valor",
+     "monto": 20
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 224.5",
+     "modelo": 44.3,
+     "mercado_pct": 49.3,
+     "momio": -108,
+     "casa": "unibet_nl",
+     "ev": -12.4,
+     "estado": "nada",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -9.4,
+    "total": 226.7,
+    "pin_spread_local": 8.0,
+    "pin_total": 224.0
+   }
+  },
+  {
+   "id": "b931a21d34e414ee92b1a4b8e63774aa",
+   "inicio": "2026-11-16T01:10:00+00:00",
+   "local": "MIL",
+   "visita": "ATL",
+   "lados": [
+    {
+     "equipo": "ATL",
+     "local": false,
+     "modelo": 74.1,
+     "mercado": 73.1,
+     "momio": -295,
+     "casa": "unibet_nl",
+     "pinnacle": -312,
+     "ev": -0.8,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Kingston Flemings",
+       "prob": 0,
+       "valor": 6.27
+      }
+     ]
+    },
+    {
+     "equipo": "MIL",
+     "local": true,
+     "modelo": 25.9,
+     "mercado": 26.9,
+     "momio": 275,
+     "casa": "marathonbet",
+     "pinnacle": 259,
+     "ev": -2.8,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Ryan Rollins",
+       "prob": 60,
+       "valor": 7.3
+      },
+      {
+       "jugador": "Ousmane Dieng",
+       "prob": 0,
+       "valor": 2.38
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "ATL -8.5",
+     "modelo": 48.0,
+     "mercado_pct": 49.1,
+     "momio": -101,
+     "casa": "lowvig",
+     "ev": -4.5,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "MIL +8.5",
+     "modelo": 52.0,
+     "mercado_pct": 50.9,
+     "momio": -110,
+     "casa": "marathonbet",
+     "ev": -0.7,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 233.5",
+     "modelo": 43.5,
+     "mercado_pct": 48.9,
+     "momio": -102,
+     "casa": "pinnacle",
+     "ev": -13.8,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 234",
+     "modelo": 56.5,
+     "mercado_pct": 51.1,
+     "momio": -110,
+     "casa": "mybookieag",
+     "ev": 9.9,
+     "estado": "valor",
+     "monto": 20
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -7.8,
+    "total": 230.4,
+    "pin_spread_local": 8.5,
+    "pin_total": 233.5
+   }
+  },
+  {
+   "id": "f8334b355cf9346d423fa9eb93b425f0",
+   "inicio": "2026-11-16T02:10:00+00:00",
+   "local": "SAC",
+   "visita": "OKC",
+   "lados": [
+    {
+     "equipo": "OKC",
+     "local": false,
+     "modelo": 78.4,
+     "mercado": 79.4,
+     "momio": -435,
+     "casa": "unibet_nl",
+     "pinnacle": -469,
+     "ev": -3.6,
+     "estado": "nada",
+     "monto": 0,
+     "bajas": [
+      {
+       "jugador": "Ajay Mitchell",
+       "prob": 50,
+       "valor": 13.86
+      }
+     ]
+    },
+    {
+     "equipo": "SAC",
+     "local": true,
+     "modelo": 21.6,
+     "mercado": 20.6,
+     "momio": 385,
+     "casa": "fanduel",
+     "pinnacle": 368,
+     "ev": 5.0,
+     "estado": "valor",
+     "monto": 3,
+     "bajas": [
+      {
+       "jugador": "Precious Achiuwa",
+       "prob": 50,
+       "valor": 9.38
+      }
+     ]
+    }
+   ],
+   "puntos": [
+    {
+     "mercado": "spreads",
+     "lado": "V",
+     "texto": "OKC -10.5",
+     "modelo": 47.5,
+     "mercado_pct": 51.4,
+     "momio": -105,
+     "casa": "unibet_nl",
+     "ev": -7.2,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "spreads",
+     "lado": "L",
+     "texto": "SAC +10.5",
+     "modelo": 52.5,
+     "mercado_pct": 48.6,
+     "momio": 100,
+     "casa": "pinnacle",
+     "ev": 5.0,
+     "estado": "nada",
+     "monto": 0
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "texto": "Over 223",
+     "modelo": 57.5,
+     "mercado_pct": 51.5,
+     "momio": -105,
+     "casa": "coolbet",
+     "ev": 10.4,
+     "estado": "valor",
+     "monto": 20
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "texto": "Under 222.5",
+     "modelo": 42.5,
+     "mercado_pct": 48.5,
+     "momio": -101,
+     "casa": "pinnacle",
+     "ev": -15.5,
+     "estado": "nada",
+     "monto": 0
+    }
+   ],
+   "proyeccion": {
+    "margen_local": -9.6,
+    "total": 226.1,
+    "pin_spread_local": 10.5,
+    "pin_total": 222.5
+   }
+  }
+ ],
  "ratings": [
   {
    "rank": 1,
@@ -23,33 +952,33 @@
   },
   {
    "rank": 3,
-   "equipo": "DET",
-   "elo": 1637
-  },
-  {
-   "rank": 4,
    "equipo": "HOU",
    "elo": 1626
   },
   {
-   "rank": 5,
+   "rank": 4,
    "equipo": "LAL",
    "elo": 1620
   },
   {
-   "rank": 6,
-   "equipo": "MIN",
+   "rank": 5,
+   "equipo": "DET",
    "elo": 1614
   },
   {
-   "rank": 7,
+   "rank": 6,
    "equipo": "OKC",
    "elo": 1599
   },
   {
+   "rank": 7,
+   "equipo": "MIN",
+   "elo": 1591
+  },
+  {
    "rank": 8,
    "equipo": "DEN",
-   "elo": 1586
+   "elo": 1590
   },
   {
    "rank": 9,
@@ -64,7 +993,7 @@
   {
    "rank": 11,
    "equipo": "CLE",
-   "elo": 1548
+   "elo": 1554
   },
   {
    "rank": 12,
@@ -83,18 +1012,18 @@
   },
   {
    "rank": 15,
+   "equipo": "MIA",
+   "elo": 1527
+  },
+  {
+   "rank": 16,
    "equipo": "PHX",
    "elo": 1516
   },
   {
-   "rank": 16,
+   "rank": 17,
    "equipo": "TOR",
    "elo": 1505
-  },
-  {
-   "rank": 17,
-   "equipo": "MIA",
-   "elo": 1504
   },
   {
    "rank": 18,
@@ -114,32 +1043,32 @@
   {
    "rank": 21,
    "equipo": "MEM",
-   "elo": 1466
+   "elo": 1476
   },
   {
    "rank": 22,
    "equipo": "DAL",
-   "elo": 1458
+   "elo": 1452
   },
   {
    "rank": 23,
+   "equipo": "CHI",
+   "elo": 1397
+  },
+  {
+   "rank": 24,
    "equipo": "IND",
    "elo": 1393
   },
   {
-   "rank": 24,
-   "equipo": "BKN",
-   "elo": 1374
-  },
-  {
    "rank": 25,
-   "equipo": "CHI",
-   "elo": 1373
+   "equipo": "NOP",
+   "elo": 1368
   },
   {
    "rank": 26,
-   "equipo": "NOP",
-   "elo": 1372
+   "equipo": "BKN",
+   "elo": 1364
   },
   {
    "rank": 27,
@@ -163,6 +1092,110 @@
   }
  ],
  "historial": [
+  {
+   "fecha": "15/11 20:10",
+   "partido": "OKC @ SAC",
+   "mercado": "totals",
+   "apuesta": "Over 223",
+   "momio": -105,
+   "casa": "coolbet",
+   "monto": 20.0,
+   "ev": 10.4,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 20:10",
+   "partido": "OKC @ SAC",
+   "mercado": "h2h",
+   "apuesta": "SAC",
+   "momio": 385,
+   "casa": "fanduel",
+   "monto": 3.0,
+   "ev": 5.0,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 19:10",
+   "partido": "ATL @ MIL",
+   "mercado": "totals",
+   "apuesta": "Under 234",
+   "momio": -110,
+   "casa": "mybookieag",
+   "monto": 20.0,
+   "ev": 9.9,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 18:10",
+   "partido": "HOU @ WAS",
+   "mercado": "totals",
+   "apuesta": "Over 223.5",
+   "momio": -110,
+   "casa": "mybookieag",
+   "monto": 20.0,
+   "ev": 8.0,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 18:10",
+   "partido": "HOU @ WAS",
+   "mercado": "spreads",
+   "apuesta": "HOU -8",
+   "momio": -104,
+   "casa": "pinnacle",
+   "monto": 15.0,
+   "ev": 5.8,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 17:10",
+   "partido": "NYK @ TOR",
+   "mercado": "h2h",
+   "apuesta": "TOR",
+   "momio": 180,
+   "casa": "tipico_de",
+   "monto": 7.0,
+   "ev": 5.2,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 16:10",
+   "partido": "SAS @ UTA",
+   "mercado": "totals",
+   "apuesta": "Over 225.5",
+   "momio": -102,
+   "casa": "onexbet",
+   "monto": 18.0,
+   "ev": 6.9,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
+  {
+   "fecha": "15/11 15:10",
+   "partido": "LAL @ PHX",
+   "mercado": "spreads",
+   "apuesta": "PHX +3",
+   "momio": -103,
+   "casa": "pinnacle",
+   "monto": 18.0,
+   "ev": 6.9,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
   {
    "fecha": "14/11 19:10",
    "partido": "CHI @ MIN",
@@ -295,7 +1328,7 @@
   }
  ],
  "resumen": {
-  "apuestas": 10,
+  "apuestas": 18,
   "liquidadas": 10,
   "ganadas": 7,
   "perdidas": 3,
