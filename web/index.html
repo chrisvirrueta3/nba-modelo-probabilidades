@@ -530,7 +530,7 @@ function prepararPicks(d) {
                     lado: x.lado, proy: p.proyeccion || {}};
       const mL = String(x.texto).match(/([+-]?[\d.]+)\s*$/);
       if (mL && p.proyeccion && p.proyeccion.margen_local != null) info.linea = parseFloat(mL[1]);
-      info.minimo = minimoMomio(info.p, info.u);
+      info.minimo = info.linea != null ? minimoConPush(probsLinea(info, info.linea), info.u) : minimoMomio(info.p, info.u);
       PICKS.set(id, info);
       if (x.estado === "valor") picks.push(info); else if (x.estado === "sospechosa") sosp.push(info);
     }
