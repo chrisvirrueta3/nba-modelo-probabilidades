@@ -311,8 +311,8 @@
     <div class="sec-h"><h2>Cómo usar la página</h2></div>
     <div class="caja bloque">
       <p><b>1. Mira "Hoy conviene".</b> Ahí están solo las apuestas que vale la pena considerar hoy. Si dice "Hoy no hay valor", no apuestes.</p>
-      <p><b>2. Busca esa misma apuesta en Caliente.</b> Debajo de cada apuesta dice cómo se llama ahí (ganador, hándicap o total de puntos).</p>
-      <p><b>3. Compara el momio.</b> Si Caliente paga el número verde o uno más alto, conviene: apuesta el monto sugerido. Si paga menos, no. También puedes escribir el momio de Caliente en la cajita y la página te dice "Sí conviene" o "No conviene".</p>
+      <p><b>2. Busca esa misma apuesta en Draftea.</b> Debajo de cada apuesta dice cómo se llama ahí (ganador, hándicap o total de puntos).</p>
+      <p><b>3. Compara el momio.</b> Si Draftea paga el número verde o uno más alto, conviene: apuesta el monto sugerido. Si paga menos, no. También puedes escribir el momio de Draftea en la cajita y la página te dice "Sí conviene" o "No conviene".</p>
     </div>
     <button type="button" id="ver-como" class="btn sec">Mostrar otra vez la guía rápida en "Hoy"</button>
 
@@ -326,7 +326,7 @@
       <p><b>Ganador:</b> apuestas a qué equipo gana el partido.</p>
       <p><b>Hándicap (spread):</b> a un equipo le "quitan" o "regalan" puntos. "Nuggets −12.5" significa que tienen que ganar por 13 o más. "Pelicans +12.5" significa que ganas si los Pelicans ganan, o si pierden por 12 o menos.</p>
       <p><b>Puntos totales (más / menos):</b> apuestas a si entre los dos equipos anotan más o menos de cierta cantidad de puntos.</p>
-      <p><b>Parlay:</b> juntas varias apuestas en una sola. Solo ganas si salen todas, pero paga mucho más. La página solo arma parlays con apuestas que ya convienen, de partidos distintos, y te dice cuánto debe pagar Caliente por el parlay completo.</p>
+      <p><b>Parlay:</b> juntas varias apuestas en una sola. Solo ganas si salen todas, pero paga mucho más. La página solo arma parlays con apuestas que ya convienen, de partidos distintos, y te dice cuánto debe pagar Draftea por el parlay completo.</p>
       <p>Si la línea es un número exacto (por ejemplo −4) y el resultado queda justo ahí, te devuelven tu dinero.</p>
     </div>
 
@@ -374,7 +374,7 @@ const PICKS = new Map();  // id -> datos para la calculadora
 /* ---------- Lenguaje sencillo ---------- */
 const pts = n => `${n} punto${n === 1 ? "" : "s"}`;
 function explica(mercado, texto, juego) {
-  if (mercado === "h2h") return { frase: `Ganan los ${texto.replace(/ gana$/, "")}`, codigo: "En Caliente: ganador del partido" };
+  if (mercado === "h2h") return { frase: `Ganan los ${texto.replace(/ gana$/, "")}`, codigo: "En Draftea: ganador del partido" };
   const m = String(texto).trim().match(/^(\S+)\s+([+-]?[\d.]+)$/);
   if (!m) return { frase: texto, codigo: "" };
   const [, a, b] = m, x = parseFloat(b), entero = Number.isInteger(x);
@@ -383,14 +383,14 @@ function explica(mercado, texto, juego) {
     const n = entero ? x : (mas ? Math.ceil(x) : Math.floor(x));
     const frase = entero ? `Entre los dos equipos anotan ${mas ? "más" : "menos"} de ${pts(x)}`
                          : `Entre los dos equipos anotan ${pts(n)} o ${mas ? "más" : "menos"}`;
-    return { frase, codigo: `En Caliente: ${mas ? "Más" : "Menos"} de ${x} (total de puntos)${entero ? ` · si quedan ${x} exactos, te devuelven tu dinero` : ""}` };
+    return { frase, codigo: `En Draftea: ${mas ? "Más" : "Menos"} de ${x} (total de puntos)${entero ? ` · si quedan ${x} exactos, te devuelven tu dinero` : ""}` };
   }
   const eq = nombre(a), n = Math.abs(x);
   let frase;
   if (x < 0) frase = entero ? `Los ${eq} ganan por más de ${pts(n)}` : `Los ${eq} ganan por ${pts(Math.ceil(n))} o más`;
   else if (x > 0) frase = entero ? `Los ${eq} ganan, o pierden por menos de ${pts(n)}` : `Los ${eq} ganan, o pierden por ${pts(Math.floor(n))} o menos`;
   else frase = `Los ${eq} ganan`;
-  return { frase, codigo: `En Caliente: ${a} ${menos(b)} (hándicap)${entero ? ` · si queda justo en ${n}, te devuelven tu dinero` : ""}` };
+  return { frase, codigo: `En Draftea: ${a} ${menos(b)} (hándicap)${entero ? ` · si queda justo en ${n}, te devuelven tu dinero` : ""}` };
 }
 
 /* ---------- Utilidades de apuesta ---------- */
@@ -416,7 +416,7 @@ function calcHTML(id, minimo) {
   const neg = guardado ? guardado.startsWith("-") : minimo < 0;
   const val = guardado.replace("-", "");
   return `<div class="calc" data-id="${esc(id)}">
-    <label class="calc-l" for="c-${esc(id)}">¿Cuánto paga Caliente? Escríbelo para confirmar</label>
+    <label class="calc-l" for="c-${esc(id)}">¿Cuánto paga Draftea? Escríbelo para confirmar</label>
     <div class="calc-in"><button type="button" class="sign" aria-label="Cambiar signo">${neg ? "−" : "+"}</button><input id="c-${esc(id)}" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="${Math.abs(minimo)}" value="${esc(val)}"></div>
     <output class="calc-r" aria-live="polite"></output>
   </div>`;
@@ -499,7 +499,7 @@ function renderConviene(d, {picks, sosp, empezados}) {
       ${lista.map(x => `<div class="pick">
         <div class="pick-top">
           <div><div class="pick-nom">${esc(explica(x.mercado, x.texto).frase)}</div><div class="pick-meta">${esc(explica(x.mercado, x.texto).codigo)}</div></div>
-          <div class="precio-btn"><span class="l">Apuesta si Caliente paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
+          <div class="precio-btn"><span class="l">Apuesta si Draftea paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
         </div>
         <div class="pick-det">Nuestro modelo le da ${Math.round(x.p * 100)}% de probabilidad; las casas, ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}. Monto sugerido: <b>${fmtMoney(x.monto)}</b>.</div>
         ${calcHTML(x.id, x.minimo)}
@@ -533,7 +533,7 @@ function renderParlays({picks}) {
     PICKS.set(id, {id, p, mkt, u: UMBRAL_PARLAY, minimo, sosp: false, tope});
     return `<div class="caja parlay">
       <div class="parlay-h">Parlay de ${n} <span>tienen que salir las ${n}</span></div>
-      <ol class="patas">${patas.map((x, i) => { const e = explica(x.mercado, x.texto); return `<li><span class="eq ch" aria-hidden="true">${i + 1}</span><span><span class="t">${esc(e.frase)}</span><br><span class="c">${esc(nombre(x.juego.visita))} @ ${esc(nombre(x.juego.local))} · ${hora(x.juego.inicio)} · ${esc(e.codigo.replace(/^En Caliente: /, "").replace(/ · si .*$/, ""))}</span></span></li>`; }).join("")}</ol>
+      <ol class="patas">${patas.map((x, i) => { const e = explica(x.mercado, x.texto); return `<li><span class="eq ch" aria-hidden="true">${i + 1}</span><span><span class="t">${esc(e.frase)}</span><br><span class="c">${esc(nombre(x.juego.visita))} @ ${esc(nombre(x.juego.local))} · ${hora(x.juego.inicio)} · ${esc(e.codigo.replace(/^En Draftea: /, "").replace(/ · si .*$/, ""))}</span></span></li>`; }).join("")}</ol>
       <div class="pick">
         <div class="pick-top">
           <div><div class="pick-nom">Probabilidad de que salgan todas: ${Math.round(p * 100)}%</div><div class="pick-meta">Las casas: ${mkt == null ? "–" : Math.round(mkt * 100) + "%"}</div></div>
@@ -670,8 +670,8 @@ function renderComo() {
     <h3>Cómo usar esta página</h3>
     <ol>
       <li>Mira la lista <b>Hoy conviene</b>.</li>
-      <li>Busca <b>la misma apuesta en Caliente</b>.</li>
-      <li>Si Caliente paga <b>el número verde o más</b>, apuesta el monto sugerido. Si no, sáltala.</li>
+      <li>Busca <b>la misma apuesta en Draftea</b>.</li>
+      <li>Si Draftea paga <b>el número verde o más</b>, apuesta el monto sugerido. Si no, sáltala.</li>
     </ol>
     <div class="momios"><b>+170</b> = por cada $100 ganas $170 · <b>−130</b> = apuestas $130 para ganar $100 · el número más alto siempre es mejor.</div>
     <button type="button" class="btn" id="como-ok">Entendido</button>
