@@ -327,6 +327,7 @@
       <p><b>Hándicap (spread):</b> a un equipo le "quitan" o "regalan" puntos. "Nuggets −12.5" significa que tienen que ganar por 13 o más. "Pelicans +12.5" significa que ganas si los Pelicans ganan, o si pierden por 12 o menos.</p>
       <p><b>Puntos totales (más / menos):</b> apuestas a si entre los dos equipos anotan más o menos de cierta cantidad de puntos.</p>
       <p><b>Parlay:</b> juntas varias apuestas en una sola. Solo ganas si salen todas, pero paga mucho más. La página solo arma parlays con apuestas que ya convienen, de partidos distintos, y te dice cuánto debe pagar Draftea por el parlay completo.</p>
+      <p><b>Si Draftea tiene otra línea:</b> por ejemplo la página dice "Celtics −9" y Draftea solo tiene −8.5 o −9.5. En la apuesta, escribe la línea de Draftea en "Línea en Draftea" y la página recalcula cuánto debe pagar para que convenga.</p>
       <p>Si la línea es un número exacto (por ejemplo −4) y el resultado queda justo ahí, te devuelven tu dinero.</p>
     </div>
 
@@ -399,6 +400,31 @@ function stake(p, d) {
   const k = (p * d - 1) / (d - 1);
   return CFG.bankroll * Math.min(Math.max(k, 0) * CFG.kelly, CFG.tope);
 }
+/* Probabilidad del modelo para CUALQUIER línea (normal con corrección de continuidad, igual que src/puntos.py) */
+const phi = z => { const t = 1 / (1 + 0.2316419 * Math.abs(z)), d = 0.3989423 * Math.exp(-z * z / 2);
+  const q = d * t * (0.3193815 + t * (-0.3565638 + t * (1.781478 + t * (-1.821256 + t * 1.330274)))); return z > 0 ? 1 - q : q; };
+function probsMayor(mu, sigma, linea) {
+  if (Number.isInteger(linea)) { const g = 1 - phi((linea + 0.5 - mu) / sigma), l = phi((linea - 0.5 - mu) / sigma); return [g, 1 - g - l, l]; }
+  const g = 1 - phi((linea - mu) / sigma); return [g, 0, 1 - g];
+}
+function probsLinea(info, linea) {  // -> {pw, pp, pl}
+  const pr = info.proy;
+  let g, p, l;
+  if (info.mercado === "spreads") {
+    if (info.lado === "L") [g, p, l] = probsMayor(pr.margen_local, pr.sigma_margen || 14.3, -linea);
+    else { [g, p, l] = probsMayor(pr.margen_local, pr.sigma_margen || 14.3, linea); [g, l] = [l, g]; }
+  } else {
+    [g, p, l] = probsMayor(pr.total, pr.sigma_total || 19.3, linea);
+    if (info.lado === "Under") [g, l] = [l, g];
+  }
+  return {pw: g, pp: p, pl: l};
+}
+const minimoConPush = (q, u) => aAmericano(1 + (u + q.pl) / q.pw);
+function stakePush(q, d) {
+  const b = d - 1, k = (q.pw * b - q.pl) / b;
+  return CFG.bankroll * Math.min(Math.max(k, 0) * CFG.kelly, CFG.tope);
+}
+
 function evTexto(ev, estado) {
   if (estado === "sospechosa") return `<span class="ev-sosp" title="Ganancia esperada no confiable">ganancia esperada ${signo(ev)}</span>`;
   if (estado === "valor") return `<span class="ev-pos">conviene (ganancia esperada ${signo(ev)})</span>`;
@@ -411,40 +437,69 @@ function chipEstado(estado, monto) {
 }
 
 /* ---------- Calculadora ---------- */
+function lineaHTML(id) {
+  const info = PICKS.get(id);
+  if (!info || info.linea == null) return "";
+  const esSpread = info.mercado === "spreads";
+  const g = leer("linea:" + id), val = g != null ? parseFloat(g) : info.linea;
+  return `<label class="calc-l" for="l-${esc(id)}">Línea en Draftea (cámbiala si Draftea tiene otra)</label>
+    <div class="calc-in linea">${esSpread ? `<button type="button" class="sign" aria-label="Cambiar signo de la línea">${val < 0 ? "−" : "+"}</button>` : ""}<input id="l-${esc(id)}" class="linea-in" inputmode="decimal" maxlength="5" autocomplete="off" value="${Math.abs(val)}"></div>
+    <span class="calc-r linea-r"></span>`;
+}
 function calcHTML(id, minimo) {
   const guardado = leer("calc:" + id) || "";
   const neg = guardado ? guardado.startsWith("-") : minimo < 0;
   const val = guardado.replace("-", "");
   return `<div class="calc" data-id="${esc(id)}">
+    ${lineaHTML(id)}
     <label class="calc-l" for="c-${esc(id)}">¿Cuánto paga Draftea? Escríbelo para confirmar</label>
-    <div class="calc-in"><button type="button" class="sign" aria-label="Cambiar signo">${neg ? "−" : "+"}</button><input id="c-${esc(id)}" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="${Math.abs(minimo)}" value="${esc(val)}"></div>
+    <div class="calc-in momio"><button type="button" class="sign" aria-label="Cambiar signo">${neg ? "−" : "+"}</button><input id="c-${esc(id)}" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="${Math.abs(minimo)}" value="${esc(val)}"></div>
     <output class="calc-r" aria-live="polite"></output>
   </div>`;
 }
 function calcular(box) {
-  const info = PICKS.get(box.dataset.id);
-  const input = box.querySelector("input"), out = box.querySelector(".calc-r");
-  const neg = box.querySelector(".sign").textContent === "−";
+  const base = PICKS.get(box.dataset.id);
+  let info = base;
+  const lin = box.querySelector(".linea-in");
+  if (lin) {
+    lin.value = lin.value.replace(",", ".").replace(/[^\d.]/g, "");
+    const sgn = box.querySelector(".linea .sign"), negL = sgn && sgn.textContent === "−";
+    const L = parseFloat(lin.value), outL = box.querySelector(".linea-r");
+    if (!isNaN(L) && Math.round(L * 2) === L * 2) {
+      const linea = negL ? -L : L;
+      guardar("linea:" + base.id, String(linea));
+      const q = probsLinea(base, linea), igual = linea === base.linea;
+      const minimo = minimoConPush(q, base.u);
+      info = {...base, p: q.pw, q, minimo, mkt: igual ? base.mkt : null};
+      outL.innerHTML = "<span>" + (igual ? `Misma línea que la página: apuesta si paga <b>${fmtMomio(minimo)}</b> o más`
+        : `Con ${base.mercado === "spreads" ? fmtLinea(linea) : linea}: apuesta si paga <b class="ok">${fmtMomio(minimo)}</b> o más${q.pp > 0.001 ? ` · ${Math.round(q.pp * 100)}% de que te devuelvan tu dinero` : ""}`) + "</span>";
+    } else outL.innerHTML = `<span class="warn">Escribe una línea como 7.5 o 8</span>`;
+  }
+  const input = box.querySelector(".momio input"), out = box.querySelector(".calc-r:not(.linea-r)");
+  const neg = box.querySelector(".momio .sign").textContent === "−";
   const digitos = input.value.replace(/\D/g, "");
   input.value = digitos;
   guardar("calc:" + box.dataset.id, digitos ? (neg ? "-" : "") + digitos : "");
   if (!digitos) { out.textContent = "Usa ± para el signo (−150 o +150)."; return; }
   const v = parseInt(digitos, 10);
   if (v < 100) { out.innerHTML = `<span class="warn">Escribe al menos 3 dígitos, ej. ${Math.abs(info.minimo)}</span>`; return; }
-  const m = neg ? -v : v, d = aDecimal(m), ev = info.p * d - 1;
+  const m = neg ? -v : v, d = aDecimal(m), ev = info.q ? info.q.pw * (d - 1) - info.q.pl : info.p * d - 1;
   const impl = 1 / d;
   if (info.mkt != null && Math.abs(impl - info.mkt) > 0.15) {
     out.innerHTML = `<span class="warn">¿Seguro que es ${fmtMomio(m)}? Se ve muy distinto a las demás casas. Revisa el signo con ±.</span>`;
     return;
   }
   if (info.sosp) { out.innerHTML = `<span class="warn">No apuestes: es sospechosa (el modelo puede no saber algo).</span>`; return; }
-  const monto = info.tope ? Math.min(stake(info.p, d), CFG.bankroll * info.tope) : stake(info.p, d);
+  const monto = info.q ? stakePush(info.q, d) : info.tope ? Math.min(stake(info.p, d), CFG.bankroll * info.tope) : stake(info.p, d);
   if (ev >= info.u) out.innerHTML = `<span class="ok"><b>Sí conviene: apuesta ${fmtMoney(monto)}</b>${info.tope ? ` · si gana cobras ${fmtMoney(monto * (d - 1))}` : ""}</span>`;
   else out.innerHTML = `<span>No conviene a ${fmtMomio(m)}. Mejor no apuestes.</span>`;
 }
 function activarCalcs(raiz) {
   raiz.querySelectorAll(".calc").forEach(box => {
-    const input = box.querySelector("input"), btn = box.querySelector(".sign");
+    const lin = box.querySelector(".linea-in"), sgnL = box.querySelector(".linea .sign");
+    if (lin) lin.addEventListener("input", () => calcular(box));
+    if (sgnL) sgnL.addEventListener("click", () => { sgnL.textContent = sgnL.textContent === "−" ? "+" : "−"; calcular(box); lin.focus(); });
+    const input = box.querySelector(".momio input"), btn = box.querySelector(".momio .sign");
     input.addEventListener("input", () => calcular(box));
     btn.addEventListener("click", () => { btn.textContent = btn.textContent === "−" ? "+" : "−"; calcular(box); input.focus(); });
     calcular(box);
@@ -471,7 +526,10 @@ function prepararPicks(d) {
       const id = `${p.id}-${x.mercado}-${x.lado}`;
       const info = {id, juego: p, mercado: x.mercado, texto: x.texto, p: (x.modelo ?? 0) / 100,
                     mkt: x.mercado_pct == null ? null : x.mercado_pct / 100, u: CFG.umbral_ev_puntos ?? 0.05,
-                    momio: x.momio, casa: x.casa, monto: x.monto, ev: x.ev, sosp: x.estado === "sospechosa"};
+                    momio: x.momio, casa: x.casa, monto: x.monto, ev: x.ev, sosp: x.estado === "sospechosa",
+                    lado: x.lado, proy: p.proyeccion || {}};
+      const mL = String(x.texto).match(/([+-]?[\d.]+)\s*$/);
+      if (mL && p.proyeccion && p.proyeccion.margen_local != null) info.linea = parseFloat(mL[1]);
       info.minimo = minimoMomio(info.p, info.u);
       PICKS.set(id, info);
       if (x.estado === "valor") picks.push(info); else if (x.estado === "sospechosa") sosp.push(info);

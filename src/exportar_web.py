@@ -82,7 +82,8 @@ def proximos() -> list:
             "id": ev.EVENTO_ID, "inicio": ev.INICIO.isoformat(), "local": ev.LOCAL, "visita": ev.VISITA,
             "lados": lados, "puntos": puntos_,
             "proyeccion": {"margen_local": _num(pr["MU_MARGEN"]), "total": _num(pr["MU_TOTAL"]),
-                           "pin_spread_local": _num(pr["PIN_SPREAD_LOCAL"]), "pin_total": _num(pr["PIN_TOTAL"])},
+                           "pin_spread_local": _num(pr["PIN_SPREAD_LOCAL"]), "pin_total": _num(pr["PIN_TOTAL"]),
+                           "sigma_margen": _num(pr.get("SIGMA_MARGEN")), "sigma_total": _num(pr.get("SIGMA_TOTAL"))},
         })
     return salida
 
