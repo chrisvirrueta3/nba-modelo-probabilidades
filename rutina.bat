@@ -35,9 +35,10 @@ if not exist .git (
 )
 git add -A
 git diff --cached --quiet || git commit -q -m "Actualizacion diaria %date%"
-git pull -q --rebase --autostash || goto error_git
+git pull -q --rebase --autostash -X theirs || goto error_git
 git push -q || goto error_git
 echo Subido. La pagina se actualiza en 1-2 minutos.
+"%PY%" src\avisar.py
 
 :fin
 echo.

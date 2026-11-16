@@ -131,6 +131,35 @@ def a_decimal(momio: float) -> float:
     return 1 + (momio / 100 if momio > 0 else 100 / -momio)
 
 
+def liquidar_parlays(res) -> None:
+    """Parlay: pierde si falla una pata; una pata empatada (push) se quita y el momio se recalcula."""
+    import json
+    from types import SimpleNamespace
+    ruta = config.DATOS / "parlays_simulados.csv"
+    if not ruta.exists():
+        return
+    pr = pd.read_csv(ruta)
+    resultados, ganancias, patas_res = [], [], []
+    for r in pr.itertuples():
+        patas = json.loads(r.PATAS)
+        est = [liquidar_fila(SimpleNamespace(EVENTO_ID=x["EVENTO_ID"], MERCADO=x["MERCADO"], LADO=x["LADO"],
+                                             LINEA=x["LINEA"] if x["LINEA"] is not None else np.nan), res)
+               for x in patas]
+        if "PERDIDA" in est:
+            out, g = "PERDIDA", -r.MONTO
+        elif "PENDIENTE" in est:
+            out, g = "PENDIENTE", 0.0
+        else:
+            dec = float(np.prod([a_decimal(x["MOMIO"]) for x, e in zip(patas, est) if e == "GANADA"] or [1.0]))
+            out, g = ("PUSH", 0.0) if dec == 1.0 else ("GANADA", r.MONTO * (dec - 1))
+        resultados.append(out); ganancias.append(round(g, 2)); patas_res.append(json.dumps(est))
+    pr["RESULTADO"], pr["GANANCIA"], pr["PATAS_RESULTADO"] = resultados, ganancias, patas_res
+    pr.to_csv(config.DATOS / "reporte_parlays.csv", index=False)
+    liq = pr[pr["RESULTADO"] != "PENDIENTE"]
+    print(f"\n=== PARLAYS SIMULADOS === registrados: {len(pr)} · liquidados: {len(liq)}"
+          + (f" · ganados: {(liq['RESULTADO'] == 'GANADA').sum()} · ganancia: ${liq['GANANCIA'].sum():,.0f}" if len(liq) else ""))
+
+
 # ---------------- Reporte ----------------
 def main():
     ruta_ap = config.DATOS / "apuestas_simuladas.csv"
@@ -217,6 +246,9 @@ def main():
         print("\nÚltimas apuestas:")
         cols = ["INICIO (CDMX)", "PARTIDO", "APUESTA", "MEJOR_MOMIO", "MONTO", "RESULTADO", "GANANCIA", "CLV_%", "CLV_PTS"]
         print(a[cols].tail(12).to_string(index=False))
+
+    # ===== 1b) Parlays simulados =====
+    liquidar_parlays(res)
 
     # ===== 2) Modelo vs. mercado en todos los partidos =====
     if not pred.empty:

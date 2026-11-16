@@ -119,17 +119,73 @@ def historial():
         "clv_pts": round(float(clv_pts.mean()), 2) if len(clv_pts) else None,
     }
     a["CLV"] = np.where(a["MERCADO"] == "h2h", a["CLV_%"], a["CLV_PTS"])
-    cols = {"INICIO (CDMX)": "fecha", "PARTIDO": "partido", "MERCADO": "mercado", "APUESTA": "apuesta",
-            "MEJOR_MOMIO": "momio", "CASA": "casa", "MONTO": "monto", "EV_%": "ev", "RESULTADO": "resultado",
-            "GANANCIA": "ganancia", "CLV": "clv"}
-    h = a[[c for c in cols if c in a]].rename(columns=cols).iloc[::-1]
-    return limpio(h), resumen
+    cols = {"REGISTRADA_UTC": "registrada", "INICIO (CDMX)": "fecha", "PARTIDO": "partido", "MERCADO": "mercado",
+            "APUESTA": "apuesta", "MEJOR_MOMIO": "momio", "CASA": "casa", "MONTO": "monto", "EV_%": "ev",
+            "RESULTADO": "resultado", "GANANCIA": "ganancia", "CLV": "clv"}
+    h = limpio(a[[c for c in cols if c in a]].rename(columns=cols))
+
+    # Parlays simulados (no cuentan para el CLV, sí para el dinero)
+    rp = config.DATOS / "reporte_parlays.csv"
+    if not rp.exists():
+        rp = config.DATOS / "parlays_simulados.csv"
+    if rp.exists():
+        pr = pd.read_csv(rp)
+        for col, default in (("RESULTADO", "PENDIENTE"), ("GANANCIA", 0.0)):
+            if col not in pr:
+                pr[col] = default
+        for _, r in pr.iterrows():
+            patas = json.loads(r["PATAS"])
+            d = float(r["DECIMAL"])
+            h.append({"registrada": r["REGISTRADA_UTC"], "fecha": str(r.get("INICIO (CDMX)") or r["DIA"]),
+                      "partido": f"Parlay de {int(r['N'])}", "mercado": "parlay",
+                      "apuesta": " + ".join(x["APUESTA"] for x in patas),
+                      "patas": [{"mercado": x["MERCADO"], "apuesta": x["APUESTA"], "partido": x["PARTIDO"]} for x in patas],
+                      "momio": int(round((d - 1) * 100)) if d >= 2 else int(round(-100 / (d - 1))),
+                      "casa": "parlay", "monto": float(r["MONTO"]), "ev": float(r["EV_%"]),
+                      "resultado": r["RESULTADO"], "ganancia": float(r["GANANCIA"]), "clv": None})
+        liq_p = pr[pr["RESULTADO"] != "PENDIENTE"]
+        g_p = float(liq_p["GANANCIA"].sum())
+        arr_p = float(liq_p.loc[liq_p["RESULTADO"] != "PUSH", "MONTO"].sum())
+        resumen["parlays"] = {"registrados": int(len(pr)), "liquidados": int(len(liq_p)),
+                              "ganados": int((liq_p["RESULTADO"] == "GANADA").sum()), "ganancia": round(g_p, 2)}
+        resumen["ganancia"] = round(resumen["ganancia"] + g_p, 2)
+        resumen["arriesgado"] = round(resumen["arriesgado"] + arr_p, 2)
+        resumen["roi"] = round(100 * resumen["ganancia"] / resumen["arriesgado"], 1) if resumen["arriesgado"] else None
+        resumen["bankroll"] = round(config.BANKROLL + resumen["ganancia"], 2)
+    h.sort(key=lambda x: str(x.get("registrada") or ""), reverse=True)
+    return h, resumen
+
+
+def resultados_y_cierres():
+    """Para liquidar en el teléfono las apuestas reales: marcadores finales y momios/líneas de cierre."""
+    import liquidar
+    res = {}
+    ruta = config.DATOS / "resultados.csv"
+    if ruta.exists():
+        for r in pd.read_csv(ruta).itertuples():
+            res[r.EVENTO_ID] = {"local": r.LOCAL, "visita": r.VISITA,
+                                "pts_local": int(r.PTS_LOCAL), "pts_visita": int(r.PTS_VISITA)}
+    cierres = {}
+    try:
+        momios = pd.read_csv(config.MOMIOS / "momios_historico.csv")
+        pc = liquidar.probabilidades_cierre(momios)
+        for r in pc.itertuples():
+            cierres.setdefault(r.EVENTO_ID, {"h2h": {}})["h2h"][r.EQUIPO] = round(float(r.PROB_CIERRE), 4)
+        lc = liquidar.lineas_cierre(momios)
+        for e, r in lc.iterrows():
+            c = cierres.setdefault(e, {"h2h": {}})
+            c["spread_local"] = _num(r["CIERRE_SPREAD_LOCAL"], 1)
+            c["total"] = _num(r["CIERRE_TOTAL"], 1)
+    except Exception as e:  # el cierre es un extra: nunca debe romper la página
+        print(f"(aviso) no se pudieron calcular los cierres: {e}")
+    return res, cierres
 
 
 def main():
     ratings = pd.read_csv(config.PROCESADOS / "ratings_actuales.csv")
     params = json.loads((config.PROCESADOS / "elo_parametros.json").read_text())
     hist, resumen = historial()
+    res, cierres = resultados_y_cierres()
     datos = {
         "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "config": {"bankroll": config.BANKROLL, "kelly": config.KELLY_FRACCION, "tope": config.TOPE_APUESTA,
@@ -139,6 +195,8 @@ def main():
         "ratings": limpio(ratings.rename(columns={"RANK": "rank", "EQUIPO": "equipo", "ELO": "elo"})),
         "historial": hist,
         "resumen": resumen,
+        "resultados": res,
+        "cierres": cierres,
     }
     (WEB / "datos.json").write_text(json.dumps(datos, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"web/datos.json listo: {len(datos['proximos'])} partidos próximos, "

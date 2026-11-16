@@ -67,5 +67,8 @@ CASAS_EXCLUIDAS = ["betfair_ex_eu", "betfair_ex_uk", "betfair_ex_au", "matchbook
 # El modelo de puntos es menos preciso que las líneas del mercado, así que
 # exigimos más ventaja y desconfiamos antes que en el mercado de ganador.
 UMBRAL_EV_PUNTOS = 0.05         # EV mínimo para marcar valor en spreads/totales
+UMBRAL_EV_PARLAY = 0.10         # EV mínimo de un parlay simulado (los errores del modelo se multiplican)
+PARLAY_PATAS = 2                # patas del parlay simulado diario (partidos distintos)
+PARLAY_PROB_MIN_PATA = 0.40     # en parlays solo patas con 40%+ de probabilidad (nada de lotería)
 DIF_SOSPECHOSA_SPREAD = 3.0     # puntos de diferencia vs. la línea de Pinnacle
 DIF_SOSPECHOSA_TOTAL = 5.0

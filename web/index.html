@@ -122,6 +122,30 @@
   .parlay .pick { border-top: 1px solid var(--line); }
   .aviso { color: var(--dim); font-size: 12.5px; margin: -2px 0 12px; max-width: 62ch; }
 
+  /* ---------- La aposté / Mis apuestas ---------- */
+  .aposte { margin-top: 10px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+  .aposte .btn { margin-top: 0; padding: 9px 14px; }
+  .aposte-form { display: none; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .aposte.abierto .aposte-form { display: flex; }
+  .aposte.abierto .abrir { display: none; }
+  .aposte-form label { font-size: 12.5px; color: var(--dim); font-weight: 600; }
+  .aposte-form input { width: 90px; padding: 8px 10px; border: 1px solid var(--line2); border-radius: 10px; background: var(--surface); color: var(--txt); font: 600 17px/1.2 var(--num); }
+  .aposte-msg { font-size: 13px; color: var(--dim); }
+  .grafica { padding: 12px 14px 8px; margin-bottom: 12px; }
+  .grafica h3 { font-size: 13px; font-weight: 650; color: var(--dim); display: flex; justify-content: space-between; gap: 8px; }
+  .grafica h3 b { color: var(--txt); font: 700 15px/1 var(--num); }
+  .grafica svg { display: block; width: 100%; height: 120px; margin-top: 6px; overflow: visible; }
+  .grafica .ref { stroke: var(--line2); stroke-dasharray: 3 3; }
+  .grafica .lin { fill: none; stroke: var(--acc); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+  .grafica .area { fill: var(--acc-bg); }
+  .grafica .eje { font: 500 10px var(--num); fill: var(--faint); }
+  .grafica .nota { font-size: 11.5px; color: var(--faint); margin-top: 2px; }
+  .log .borrar { justify-self: end; background: none; border: 0; color: var(--faint); font: inherit; font-size: 12px; cursor: pointer; padding: 2px 0; text-decoration: underline; text-underline-offset: 2px; }
+  .log .borrar.seguro { color: var(--neg); }
+  .respaldo { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .respaldo .btn { margin-top: 0; font-size: 13px; padding: 8px 12px; }
+  .log .patas-h { grid-column: 1 / -1; color: var(--dim); font-size: 12.5px; }
+
   /* ---------- Calculadora ---------- */
   .calc { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line2); display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; }
   .calc-l { font-size: 12.5px; color: var(--dim); font-weight: 600; grid-column: 1 / -1; }
@@ -294,8 +318,11 @@
   </section>
 
   <section class="vista" id="v-apuestas" aria-label="Apuestas">
-    <div class="sec-h"><h2>Apuestas de práctica</h2></div>
+    <div class="sec-h"><h2>Mis apuestas en Draftea</h2></div>
+    <div id="mias"></div>
+    <div class="sec-h"><h2>Apuestas de práctica del modelo</h2></div>
     <div class="caja stats" id="kpis"></div>
+    <div id="graficas"></div>
     <p class="intro"><b>¿Le ganamos al cierre?</b> compara el momio que tomamos contra el último momio antes del partido. Si casi siempre tomamos mejores momios, el modelo sí tiene ventaja aunque un día perdamos.</p>
     <div class="sec-h"><h2>Historial</h2></div>
     <div id="historial"></div>
@@ -340,6 +367,8 @@
       <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
       <p><b>Lesiones:</b> jugadores importantes en el reporte de ESPN y la probabilidad de que jueguen. El modelo ya las toma en cuenta.</p>
       <p><b>¿Le ganamos al cierre? (CLV):</b> si el momio que tomamos fue mejor que el último momio antes del partido. Es la señal más confiable de que el modelo sirve; ganar o perder unos días es casi pura suerte.</p>
+      <p><b>La aposté en Draftea:</b> cuando de verdad hagas una apuesta, escribe cuánto pagó Draftea y toca ese botón. Queda en "Mis apuestas" y se liquida sola cuando termina el partido. Se guarda solo en este teléfono: descarga un respaldo de vez en cuando.</p>
+      <p><b>Avisos al teléfono:</b> si instalas la app gratis "ntfy" y te suscribes a tu tema, te llega una notificación cada vez que rutina.bat encuentra apuestas nuevas que convienen.</p>
       <p><b>Modo práctica:</b> todas las apuestas son simuladas. La idea es medir durante unas semanas si el modelo de verdad le gana a las casas antes de usar dinero real.</p>
     </div>
   </section>
@@ -455,6 +484,11 @@ function calcHTML(id, minimo) {
     <label class="calc-l" for="c-${esc(id)}">¿Cuánto paga Draftea? Escríbelo para confirmar</label>
     <div class="calc-in momio"><button type="button" class="sign" aria-label="Cambiar signo">${neg ? "−" : "+"}</button><input id="c-${esc(id)}" inputmode="numeric" pattern="[0-9]*" maxlength="4" autocomplete="off" placeholder="${Math.abs(minimo)}" value="${esc(val)}"></div>
     <output class="calc-r" aria-live="polite"></output>
+  </div>
+  <div class="aposte" data-id="${esc(id)}">
+    <button type="button" class="btn sec abrir">La aposté en Draftea</button>
+    <span class="aposte-form"><label for="m-${esc(id)}">Monto $</label><input id="m-${esc(id)}" inputmode="numeric" maxlength="6" autocomplete="off"><button type="button" class="btn guardar">Guardar</button></span>
+    <span class="aposte-msg" aria-live="polite"></span>
   </div>`;
 }
 function calcular(box) {
@@ -494,6 +528,174 @@ function calcular(box) {
   if (ev >= info.u) out.innerHTML = `<span class="ok"><b>Sí conviene: apuesta ${fmtMoney(monto)}</b>${info.tope ? ` · si gana cobras ${fmtMoney(monto * (d - 1))}` : ""}</span>`;
   else out.innerHTML = `<span>No conviene a ${fmtMomio(m)}. Mejor no apuestes.</span>`;
 }
+/* ---------- Mis apuestas (se guardan en este teléfono) ---------- */
+let D = null;
+const MIAS_KEY = "mis-apuestas";
+const leerMias = () => { try { return JSON.parse(localStorage.getItem(MIAS_KEY) || "[]"); } catch (e) { return []; } };
+const guardarMias = l => guardar(MIAS_KEY, JSON.stringify(l));
+function lineaElegida(id, info) {
+  const g = leer("linea:" + id);
+  return g != null && !isNaN(parseFloat(g)) ? parseFloat(g) : info.linea;
+}
+function pataDe(info) {
+  const linea = info.mercado === "h2h" ? null : lineaElegida(info.id, info);
+  const texto = info.mercado === "h2h" ? info.texto : info.mercado === "totals" ? `${info.lado} ${linea}` : `${String(info.texto).split(" ")[0]} ${fmtLinea(linea)}`.replace("−", "-");
+  return {evento: info.juego.id, partido: `${info.juego.visita} @ ${info.juego.local}`, inicio: info.juego.inicio,
+          mercado: info.mercado, lado: info.lado, linea, frase: explica(info.mercado, texto).frase};
+}
+function activarAposte(raiz) {
+  raiz.querySelectorAll(".aposte").forEach(box => {
+    const id = box.dataset.id, msg = box.querySelector(".aposte-msg"), monto = box.querySelector("input");
+    const ya = leerMias().find(b => b.pick === id);
+    if (ya) msg.innerHTML = `<span class="ok">Ya la anotaste (${fmtMomio(ya.momio)}, ${fmtMoney(ya.monto)})</span>`;
+    box.querySelector(".abrir").addEventListener("click", () => {
+      const calc = box.previousElementSibling, dig = calc.querySelector(".momio input").value;
+      if (!dig || parseInt(dig, 10) < 100) { msg.innerHTML = `<span class="warn">Primero escribe arriba cuánto pagó Draftea</span>`; return; }
+      const sug = calc.querySelector(".calc-r:not(.linea-r)").textContent.match(/apuesta \$([\d,]+)/);
+      monto.value = sug ? sug[1].replace(/,/g, "") : (PICKS.get(id).monto || "");
+      box.classList.add("abierto"); msg.textContent = ""; monto.focus();
+    });
+    box.querySelector(".guardar").addEventListener("click", () => {
+      const info = PICKS.get(id), calc = box.previousElementSibling;
+      const neg = calc.querySelector(".momio .sign").textContent === "−";
+      const momio = (neg ? -1 : 1) * parseInt(calc.querySelector(".momio input").value, 10);
+      const m = parseFloat(monto.value);
+      if (!(m > 0)) { msg.innerHTML = `<span class="warn">Escribe el monto</span>`; return; }
+      const b = {id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), pick: id, ts: new Date().toISOString(), momio, monto: m};
+      if (info.parlay) Object.assign(b, {tipo: "parlay", patas: info.parlay.map(pataDe), inicio: info.parlay.map(x => x.juego.inicio).sort()[0]});
+      else Object.assign(b, {tipo: "sencilla", ...pataDe(info)});
+      guardarMias([...leerMias().filter(x => x.pick !== id), b]);
+      box.classList.remove("abierto");
+      msg.innerHTML = `<span class="ok">Guardada en Mis apuestas (${fmtMomio(momio)}, ${fmtMoney(m)})</span>`;
+      renderMias();
+    });
+  });
+}
+
+/* Liquidación en el teléfono con los marcadores finales que publica rutina.bat */
+function resultadoPata(x) {
+  const r = D && D.resultados && D.resultados[x.evento];
+  if (!r) return "PENDIENTE";
+  const margen = r.pts_local - r.pts_visita, total = r.pts_local + r.pts_visita;
+  let neto;
+  if (x.mercado === "h2h") neto = (x.lado === r.local ? margen : -margen);
+  else if (x.mercado === "spreads") neto = (x.lado === "L" ? margen : -margen) + x.linea;
+  else neto = x.lado === "Over" ? total - x.linea : x.linea - total;
+  return neto > 0 ? "GANADA" : neto < 0 ? "PERDIDA" : "PUSH";
+}
+function liquidarMia(b) {
+  const patas = b.tipo === "parlay" ? b.patas : [b];
+  const est = patas.map(resultadoPata);
+  if (est.includes("PERDIDA")) return {res: "PERDIDA", gan: -b.monto};
+  if (est.includes("PENDIENTE")) return {res: "PENDIENTE", gan: 0};
+  if (b.tipo !== "parlay") return est[0] === "PUSH" ? {res: "PUSH", gan: 0} : {res: "GANADA", gan: b.monto * (aDecimal(b.momio) - 1)};
+  // parlay: una pata empatada se quita; el pago se reparte en proporción (aprox.: Draftea recalcula su momio)
+  const nGana = est.filter(e => e === "GANADA").length;
+  if (!nGana) return {res: "PUSH", gan: 0};
+  const d = Math.pow(aDecimal(b.momio), nGana / est.length);
+  return {res: "GANADA", gan: b.monto * (d - 1)};
+}
+function clvMia(b) {   // solo apuestas sencillas
+  if (b.tipo === "parlay" || !D || !D.cierres) return null;
+  const c = D.cierres[b.evento];
+  if (!c) return null;
+  if (b.mercado === "h2h") { const pc = c.h2h && c.h2h[b.lado]; return pc ? {v: 100 * (aDecimal(b.momio) * pc - 1), u: "%"} : null; }
+  if (b.mercado === "spreads" && c.spread_local != null) return {v: b.linea - (b.lado === "L" ? c.spread_local : -c.spread_local), u: "pts"};
+  if (b.mercado === "totals" && c.total != null) return {v: b.lado === "Over" ? c.total - b.linea : b.linea - c.total, u: "pts"};
+  return null;
+}
+
+/* Gráfica de línea sencilla en SVG */
+function grafica(titulo, valorFinal, puntos, {ref = null, fmt = v => v, nota = ""} = {}) {
+  if (puntos.length < 2) return "";
+  const W = 320, H = 120, pad = 4;
+  const vals = ref == null ? puntos : [...puntos, ref];
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (hi - lo < 1e-9) { hi += 1; lo -= 1; }
+  const x = i => pad + (W - 2 * pad) * i / (puntos.length - 1);
+  const y = v => pad + (H - 2 * pad) * (1 - (v - lo) / (hi - lo));
+  const d = puntos.map((v, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join("");
+  const area = `${d}L${x(puntos.length - 1).toFixed(1)},${H - pad}L${pad},${H - pad}Z`;
+  return `<div class="caja grafica"><h3>${titulo}<b>${valorFinal}</b></h3>
+    <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="${esc(titulo)}: ${esc(valorFinal)}">
+      <path class="area" d="${area}"/>${ref != null ? `<line class="ref" x1="0" x2="${W}" y1="${y(ref).toFixed(1)}" y2="${y(ref).toFixed(1)}"/>` : ""}
+      <path class="lin" d="${d}" vector-effect="non-scaling-stroke"/>
+    </svg>${nota ? `<div class="nota">${nota}</div>` : ""}</div>`;
+}
+
+function renderMias() {
+  const lista = leerMias().sort((a, b) => String(b.ts).localeCompare(String(a.ts)));
+  if (!lista.length) {
+    $("#mias").innerHTML = `<div class="vacio">Todavía no anotas apuestas reales.<br>En "Hoy", escribe cuánto paga Draftea y toca <b>La aposté en Draftea</b>.</div>
+      <div class="respaldo"><label class="btn sec" for="importar">Recuperar respaldo</label><input type="file" id="importar" accept="application/json" hidden></div>`;
+    activarRespaldo(); return;
+  }
+  const filas = lista.map(b => ({b, ...liquidarMia(b), clv: clvMia(b)}));
+  const liq = filas.filter(f => f.res !== "PENDIENTE");
+  const gan = liq.reduce((s, f) => s + f.gan, 0), arr = liq.filter(f => f.res !== "PUSH").reduce((s, f) => s + f.b.monto, 0);
+  const clvs = filas.map(f => f.clv).filter(Boolean);
+  const kpi = (l, v, n, cls = "") => `<div class="kpi"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="n">${n}</div></div>`;
+  const pend = filas.length - liq.length;
+  const cron = [...liq].sort((a, b) => String(a.b.inicio || a.b.ts).localeCompare(String(b.b.inicio || b.b.ts)));
+  let acum = 0; const serie = [0, ...cron.map(f => (acum += f.gan))];
+  $("#mias").innerHTML = `<div class="caja stats">
+      ${kpi("Ganado / perdido", liq.length ? (gan > 0 ? "+" : "") + fmtMoney(gan) : "Aún sin resultados", arr ? `${signo(100 * gan / arr)} sobre lo apostado` : `${pend} pendiente${pend === 1 ? "" : "s"}`, liq.length ? (gan > 0 ? "gan" : gan < 0 ? "per" : "") : "vacio-v")}
+      ${kpi("Apostado", fmtMoney(filas.reduce((s, f) => s + f.b.monto, 0)), `${filas.length} apuesta${filas.length === 1 ? "" : "s"}`)}
+      ${kpi("Aciertos", `${liq.filter(f => f.res === "GANADA").length} de ${liq.length}`, `${pend} pendiente${pend === 1 ? "" : "s"}`)}
+      ${clvs.length ? kpi("¿Le ganaste al cierre?", `${Math.round(100 * clvs.filter(c => c.v > 0).length / clvs.length)}%`, `de ${clvs.length} apuesta${clvs.length === 1 ? "" : "s"} medidas`, clvs.filter(c => c.v > 0).length * 2 >= clvs.length ? "gan" : "per")
+                    : kpi("¿Le ganaste al cierre?", "Sin datos aún", "se mide al empezar cada partido", "vacio-v")}
+    </div>
+    ${grafica("Tu ganancia acumulada", (gan > 0 ? "+" : "") + fmtMoney(gan), serie, {ref: 0})}
+    <ul class="caja log">${filas.map(({b, res, gan, clv}) => {
+      const cls = res === "GANADA" ? "gan" : res === "PERDIDA" ? "per" : "pen";
+      const t = res === "PENDIENTE" ? "Pendiente" : res === "PUSH" ? "Devuelta" : res === "GANADA" ? "Ganó +" + fmtMoney(gan) : "Perdió " + fmtMoney(gan);
+      const titulo = b.tipo === "parlay" ? `Parlay de ${b.patas.length}` : b.frase;
+      const det = b.tipo === "parlay" ? b.patas.map(x => x.frase).join(" + ") : "";
+      const clvT = clv ? `vs. cierre ${clv.u === "%" ? signo(clv.v) : fmtLinea(Math.round(clv.v * 2) / 2) + " pts"}` : "";
+      return `<li><span class="a">${esc(titulo)}</span><span class="r ${cls}">${t}</span>
+        ${det ? `<span class="patas-h">${esc(det)}</span>` : ""}
+        <span class="m">${esc(b.tipo === "parlay" ? "" : b.partido + " · ")}momio ${fmtMomio(b.momio)} · apostaste ${fmtMoney(b.monto)}${clvT ? " · " + clvT : ""}</span><button type="button" class="borrar" data-id="${esc(b.id)}">Borrar</button></li>`;
+    }).join("")}</ul>
+    <div class="respaldo"><button type="button" class="btn sec" id="exportar">Descargar respaldo</button><label class="btn sec" for="importar">Recuperar respaldo</label><input type="file" id="importar" accept="application/json" hidden></div>
+    <p class="aviso">Tus apuestas se guardan solo en este teléfono. Descarga un respaldo de vez en cuando por si borras los datos del navegador.</p>`;
+  $("#mias").querySelectorAll(".borrar").forEach(btn => btn.addEventListener("click", () => {
+    if (!btn.classList.contains("seguro")) { btn.classList.add("seguro"); btn.textContent = "¿Seguro? Toca otra vez"; return; }
+    guardarMias(leerMias().filter(x => x.id !== btn.dataset.id)); renderMias();
+  }));
+  $("#exportar").addEventListener("click", () => {
+    const blob = new Blob([JSON.stringify(leerMias(), null, 1)], {type: "application/json"});
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+    a.download = `mis-apuestas-${new Date().toISOString().slice(0, 10)}.json`; a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  });
+  activarRespaldo();
+}
+function activarRespaldo() {
+  const inp = $("#importar");
+  if (!inp) return;
+  inp.addEventListener("change", async () => {
+    try {
+      const nuevas = JSON.parse(await inp.files[0].text());
+      if (!Array.isArray(nuevas)) throw new Error("formato");
+      const porId = new Map(leerMias().map(b => [b.id, b]));
+      nuevas.forEach(b => b && b.id && porId.set(b.id, b));
+      guardarMias([...porId.values()]); renderMias();
+    } catch (e) { inp.insertAdjacentHTML("afterend", `<span class="warn" style="font-size:13px">Ese archivo no es un respaldo válido.</span>`); }
+  });
+}
+
+function renderGraficas(d) {
+  const h = [...(d.historial || [])].filter(x => x.resultado && x.resultado !== "PENDIENTE")
+    .sort((a, b) => String(a.registrada || "").localeCompare(String(b.registrada || "")));
+  const ini = (d.resumen && d.resumen.bankroll_inicial) || CFG.bankroll;
+  let acum = ini; const serie = [ini, ...h.map(x => (acum += x.ganancia || 0))];
+  const conClv = [...(d.historial || [])].filter(x => x.clv != null).sort((a, b) => String(a.registrada || "").localeCompare(String(b.registrada || "")));
+  let ok = 0; const pct = conClv.map((x, i) => { if (x.clv > 0) ok++; return 100 * ok / (i + 1); });
+  $("#graficas").innerHTML = grafica("Dinero de práctica", fmtMoney(acum), serie, {ref: ini, nota: "Cómo ha ido el dinero de práctica, apuesta por apuesta."})
+    + grafica("Veces que le ganamos al cierre", pct.length ? Math.round(pct[pct.length - 1]) + "%" : "–", pct, {ref: 50,
+      nota: "Arriba de la línea (50%) = el modelo consigue mejores momios que el cierre. Es la señal más confiable; necesita varias semanas."});
+}
+
 function activarCalcs(raiz) {
   raiz.querySelectorAll(".calc").forEach(box => {
     const lin = box.querySelector(".linea-in"), sgnL = box.querySelector(".linea .sign");
@@ -504,6 +706,7 @@ function activarCalcs(raiz) {
     btn.addEventListener("click", () => { btn.textContent = btn.textContent === "−" ? "+" : "−"; calcular(box); input.focus(); });
     calcular(box);
   });
+  activarAposte(raiz);
 }
 
 /* ---------- Construcción de datos ---------- */
@@ -517,7 +720,7 @@ function prepararPicks(d) {
       const id = `${p.id}-h2h-${l.equipo}`;
       const info = {id, juego: p, mercado: "h2h", texto: `${nombre(l.equipo)} gana`, p: l.modelo / 100,
                     mkt: l.mercado == null ? null : l.mercado / 100, u: CFG.umbral_ev, momio: l.momio, casa: l.casa,
-                    monto: l.monto, ev: l.ev, sosp: l.estado === "sospechosa"};
+                    monto: l.monto, ev: l.ev, sosp: l.estado === "sospechosa", lado: l.equipo};
       info.minimo = minimoMomio(info.p, info.u);
       PICKS.set(id, info);
       if (l.estado === "valor") picks.push(info); else if (l.estado === "sospechosa") sosp.push(info);
@@ -573,7 +776,7 @@ const UMBRAL_PARLAY = 0.10;   // se exige más ventaja: los errores del modelo s
 function renderParlays({picks}) {
   // Una sola apuesta por partido (la de mayor ganancia esperada): apuestas del mismo partido están relacionadas
   const mejorPorJuego = new Map();
-  for (const x of picks) {
+  for (const x of picks.filter(x => x.p >= 0.40)) {   // nada de lotería: solo patas con 40%+ de probabilidad
     const y = mejorPorJuego.get(x.juego.id);
     if (!y || x.ev > y.ev) mejorPorJuego.set(x.juego.id, x);
   }
@@ -588,7 +791,7 @@ function renderParlays({picks}) {
     const dMin = aDecimal(minimo);
     const monto = Math.min(stake(p, dMin), CFG.bankroll * tope);
     const id = `parlay-${n}-` + patas.map(x => x.id).join("|");
-    PICKS.set(id, {id, p, mkt, u: UMBRAL_PARLAY, minimo, sosp: false, tope});
+    PICKS.set(id, {id, p, mkt, u: UMBRAL_PARLAY, minimo, sosp: false, tope, parlay: patas});
     return `<div class="caja parlay">
       <div class="parlay-h">Parlay de ${n} <span>tienen que salir las ${n}</span></div>
       <ol class="patas">${patas.map((x, i) => { const e = explica(x.mercado, x.texto); return `<li><span class="eq ch" aria-hidden="true">${i + 1}</span><span><span class="t">${esc(e.frase)}</span><br><span class="c">${esc(nombre(x.juego.visita))} @ ${esc(nombre(x.juego.local))} · ${hora(x.juego.inicio)} · ${esc(e.codigo.replace(/^En Draftea: /, "").replace(/ · si .*$/, ""))}</span></span></li>`; }).join("")}</ol>
@@ -604,7 +807,7 @@ function renderParlays({picks}) {
   };
   const tamanos = [2, 3].filter(n => n <= lista.length);
   $("#parlays").innerHTML = `<div class="sec-h"><h2>Parlay</h2></div>
-    <p class="aviso">Junta apuestas que convienen de partidos distintos. Paga mucho más, pero falla mucho más seguido: por eso el monto es la mitad y se pide más ventaja. Opcional: lo más seguro sigue siendo apostarlas por separado.</p>
+    <p class="aviso">Junta apuestas que convienen de partidos distintos (solo las que tienen 40% o más de salir). Paga mucho más, pero falla mucho más seguido: por eso el monto es la mitad y se pide más ventaja. Opcional: lo más seguro sigue siendo apostarlas por separado.</p>
     ${tamanos.map(tarjeta).join("")}`;
 }
 
@@ -706,6 +909,11 @@ function renderApuestas(d) {
     const res = h.resultado === "PENDIENTE" ? "Pendiente" : h.resultado === "PUSH" ? "Devuelta" : h.resultado === "GANADA" ? "Ganó +" + fmtMoney(h.ganancia) : "Perdió " + fmtMoney(h.ganancia);
     const esPts = h.mercado && h.mercado !== "h2h";
     const clvT = h.clv == null ? "" : "vs. cierre " + (esPts ? `${fmtLinea(h.clv)} pts` : signo(h.clv));
+    if (h.mercado === "parlay") return `<li>
+      <span class="a">${esc(h.partido)}</span><span class="r ${cls}">${res}</span>
+      <span class="patas-h">${esc((h.patas || []).map(x => explica(x.mercado, x.mercado === "h2h" ? nombre(x.apuesta) + " gana" : x.apuesta).frase).join(" + "))}</span>
+      <span class="m">${esc(String(h.fecha))} · momio ${fmtMomio(h.momio)} · apostaste ${fmtMoney(h.monto)}</span><span class="c"></span>
+    </li>`;
     return `<li>
       <span class="a">${esc(explica(h.mercado || "h2h", esPts ? h.apuesta : nombre(h.apuesta) + " gana").frase)}</span><span class="r ${cls}">${res}</span>
       <span class="m">${esc(h.partido)} · ${esc(String(h.fecha))} · momio ${fmtMomio(h.momio)} · apostaste ${fmtMoney(h.monto)}</span><span class="c">${clvT}</span>
@@ -738,6 +946,7 @@ function renderComo() {
 }
 
 function render(d) {
+  D = d;
   CFG = d.config;
   const act = new Date(d.actualizado);
   $("#actualizado").textContent = "Actualizado " + act.toLocaleString("es-MX", {dateStyle: "medium", timeStyle: "short", timeZone: "America/Mexico_City"});
@@ -761,6 +970,8 @@ function render(d) {
   activarCalcs($("#conviene"));
   activarCalcs($("#parlays"));
   renderApuestas(d);
+  renderGraficas(d);
+  renderMias();
   renderRanking(d);
 }
 

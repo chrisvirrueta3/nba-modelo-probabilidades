@@ -313,6 +313,52 @@ def registrar(tabla: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame) ->
     return len(nuevas)
 
 
+def registrar_parlay(tabla: pd.DataFrame) -> bool:
+    """
+    Registra como máximo UN parlay simulado por día (hora CDMX): las PARLAY_PATAS
+    apuestas con más ganancia esperada, de partidos distintos. La probabilidad de cada
+    pata se deduce de su EV (p = (1+EV)/decimal), así el parlay es consistente con ellas.
+    """
+    import json
+    valor = tabla[tabla["ESTADO"] == "VALOR"].copy()
+    if valor.empty:
+        return False
+    valor["DECIMAL"] = valor["MEJOR_MOMIO"].apply(a_decimal)
+    valor["P_PATA"] = (1 + valor["EV_%"] / 100) / valor["DECIMAL"]
+    valor = valor[valor["P_PATA"] >= config.PARLAY_PROB_MIN_PATA]
+    valor = valor.sort_values("EV_%", ascending=False).drop_duplicates("EVENTO_ID")
+    n = config.PARLAY_PATAS
+    if len(valor) < n:
+        return False
+    patas = valor.head(n)
+    dec = float(np.prod(patas["DECIMAL"]))
+    p = float(np.prod((1 + patas["EV_%"] / 100) / patas["DECIMAL"]))
+    ev = p * dec - 1
+    if ev < config.UMBRAL_EV_PARLAY:
+        return False
+    hoy = pd.Timestamp.now(tz="America/Mexico_City").strftime("%Y-%m-%d")
+    reg = config.DATOS / "parlays_simulados.csv"
+    previos = pd.read_csv(reg) if reg.exists() else pd.DataFrame(columns=["DIA"])
+    if hoy in set(previos["DIA"].astype(str)):
+        return False
+    k = (p * (dec - 1) - (1 - p)) / (dec - 1)
+    monto = round(config.BANKROLL * min(max(k, 0) * config.KELLY_FRACCION, config.TOPE_APUESTA / 2), 0)
+    if monto <= 0:
+        return False
+    lista = [{"EVENTO_ID": r["EVENTO_ID"], "PARTIDO": r["PARTIDO"], "MERCADO": r["MERCADO"], "LADO": r["LADO"],
+              "LINEA": None if pd.isna(r["LINEA"]) else float(r["LINEA"]), "APUESTA": r["APUESTA"],
+              "MOMIO": int(r["MEJOR_MOMIO"]), "INICIO (CDMX)": str(r.get("INICIO (CDMX)", ""))}
+             for _, r in patas.iterrows()]
+    fila = pd.DataFrame([{
+        "DIA": hoy, "REGISTRADA_UTC": datetime.now(timezone.utc).isoformat(timespec="minutes"),
+        "PATAS": json.dumps(lista, ensure_ascii=False), "N": n, "DECIMAL": round(dec, 4),
+        "PROB_%": round(100 * p, 1), "EV_%": round(100 * ev, 1), "MONTO": monto,
+        "INICIO (CDMX)": min(str(d["INICIO (CDMX)"]) for d in lista),
+    }])
+    pd.concat([previos, fila], ignore_index=True).to_csv(reg, index=False)
+    return True
+
+
 def main():
     tabla, eventos, proy = analizar()
     if tabla.empty:
@@ -338,6 +384,8 @@ def main():
         print(f"\n{n} apuesta(s) SIMULADA(s) nuevas registradas en apuestas_simuladas.csv")
     else:
         print("\nNinguna apuesta nueva pasa los filtros. (Es normal: la mayoría de los días no hay valor.)")
+    if registrar_parlay(tabla):
+        print(f"Parlay simulado de {config.PARLAY_PATAS} registrado en parlays_simulados.csv")
     sosp = (tabla["ESTADO"] == "SOSPECHOSA").sum()
     if sosp:
         print(f"{sosp} lado(s) SOSPECHOSOS: el modelo difiere >{config.DIF_SOSPECHOSA:.0%} del mercado.")
