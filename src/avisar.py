@@ -14,6 +14,7 @@ Si NTFY_TOPIC no está en .env, no hace nada.
 import json
 import math
 import os
+import sys
 from datetime import datetime, timezone
 
 import requests
@@ -46,7 +47,7 @@ def picks(d: dict) -> list:
             continue
         for l in p["lados"]:
             if l["estado"] == "valor":
-                minimo = a_americano((1 + cfg["umbral_ev"]) / (l["modelo"] / 100))
+                minimo = a_americano((1 + cfg["umbral_ev"]) / ((l.get("prob") or l["modelo"]) / 100))
                 salida.append((f"{p['id']}-h2h-{l['equipo']}", p, f"Ganan {l['equipo']}", minimo, l["monto"]))
         for x in p.get("puntos", []):
             if x["estado"] == "valor" and x.get("modelo"):
@@ -54,7 +55,7 @@ def picks(d: dict) -> list:
                 pr = p.get("proyeccion") or {}
                 try:  # mismo cálculo que la página (considera el empate en líneas exactas)
                     linea = float(x["texto"].split()[-1])
-                    g, _, l = puntos.probs_apuesta(x["mercado"], x["lado"], linea, pr["margen_local"], pr["total"],
+                    g, _, l = puntos.probs_apuesta(x["mercado"], x["lado"], linea, pr.get("margen_apuesta") or pr["margen_local"], pr.get("total_apuesta") or pr["total"],
                                                    pr.get("sigma_margen") or 14.3, pr.get("sigma_total") or 19.3)
                     minimo = a_americano(1 + (u + l) / g)
                 except (KeyError, TypeError, ValueError):
@@ -69,6 +70,11 @@ def main():
     tema = os.environ.get("NTFY_TOPIC", "").strip()
     if not tema:
         print("Avisos: NTFY_TOPIC no está en .env (se omite).")
+        return
+    if "--error" in sys.argv:
+        requests.post(f"https://ntfy.sh/{tema}", timeout=20, headers={"Title": "NBA: la rutina automatica fallo", "Tags": "warning"},
+                      data="La rutina automática no terminó. Corre rutina.bat a mano para ver el error "
+                           "(o revisa datos\\ultima_rutina.log).".encode("utf-8"))
         return
     d = json.loads((config.RAIZ / "web" / "datos.json").read_text(encoding="utf-8"))
     ruta = config.DATOS / "avisos_enviados.json"

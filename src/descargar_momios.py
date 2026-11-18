@@ -27,6 +27,7 @@ import requests
 from dotenv import load_dotenv
 
 import config
+import creditos as creditos_mod
 
 URL = f"https://api.the-odds-api.com/v4/sports/{config.DEPORTE_ODDS}/odds"
 
@@ -42,8 +43,9 @@ def pedir_momios(api_key: str) -> tuple[list, dict]:
     r = requests.get(URL, params=params, timeout=30)
     if r.status_code == 401:
         raise SystemExit("Clave inválida. Revisa ODDS_API_KEY en tu archivo .env")
+    creditos_mod.guardar(r.headers)
     if r.status_code == 429:
-        raise SystemExit("Se acabaron los créditos del mes (o vas muy rápido).")
+        return None, {"usados": r.headers.get("x-requests-used"), "restantes": 0}
     r.raise_for_status()
     creditos = {
         "usados": r.headers.get("x-requests-used"),
@@ -93,6 +95,11 @@ def main():
         print(f"Momios de hace menos de {args.si_viejo} min: no se descargan (ahorro de créditos).")
         return
 
+    if not creditos_mod.alcanza(6, config.RESERVA_CREDITOS):
+        print(f"Quedan pocos créditos (menos de {config.RESERVA_CREDITOS}): no se bajan momios nuevos;"
+              " se usan los últimos. Los créditos se renuevan cada mes.")
+        return
+
     load_dotenv(config.RAIZ / ".env")
     api_key = os.getenv("ODDS_API_KEY")
     if not api_key:
@@ -101,6 +108,9 @@ def main():
     ahora = datetime.now(timezone.utc)
     sello = ahora.strftime("%Y%m%d_%H%M")
     eventos, creditos = pedir_momios(api_key)
+    if eventos is None:
+        print("Se acabaron los créditos del mes: se usan los últimos momios guardados.")
+        return
 
     # 1) Guardamos el JSON crudo, por si después queremos otra cosa de él
     (config.MOMIOS / f"snapshot_{sello}.json").write_text(json.dumps(eventos, indent=1))

@@ -3,11 +3,13 @@ chcp 65001 >nul
 set PYTHONIOENCODING=utf-8
 set PYTHONUTF8=1
 cd /d "%~dp0"
+set AUTO=0
+if /i "%~1"=="auto" set AUTO=1
 set PY=..\.venv\Scripts\python.exe
 if not exist "%PY%" (
   echo No encuentro el entorno de Python en ..\.venv
   echo Crea el entorno primero: python -m venv ..\.venv
-  pause
+  if "%AUTO%"=="0" pause
   exit /b 1
 )
 
@@ -45,15 +47,16 @@ echo.
 echo ============================================
 echo   LISTO. Pagina: chrisvirrueta3.github.io/nba-modelo-probabilidades
 echo ============================================
-start "" "https://chrisvirrueta3.github.io/nba-modelo-probabilidades"
-pause
+if "%AUTO%"=="0" start "" "https://chrisvirrueta3.github.io/nba-modelo-probabilidades"
+if "%AUTO%"=="0" pause
 exit /b 0
 
 :error_git
 echo.
 echo *** No se pudo subir a GitHub. Los datos SI se calcularon; solo falta publicarlos. ***
 echo *** Copia el error de arriba y pegaselo a Claude. ***
-pause
+if "%AUTO%"=="1" "%PY%" src\avisar.py --error
+if "%AUTO%"=="0" pause
 exit /b 1
 
 :paso
@@ -65,5 +68,6 @@ exit /b %errorlevel%
 :error
 echo.
 echo *** Algo fallo en el paso anterior. Copia el error de arriba y pegaselo a Claude. ***
-pause
+if "%AUTO%"=="1" "%PY%" src\avisar.py --error
+if "%AUTO%"=="0" pause
 exit /b 1

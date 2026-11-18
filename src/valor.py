@@ -145,15 +145,17 @@ def analizar_ganador(m: pd.DataFrame, eventos: pd.DataFrame, p_local: pd.Series)
             p = float(p_local[ev.EVENTO_ID] if es_local else 1 - p_local[ev.EVENTO_ID])
             lado = g[g["EQUIPO"] == equipo]
             mejor = lado.loc[lado["DECIMAL"].idxmax()]
-            ev_ = p * mejor["DECIMAL"] - 1
             pj = float(justa[equipo]) if justa is not None else np.nan
-            estado = _estado(p, pj, ev_)
+            # Para apostar: mezcla modelo + Pinnacle. Sin Pinnacle no hay contra qué revisar: no se apuesta.
+            p_ap = config.PESO_MODELO * p + (1 - config.PESO_MODELO) * pj if np.isfinite(pj) else p
+            ev_ = p_ap * mejor["DECIMAL"] - 1
+            estado = _estado(p, pj, ev_) if np.isfinite(pj) else "SIN_REFERENCIA"
             filas.append({
                 "EVENTO_ID": ev.EVENTO_ID, "INICIO": ev.INICIO, "PARTIDO": f"{ev.VISITA} @ {ev.LOCAL}",
                 "MERCADO": "h2h", "LADO": equipo, "LINEA": np.nan, "APUESTA": equipo,
-                "MODELO_%": round(100 * p, 1), "MERCADO_%": round(100 * pj, 1),
+                "MODELO_%": round(100 * p, 1), "MERCADO_%": round(100 * pj, 1), "PROB_%": round(100 * p_ap, 1),
                 "MEJOR_MOMIO": int(mejor["MOMIO"]), "CASA": mejor["CASA"],
-                "EV_%": round(100 * ev_, 1), "MONTO": _monto(p, 1 - p, mejor["DECIMAL"], estado), "ESTADO": estado,
+                "EV_%": round(100 * ev_, 1), "MONTO": _monto(p_ap, 1 - p_ap, mejor["DECIMAL"], estado), "ESTADO": estado,
             })
     return filas
 
@@ -168,7 +170,8 @@ def analizar_puntos(m: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame,
         dif_pts = {"spreads": abs(pr["MU_MARGEN"] + pr["PIN_SPREAD_LOCAL"]),   # margen esperado vs. −línea
                    "totals": abs(pr["MU_TOTAL"] - pr["PIN_TOTAL"])}
         tope_pts = {"spreads": config.DIF_SOSPECHOSA_SPREAD, "totals": config.DIF_SOSPECHOSA_TOTAL}
-        args = (pr["MU_MARGEN"], pr["MU_TOTAL"], pr["SIGMA_MARGEN"], pr["SIGMA_TOTAL"])
+        args_mod = (pr["MU_MARGEN"], pr["MU_TOTAL"], pr["SIGMA_MARGEN"], pr["SIGMA_TOTAL"])
+        args = (pr["MU_MARGEN_AP"], pr["MU_TOTAL_AP"], pr["SIGMA_MARGEN"], pr["SIGMA_TOTAL"])
         for mercado, lados in (("spreads", ("L", "V")), ("totals", ("Over", "Under"))):
             g = m[(m["EVENTO_ID"] == ev.EVENTO_ID) & (m["MERCADO"] == mercado)].dropna(subset=["LINEA"]).copy()
             if g.empty:
@@ -199,11 +202,14 @@ def analizar_puntos(m: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame,
                 # Comparación justa con el mercado: modelo en la línea de Pinnacle (sin contar push)
                 pj = justa.get(lado, np.nan)
                 if np.isfinite(pj):
-                    gp, _, lp = puntos.probs_apuesta(mercado, lado, float(linea_pin[lado]), *args)
+                    gp, _, lp = puntos.probs_apuesta(mercado, lado, float(linea_pin[lado]), *args_mod)
                     p_cmp = gp / (gp + lp)
                 else:
-                    p_cmp = p_gana / (p_gana + p_pierde)
-                if (dif_pts[mercado] > tope_pts[mercado]
+                    gp, _, lp = puntos.probs_apuesta(mercado, lado, float(mejor["LINEA"]), *args_mod)
+                    p_cmp = gp / (gp + lp)
+                if not np.isfinite(pj) or not np.isfinite(dif_pts[mercado]):
+                    estado = "SIN_REFERENCIA"
+                elif (dif_pts[mercado] > tope_pts[mercado]
                         or (mercado == "spreads" and ev.EVENTO_ID in sospechosos)):
                     estado = "SOSPECHOSA"
                 else:
@@ -215,6 +221,7 @@ def analizar_puntos(m: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame,
                     "EVENTO_ID": ev.EVENTO_ID, "INICIO": ev.INICIO, "PARTIDO": f"{ev.VISITA} @ {ev.LOCAL}",
                     "MERCADO": mercado, "LADO": lado, "LINEA": float(mejor["LINEA"]), "APUESTA": texto,
                     "MODELO_%": round(100 * p_cmp, 1), "MERCADO_%": round(100 * pj, 1),
+                    "PROB_%": round(100 * p_gana / (p_gana + p_pierde), 1),
                     "MEJOR_MOMIO": int(mejor["MOMIO"]), "CASA": mejor["CASA"],
                     "EV_%": round(100 * evs[k], 1), "MONTO": _monto(p_gana, p_pierde, mejor["DECIMAL"], estado),
                     "ESTADO": estado,
@@ -249,6 +256,12 @@ def analizar() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     proy["PIN_SPREAD_LOCAL"] = [linea_pinnacle(m, e, "spreads", loc)
                                 for e, loc in zip(eventos["EVENTO_ID"], eventos["LOCAL"])]
     proy["PIN_TOTAL"] = [linea_pinnacle(m, e, "totals") for e in eventos["EVENTO_ID"]]
+    # Proyección para apostar: mitad modelo, mitad línea de Pinnacle (si no hay línea, solo modelo)
+    w = config.PESO_MODELO
+    proy["MU_MARGEN_AP"] = np.where(proy["PIN_SPREAD_LOCAL"].notna(),
+                                    w * proy["MU_MARGEN"] + (1 - w) * -proy["PIN_SPREAD_LOCAL"], proy["MU_MARGEN"])
+    proy["MU_TOTAL_AP"] = np.where(proy["PIN_TOTAL"].notna(),
+                                   w * proy["MU_TOTAL"] + (1 - w) * proy["PIN_TOTAL"], proy["MU_TOTAL"])
     proy["PROB_LOCAL"] = p_local
 
     ganador = analizar_ganador(m, eventos, p_local)

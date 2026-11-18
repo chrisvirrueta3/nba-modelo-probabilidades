@@ -19,6 +19,7 @@ import numpy as np
 import pandas as pd
 
 import config
+import creditos
 import valor
 
 WEB = config.RAIZ / "web"
@@ -64,7 +65,8 @@ def proximos() -> list:
                 "modelo": _num(r["MODELO_%"]), "mercado": _num(r["MERCADO_%"]),
                 "momio": int(r["MEJOR_MOMIO"]), "casa": r["CASA"],
                 "pinnacle": int(pin_ml[(ev.EVENTO_ID, equipo)]) if (ev.EVENTO_ID, equipo) in pin_ml else None,
-                "ev": _num(r["EV_%"]), "estado": {"VALOR": "valor", "SOSPECHOSA": "sospechosa"}.get(r["ESTADO"], "nada"),
+                "ev": _num(r["EV_%"]), "prob": _num(r.get("PROB_%")),
+                "estado": {"VALOR": "valor", "SOSPECHOSA": "sospechosa", "SIN_REFERENCIA": "sinref"}.get(r["ESTADO"], "nada"),
                 "monto": int(r["MONTO"]),
                 "bajas": [{"jugador": b.JUGADOR, "prob": int(round(100 * b.PROB_JUGAR)), "valor": float(b.VALOR)}
                           for b in det[det["EQUIPO"] == equipo].itertuples() if b.PROB_JUGAR < 1],
@@ -73,7 +75,7 @@ def proximos() -> list:
             "mercado": r["MERCADO"], "lado": r["LADO"], "texto": r["APUESTA"],
             "modelo": _num(r["MODELO_%"]), "mercado_pct": _num(r["MERCADO_%"]),
             "momio": int(r["MEJOR_MOMIO"]), "casa": r["CASA"], "ev": _num(r["EV_%"]),
-            "estado": {"VALOR": "valor", "SOSPECHOSA": "sospechosa"}.get(r["ESTADO"], "nada"),
+            "estado": {"VALOR": "valor", "SOSPECHOSA": "sospechosa", "SIN_REFERENCIA": "sinref"}.get(r["ESTADO"], "nada"),
             "monto": int(r["MONTO"]),
         } for _, r in t[t["MERCADO"].isin(["spreads", "totals"])]
             .sort_values("LADO", key=lambda s: s.map({"V": 0, "L": 1, "Over": 2, "Under": 3})).iterrows()]
@@ -82,6 +84,7 @@ def proximos() -> list:
             "id": ev.EVENTO_ID, "inicio": ev.INICIO.isoformat(), "local": ev.LOCAL, "visita": ev.VISITA,
             "lados": lados, "puntos": puntos_,
             "proyeccion": {"margen_local": _num(pr["MU_MARGEN"]), "total": _num(pr["MU_TOTAL"]),
+                           "margen_apuesta": _num(pr.get("MU_MARGEN_AP")), "total_apuesta": _num(pr.get("MU_TOTAL_AP")),
                            "pin_spread_local": _num(pr["PIN_SPREAD_LOCAL"]), "pin_total": _num(pr["PIN_TOTAL"]),
                            "sigma_margen": _num(pr.get("SIGMA_MARGEN")), "sigma_total": _num(pr.get("SIGMA_TOTAL"))},
         })
@@ -190,13 +193,14 @@ def main():
         "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "config": {"bankroll": config.BANKROLL, "kelly": config.KELLY_FRACCION, "tope": config.TOPE_APUESTA,
                    "umbral_ev": config.UMBRAL_EV, "umbral_ev_puntos": config.UMBRAL_EV_PUNTOS,
-                   "dif_sospechosa": config.DIF_SOSPECHOSA, "hca": params["HCA"]},
+                   "dif_sospechosa": config.DIF_SOSPECHOSA, "peso_modelo": config.PESO_MODELO, "hca": params["HCA"]},
         "proximos": proximos(),
         "ratings": limpio(ratings.rename(columns={"RANK": "rank", "EQUIPO": "equipo", "ELO": "elo"})),
         "historial": hist,
         "resumen": resumen,
         "resultados": res,
         "cierres": cierres,
+        "creditos": creditos.leer(),
     }
     (WEB / "datos.json").write_text(json.dumps(datos, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"web/datos.json listo: {len(datos['proximos'])} partidos próximos, "

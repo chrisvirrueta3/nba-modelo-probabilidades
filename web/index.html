@@ -326,6 +326,7 @@
     <p class="intro"><b>¿Le ganamos al cierre?</b> compara el momio que tomamos contra el último momio antes del partido. Si casi siempre tomamos mejores momios, el modelo sí tiene ventaja aunque un día perdamos.</p>
     <div class="sec-h"><h2>Historial</h2></div>
     <div id="historial"></div>
+    <p class="aviso" id="creditos" style="margin-top:14px"></p>
   </section>
 
   <section class="vista" id="v-ranking" aria-label="Ranking">
@@ -363,6 +364,7 @@
       <p><b>Nosotros / las casas:</b> la probabilidad que calcula nuestro modelo contra la que calculan las casas de apuestas (usamos Pinnacle, la más precisa, sin su comisión).</p>
       <p><b>Conviene:</b> nuestro modelo cree que la probabilidad es suficientemente más alta que lo que paga la casa. Se exige al menos <span id="umbral"></span> de ganancia esperada en ganador y <span id="umbral_pts"></span> en hándicap y totales.</p>
       <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
+      <p><b>Punto medio:</b> para decidir no usamos solo nuestro modelo: lo promediamos con la probabilidad de Pinnacle (mitad y mitad). Las casas aciertan mucho, así que esto evita apostar cuando el modelo se emociona de más. Si no hay momios de Pinnacle todavía, la apuesta sale como "Sin referencia" y no se apuesta.</p>
       <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
       <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
       <p><b>Lesiones:</b> jugadores importantes en el reporte de ESPN y la probabilidad de que jueguen. El modelo ya las toma en cuenta.</p>
@@ -437,7 +439,9 @@ function probsMayor(mu, sigma, linea) {
   const g = 1 - phi((linea - mu) / sigma); return [g, 0, 1 - g];
 }
 function probsLinea(info, linea) {  // -> {pw, pp, pl}
-  const pr = info.proy;
+  const pr = {...info.proy};
+  if (pr.margen_apuesta != null) pr.margen_local = pr.margen_apuesta;   // mitad modelo, mitad Pinnacle
+  if (pr.total_apuesta != null) pr.total = pr.total_apuesta;
   let g, p, l;
   if (info.mercado === "spreads") {
     if (info.lado === "L") [g, p, l] = probsMayor(pr.margen_local, pr.sigma_margen || 14.3, -linea);
@@ -456,12 +460,14 @@ function stakePush(q, d) {
 
 function evTexto(ev, estado) {
   if (estado === "sospechosa") return `<span class="ev-sosp" title="Ganancia esperada no confiable">ganancia esperada ${signo(ev)}</span>`;
+  if (estado === "sinref") return `<span class="ev-no">sin momios de Pinnacle para comparar</span>`;
   if (estado === "valor") return `<span class="ev-pos">conviene (ganancia esperada ${signo(ev)})</span>`;
   return `<span class="ev-no">no conviene</span>`;
 }
 function chipEstado(estado, monto) {
   if (estado === "valor") return `<span class="chip valor">Conviene · ${fmtMoney(monto)}</span>`;
   if (estado === "sospechosa") return `<span class="chip sosp">Sospechosa · no apostar</span>`;
+  if (estado === "sinref") return `<span class="chip sosp">Sin referencia · no apostar</span>`;
   return "";
 }
 
@@ -523,7 +529,7 @@ function calcular(box) {
     out.innerHTML = `<span class="warn">¿Seguro que es ${fmtMomio(m)}? Se ve muy distinto a las demás casas. Revisa el signo con ±.</span>`;
     return;
   }
-  if (info.sosp) { out.innerHTML = `<span class="warn">No apuestes: es sospechosa (el modelo puede no saber algo).</span>`; return; }
+  if (info.sosp) { out.innerHTML = `<span class="warn">${info.sinref ? "No apuestes: todavía no hay momios de Pinnacle para revisar al modelo." : "No apuestes: es sospechosa (el modelo puede no saber algo)."}</span>`; return; }
   const monto = info.q ? stakePush(info.q, d) : info.tope ? Math.min(stake(info.p, d), CFG.bankroll * info.tope) : stake(info.p, d);
   if (ev >= info.u) out.innerHTML = `<span class="ok"><b>Sí conviene: apuesta ${fmtMoney(monto)}</b>${info.tope ? ` · si gana cobras ${fmtMoney(monto * (d - 1))}` : ""}</span>`;
   else out.innerHTML = `<span>No conviene a ${fmtMomio(m)}. Mejor no apuestes.</span>`;
@@ -718,24 +724,25 @@ function prepararPicks(d) {
     if (iniciado) { empezados.add(p.id); continue; }
     for (const l of p.lados) {
       const id = `${p.id}-h2h-${l.equipo}`;
-      const info = {id, juego: p, mercado: "h2h", texto: `${nombre(l.equipo)} gana`, p: l.modelo / 100,
+      const info = {id, juego: p, mercado: "h2h", texto: `${nombre(l.equipo)} gana`, p: (l.prob ?? l.modelo) / 100, pModelo: l.modelo / 100,
                     mkt: l.mercado == null ? null : l.mercado / 100, u: CFG.umbral_ev, momio: l.momio, casa: l.casa,
-                    monto: l.monto, ev: l.ev, sosp: l.estado === "sospechosa", lado: l.equipo};
+                    monto: l.monto, ev: l.ev, sosp: l.estado === "sospechosa" || l.estado === "sinref", sinref: l.estado === "sinref", lado: l.equipo};
       info.minimo = minimoMomio(info.p, info.u);
       PICKS.set(id, info);
-      if (l.estado === "valor") picks.push(info); else if (l.estado === "sospechosa") sosp.push(info);
+      if (l.estado === "valor") picks.push(info); else if (l.estado === "sospechosa" || l.estado === "sinref") sosp.push(info);
     }
     for (const x of (p.puntos || [])) {
       const id = `${p.id}-${x.mercado}-${x.lado}`;
       const info = {id, juego: p, mercado: x.mercado, texto: x.texto, p: (x.modelo ?? 0) / 100,
                     mkt: x.mercado_pct == null ? null : x.mercado_pct / 100, u: CFG.umbral_ev_puntos ?? 0.05,
-                    momio: x.momio, casa: x.casa, monto: x.monto, ev: x.ev, sosp: x.estado === "sospechosa",
+                    momio: x.momio, casa: x.casa, monto: x.monto, ev: x.ev, sosp: x.estado === "sospechosa" || x.estado === "sinref", sinref: x.estado === "sinref",
                     lado: x.lado, proy: p.proyeccion || {}};
       const mL = String(x.texto).match(/([+-]?[\d.]+)\s*$/);
       if (mL && p.proyeccion && p.proyeccion.margen_local != null) info.linea = parseFloat(mL[1]);
-      info.minimo = info.linea != null ? minimoConPush(probsLinea(info, info.linea), info.u) : minimoMomio(info.p, info.u);
+      if (info.linea != null) { const q = probsLinea(info, info.linea); info.pModelo = info.p; info.p = q.pw / (q.pw + q.pl); info.minimo = minimoConPush(q, info.u); }
+      else info.minimo = minimoMomio(info.p, info.u);
       PICKS.set(id, info);
-      if (x.estado === "valor") picks.push(info); else if (x.estado === "sospechosa") sosp.push(info);
+      if (x.estado === "valor") picks.push(info); else if (x.estado === "sospechosa" || x.estado === "sinref") sosp.push(info);
     }
   }
   return {picks, sosp, empezados};
@@ -743,7 +750,7 @@ function prepararPicks(d) {
 
 function renderConviene(d, {picks, sosp, empezados}) {
   const notas = [];
-  if (sosp.length) notas.push(`${sosp.length} descartada${sosp.length > 1 ? "s" : ""} por sospechosa${sosp.length > 1 ? "s" : ""}`);
+  if (sosp.length) notas.push(`${sosp.length} descartada${sosp.length > 1 ? "s" : ""} por sospechosa${sosp.length > 1 ? "s" : ""} o sin referencia`);
   if (empezados.size) notas.push(`${empezados.size} partido${empezados.size > 1 ? "s" : ""} ya empezó`);
   if (!picks.length) {
     $("#conviene").innerHTML = `<div class="sec-h"><h2>Hoy conviene</h2></div><div class="caja vacio-hero"><div class="t">Hoy no hay valor. No apuestes.</div>
@@ -762,7 +769,7 @@ function renderConviene(d, {picks, sosp, empezados}) {
           <div><div class="pick-nom">${esc(explica(x.mercado, x.texto).frase)}</div><div class="pick-meta">${esc(explica(x.mercado, x.texto).codigo)}</div></div>
           <div class="precio-btn"><span class="l">Apuesta si Draftea paga</span><span class="v">${fmtMomio(x.minimo)}</span><span class="o">o más</span></div>
         </div>
-        <div class="pick-det">Nuestro modelo le da ${Math.round(x.p * 100)}% de probabilidad; las casas, ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}. Monto sugerido: <b>${fmtMoney(x.monto)}</b>.</div>
+        <div class="pick-det">Nuestro modelo le da ${Math.round((x.pModelo ?? x.p) * 100)}%; las casas, ${x.mkt == null ? "–" : Math.round(x.mkt * 100) + "%"}. Para decidir usamos el punto medio${x.mercado === "h2h" ? ` (${Math.round(x.p * 100)}%)` : ""}. Monto sugerido: <b>${fmtMoney(x.monto)}</b>.</div>
         ${calcHTML(x.id, x.minimo)}
       </div>`).join("")}</div>`;
   }).join("");
@@ -951,7 +958,14 @@ function render(d) {
   const act = new Date(d.actualizado);
   $("#actualizado").textContent = "Actualizado " + act.toLocaleString("es-MX", {dateStyle: "medium", timeStyle: "short", timeZone: "America/Mexico_City"});
   const horas = (Date.now() - act.getTime()) / 36e5;
-  if (horas > 18) $("#alerta").innerHTML = `<div class="alerta">Estos datos tienen ${Math.round(horas)} horas. Corre <b>rutina.bat</b> para actualizarlos antes de decidir.</div>`;
+  const avisos = [];
+  if (horas > 18) avisos.push(`Estos datos tienen ${Math.round(horas)} horas. Corre <b>rutina.bat</b> para actualizarlos antes de decidir.`);
+  const cr = d.creditos;
+  if (cr && cr.restantes < 80) avisos.push(cr.restantes < 30
+    ? `Casi no quedan créditos de momios (${cr.restantes}). Ya no se bajan momios nuevos hasta que se renueven el próximo mes.`
+    : `Quedan ${cr.restantes} créditos de momios. Para que alcancen, corre rutina.bat solo una vez al día.`);
+  $("#alerta").innerHTML = avisos.map(a => `<div class="alerta">${a}</div>`).join("");
+  $("#creditos").textContent = cr ? `Créditos de momios: quedan ${cr.restantes} de 500 este mes (cada corrida de rutina.bat gasta unos 8).` : "";
   $("#umbral").textContent = Math.round(CFG.umbral_ev * 100) + "%";
   $("#umbral_pts").textContent = Math.round((CFG.umbral_ev_puntos ?? 0.05) * 100) + "%";
   $("#dif").textContent = Math.round(CFG.dif_sospechosa * 100);

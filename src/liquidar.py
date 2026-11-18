@@ -28,6 +28,7 @@ import requests
 from dotenv import load_dotenv
 
 import config
+import creditos
 from predecir_hoy import prob_implicita
 
 URL_SCORES = f"https://api.the-odds-api.com/v4/sports/{config.DEPORTE_ODDS}/scores"
@@ -35,7 +36,14 @@ URL_SCORES = f"https://api.the-odds-api.com/v4/sports/{config.DEPORTE_ODDS}/scor
 
 # ---------------- Resultados ----------------
 def bajar_resultados(api_key: str) -> pd.DataFrame:
+    if not creditos.alcanza(2):
+        print("Sin créditos para bajar resultados: se usan los ya guardados.")
+        return pd.DataFrame(columns=["EVENTO_ID", "LOCAL", "VISITA", "PTS_LOCAL", "PTS_VISITA", "GANADOR"])
     r = requests.get(URL_SCORES, params={"apiKey": api_key, "daysFrom": 3, "dateFormat": "iso"}, timeout=30)
+    creditos.guardar(r.headers)
+    if r.status_code == 429:
+        print("Se acabaron los créditos: se usan los resultados ya guardados.")
+        return pd.DataFrame(columns=["EVENTO_ID", "LOCAL", "VISITA", "PTS_LOCAL", "PTS_VISITA", "GANADOR"])
     r.raise_for_status()
     filas = []
     for ev in r.json():
