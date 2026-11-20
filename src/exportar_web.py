@@ -159,6 +159,49 @@ def historial():
     return h, resumen
 
 
+def comparacion_mercado() -> dict | None:
+    """
+    ¿El modelo le gana a las casas? Compara, en TODOS los partidos ya jugados (no solo en los
+    que se apostó), qué tan cerca estuvo cada probabilidad del resultado (Brier: menor = mejor):
+    el modelo solo, Pinnacle cuando se hizo la predicción, y Pinnacle al cierre.
+    """
+    import liquidar
+    rp, rr = config.DATOS / "predicciones.csv", config.DATOS / "resultados.csv"
+    if not (rp.exists() and rr.exists()):
+        return None
+    p = pd.read_csv(rp)
+    p = p[pd.to_datetime(p["REGISTRADA_UTC"], utc=True) < pd.to_datetime(p["INICIO_UTC"], utc=True)]
+    p = p.sort_values("REGISTRADA_UTC").drop_duplicates("EVENTO_ID", keep="last")
+    x = p.merge(pd.read_csv(rr), on="EVENTO_ID").dropna(subset=["PROB_MERCADO_LOCAL"])
+    if x.empty:
+        return None
+    x["Y"] = (x["GANADOR"] == x["LOCAL"]).astype(float)
+    try:
+        pc = liquidar.probabilidades_cierre(pd.read_csv(config.MOMIOS / "momios_historico.csv"))
+        x = x.merge(pc.rename(columns={"EQUIPO": "LOCAL", "PROB_CIERRE": "CIERRE"}), on=["EVENTO_ID", "LOCAL"], how="left")
+    except Exception:
+        x["CIERRE"] = np.nan
+    bm = (x["PROB_MODELO_LOCAL"] - x["Y"]) ** 2
+    bk = (x["PROB_MERCADO_LOCAL"] - x["Y"]) ** 2
+    dif = (bm - bk).to_numpy()
+    rng = np.random.default_rng(0)
+    prob_mejor = float(np.mean([rng.choice(dif, len(dif)).mean() < 0 for _ in range(2000)])) if len(dif) > 5 else None
+    x["DIA"] = pd.to_datetime(x["INICIO_UTC"], utc=True).dt.tz_convert("America/Mexico_City").dt.strftime("%Y-%m-%d")
+    x["DIF"] = dif
+    por_dia = x.groupby("DIA")["DIF"].agg(["sum", "size"]).cumsum()
+    con_cierre = x.dropna(subset=["CIERRE"])
+    return {
+        "partidos": int(len(x)),
+        "brier_modelo": round(float(bm.mean()), 4), "brier_mercado": round(float(bk.mean()), 4),
+        "brier_cierre": round(float(((con_cierre["CIERRE"] - con_cierre["Y"]) ** 2).mean()), 4) if len(con_cierre) else None,
+        "acierto_modelo": round(100 * float(((x["PROB_MODELO_LOCAL"] > .5) == (x["Y"] == 1)).mean()), 1),
+        "acierto_mercado": round(100 * float(((x["PROB_MERCADO_LOCAL"] > .5) == (x["Y"] == 1)).mean()), 1),
+        "prob_modelo_mejor": None if prob_mejor is None else round(prob_mejor, 3),
+        # diferencia acumulada (modelo − casas) por día: negativa = el modelo va mejor
+        "serie": [{"dia": d, "dif": round(float(r["sum"] / r["size"]), 5), "n": int(r["size"])} for d, r in por_dia.iterrows()],
+    }
+
+
 def resultados_y_cierres():
     """Para liquidar en el teléfono las apuestas reales: marcadores finales y momios/líneas de cierre."""
     import liquidar
@@ -201,6 +244,7 @@ def main():
         "resultados": res,
         "cierres": cierres,
         "creditos": creditos.leer(),
+        "comparacion": comparacion_mercado(),
     }
     (WEB / "datos.json").write_text(json.dumps(datos, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"web/datos.json listo: {len(datos['proximos'])} partidos próximos, "

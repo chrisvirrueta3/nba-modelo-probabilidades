@@ -320,6 +320,8 @@
   <section class="vista" id="v-apuestas" aria-label="Apuestas">
     <div class="sec-h"><h2>Mis apuestas en Draftea</h2></div>
     <div id="mias"></div>
+    <div class="sec-h"><h2>¿El modelo le gana a las casas?</h2></div>
+    <div id="comparacion"></div>
     <div class="sec-h"><h2>Apuestas de práctica del modelo</h2></div>
     <div class="caja stats" id="kpis"></div>
     <div id="graficas"></div>
@@ -692,6 +694,28 @@ function activarRespaldo() {
   });
 }
 
+function renderComparacion(d) {
+  const c = d.comparacion;
+  if (!c || !c.partidos) { $("#comparacion").innerHTML = `<div class="vacio">Todavía no hay partidos terminados para comparar.</div>`; return; }
+  const mejor = c.brier_modelo < c.brier_mercado, pm = c.prob_modelo_mejor;
+  let veredicto;
+  if (c.partidos < 100) veredicto = `<b>Todavía no se sabe</b>: van ${c.partidos} partidos y hacen falta unos 150. Por ahora ${mejor ? "el modelo va un poco <b class=\"gan\">mejor</b>" : "las casas van un poco <b class=\"per\">mejor</b>"} que el modelo.`;
+  else if (pm != null && pm >= 0.9) veredicto = `<b class="gan">Sí</b>: en ${c.partidos} partidos el modelo predice mejor que las casas (con ${Math.round(pm * 100)}% de seguridad).`;
+  else if (pm != null && pm <= 0.1) veredicto = `<b class="per">No</b>: en ${c.partidos} partidos las casas predicen mejor que el modelo. Así es difícil ganar a la larga.`;
+  else veredicto = `<b>Van parejos</b> después de ${c.partidos} partidos: ninguno es claramente mejor.`;
+  const serie = (c.serie || []).map(x => -1000 * x.dif);
+  const kpi = (l, v, n, cls = "") => `<div class="kpi"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="n">${n}</div></div>`;
+  $("#comparacion").innerHTML = `<p class="intro">${veredicto}</p>
+    <div class="caja stats">
+      ${kpi("Error del modelo", c.brier_modelo.toFixed(3), "menos es mejor", mejor ? "gan" : "per")}
+      ${kpi("Error de las casas", c.brier_mercado.toFixed(3), "Pinnacle al predecir")}
+      ${kpi("Acierta el ganador", c.acierto_modelo + "%", `las casas: ${c.acierto_mercado}%`)}
+      ${kpi("Partidos comparados", c.partidos, "todos, no solo apuestas")}
+    </div>
+    ${grafica("Ventaja del modelo sobre las casas", serie.length ? (serie[serie.length - 1] > 0 ? "va mejor el modelo" : "van mejor las casas") : "–", serie.length > 1 ? serie : [], {ref: 0,
+      nota: "Arriba de la línea = el modelo predice mejor que las casas. Usa todos los partidos, por eso se aclara mucho antes que las apuestas."})}`;
+}
+
 function renderGraficas(d) {
   const h = [...(d.historial || [])].filter(x => x.resultado && x.resultado !== "PENDIENTE")
     .sort((a, b) => String(a.registrada || "").localeCompare(String(b.registrada || "")));
@@ -988,6 +1012,7 @@ function render(d) {
   activarCalcs($("#parlays"));
   renderApuestas(d);
   renderGraficas(d);
+  renderComparacion(d);
   renderMias();
   renderRanking(d);
 }
