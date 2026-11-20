@@ -28,5 +28,5 @@ if (Test-Path $pyw) {
   Register-ScheduledTask -TaskName "NBA revisar lesiones" -Action $accionL -Trigger $dispL -Settings $ajustesL -Force | Out-Null
   Write-Host "  Programada: NBA revisar lesiones (cada 30 min, 11:30 a 22:00)"
 } else {
-  Write-Host "  (No encontre $pyw: la revision de lesiones no se programo)"
+  Write-Host ("  (No encontre " + $pyw + "; la revision de lesiones no se programo)")
 }
