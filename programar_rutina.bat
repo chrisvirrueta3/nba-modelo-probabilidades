@@ -14,6 +14,7 @@ if errorlevel 1 (
 )
 echo.
 echo Listo: rutina.bat va a correr solo todos los dias a las 12:00 y a las 17:30.
+echo Ademas, cada 30 minutos por la tarde revisa lesiones y te avisa si hay que cancelar una apuesta.
 echo La computadora tiene que estar prendida (si estaba apagada, corre al prenderla).
 echo Si algo falla te llega un aviso al telefono (ntfy) y el detalle queda en datos\ultima_rutina.log
 echo.

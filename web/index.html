@@ -364,6 +364,8 @@
       <p><b>Nosotros / las casas:</b> la probabilidad que calcula nuestro modelo contra la que calculan las casas de apuestas (usamos Pinnacle, la más precisa, sin su comisión).</p>
       <p><b>Conviene:</b> nuestro modelo cree que la probabilidad es suficientemente más alta que lo que paga la casa. Se exige al menos <span id="umbral"></span> de ganancia esperada en ganador y <span id="umbral_pts"></span> en hándicap y totales.</p>
       <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
+      <p><b>Momio típico:</b> las apuestas de práctica se anotan con el momio que paga una casa típica (la mediana de todas), no con el mejor que exista. Así se parece a lo que de verdad te pagaría Draftea. En "ganador" no se apuestan no favoritos que paguen más de +300.</p>
+      <p><b>Revisión de lesiones:</b> por la tarde, cada 30 minutos, el programa vuelve a revisar el reporte de lesiones. Si una apuesta deja de convenir, te llega un aviso para cancelarla.</p>
       <p><b>Punto medio:</b> para decidir no usamos solo nuestro modelo: lo promediamos con la probabilidad de Pinnacle (mitad y mitad). Las casas aciertan mucho, así que esto evita apostar cuando el modelo se emociona de más. Si no hay momios de Pinnacle todavía, la apuesta sale como "Sin referencia" y no se apuesta.</p>
       <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
       <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
@@ -781,6 +783,7 @@ function renderConviene(d, {picks, sosp, empezados}) {
 /* ---------- Parlays ---------- */
 const UMBRAL_PARLAY = 0.10;   // se exige más ventaja: los errores del modelo se multiplican
 function renderParlays({picks}) {
+  if (CFG.parlays === false) { $("#parlays").innerHTML = ""; return; }
   // Una sola apuesta por partido (la de mayor ganancia esperada): apuestas del mismo partido están relacionadas
   const mejorPorJuego = new Map();
   for (const x of picks.filter(x => x.p >= 0.40)) {   // nada de lotería: solo patas con 40%+ de probabilidad

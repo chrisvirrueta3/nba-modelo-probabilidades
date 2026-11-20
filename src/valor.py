@@ -144,12 +144,17 @@ def analizar_ganador(m: pd.DataFrame, eventos: pd.DataFrame, p_local: pd.Series)
         for equipo, es_local in ((ev.LOCAL, True), (ev.VISITA, False)):
             p = float(p_local[ev.EVENTO_ID] if es_local else 1 - p_local[ev.EVENTO_ID])
             lado = g[g["EQUIPO"] == equipo]
-            mejor = lado.loc[lado["DECIMAL"].idxmax()]
+            mejor = lado.loc[lado["DECIMAL"].idxmax()].copy()
+            if config.MOMIO_TIPICO and len(lado) >= 3:   # precio típico: mediana de las casas
+                mejor["DECIMAL"] = float(lado["DECIMAL"].median())
+                mejor["MOMIO"] = a_americano(mejor["DECIMAL"]); mejor["CASA"] = f"típica ({len(lado)} casas)"
             pj = float(justa[equipo]) if justa is not None else np.nan
             # Para apostar: mezcla modelo + Pinnacle. Sin Pinnacle no hay contra qué revisar: no se apuesta.
             p_ap = config.PESO_MODELO * p + (1 - config.PESO_MODELO) * pj if np.isfinite(pj) else p
             ev_ = p_ap * mejor["DECIMAL"] - 1
             estado = _estado(p, pj, ev_) if np.isfinite(pj) else "SIN_REFERENCIA"
+            if estado == "VALOR" and mejor["MOMIO"] > config.MOMIO_MAX_GANADOR:
+                estado = "NADA"   # no favorito demasiado grande: mucho ruido, poca confianza
             filas.append({
                 "EVENTO_ID": ev.EVENTO_ID, "INICIO": ev.INICIO, "PARTIDO": f"{ev.VISITA} @ {ev.LOCAL}",
                 "MERCADO": "h2h", "LADO": equipo, "LINEA": np.nan, "APUESTA": equipo,
@@ -193,6 +198,16 @@ def analizar_puntos(m: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame,
                 ofertas = g[g["LADO"] == lado]
                 if ofertas.empty:
                     continue
+                if config.MOMIO_TIPICO and len(ofertas) >= 3:
+                    # Línea y precio típicos: la línea que más casas ofrecen y la mediana de su precio
+                    cuenta = ofertas["LINEA"].value_counts()
+                    top = cuenta[cuenta == cuenta.max()].index
+                    lin = min(top, key=lambda x: abs(x - ofertas["LINEA"].median()))
+                    en_lin = ofertas[ofertas["LINEA"] == lin]
+                    tip = en_lin.iloc[[0]].copy()
+                    tip["DECIMAL"] = float(en_lin["DECIMAL"].median())
+                    tip["MOMIO"] = a_americano(float(tip["DECIMAL"].iloc[0])); tip["CASA"] = f"típica ({len(en_lin)} casas)"
+                    ofertas = tip
                 probs = [puntos.probs_apuesta(mercado, lado, float(o.LINEA), *args) for o in ofertas.itertuples()]
                 evs = [pg * (o.DECIMAL - 1) - pp for (pg, _, pp), o in zip(probs, ofertas.itertuples())]
                 k = int(np.argmax(evs))
@@ -326,6 +341,11 @@ def registrar(tabla: pd.DataFrame, eventos: pd.DataFrame, proy: pd.DataFrame) ->
     return len(nuevas)
 
 
+def a_americano(d: float) -> int:
+    d = float(d)
+    return int(round((d - 1) * 100)) if d >= 2 else int(round(-100 / (d - 1)))
+
+
 def registrar_parlay(tabla: pd.DataFrame) -> bool:
     """
     Registra como máximo UN parlay simulado por día (hora CDMX): las PARLAY_PATAS
@@ -333,6 +353,8 @@ def registrar_parlay(tabla: pd.DataFrame) -> bool:
     pata se deduce de su EV (p = (1+EV)/decimal), así el parlay es consistente con ellas.
     """
     import json
+    if not config.PARLAYS_ACTIVOS:
+        return False
     valor = tabla[tabla["ESTADO"] == "VALOR"].copy()
     if valor.empty:
         return False

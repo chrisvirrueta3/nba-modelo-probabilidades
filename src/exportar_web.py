@@ -193,7 +193,7 @@ def main():
         "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "config": {"bankroll": config.BANKROLL, "kelly": config.KELLY_FRACCION, "tope": config.TOPE_APUESTA,
                    "umbral_ev": config.UMBRAL_EV, "umbral_ev_puntos": config.UMBRAL_EV_PUNTOS,
-                   "dif_sospechosa": config.DIF_SOSPECHOSA, "peso_modelo": config.PESO_MODELO, "hca": params["HCA"]},
+                   "dif_sospechosa": config.DIF_SOSPECHOSA, "peso_modelo": config.PESO_MODELO, "parlays": config.PARLAYS_ACTIVOS, "hca": params["HCA"]},
         "proximos": proximos(),
         "ratings": limpio(ratings.rename(columns={"RANK": "rank", "EQUIPO": "equipo", "ELO": "elo"})),
         "historial": hist,
