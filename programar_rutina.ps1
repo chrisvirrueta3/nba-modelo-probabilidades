@@ -3,7 +3,8 @@
 #  - resumen semanal al teléfono los domingos a las 10:00
 #  - revisión de lesiones cada 30 minutos de 11:30 a 22:00 (sin ventana; solo avisa si hay que cancelar)
 $dir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$ajustes = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable `
+# -WakeToRun: despierta la computadora si está dormida (no si está apagada)
+$ajustes = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable -WakeToRun `
            -ExecutionTimeLimit (New-TimeSpan -Hours 1) -MultipleInstances IgnoreNew
 
 Unregister-ScheduledTask -TaskName "NBA rutina mediodia" -Confirm:$false -ErrorAction SilentlyContinue

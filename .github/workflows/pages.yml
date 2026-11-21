@@ -23,12 +23,27 @@ jobs:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url || steps.intento1.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: web
-      - id: deployment
+      - id: intento1
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+      # GitHub a veces falla al publicar ("No artifacts found"): se espera y se reintenta
+      - if: steps.intento1.outcome == 'failure'
+        run: sleep 60
+      - id: deployment
+        if: steps.intento1.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+      # Si aun así falla, aviso al teléfono (el tema de ntfy va en el secreto NTFY_TOPIC del repositorio)
+      - if: failure()
+        env:
+          TEMA: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          [ -n "$TEMA" ] && curl -s -H "Title: NBA: no se pudo publicar la pagina" -H "Tags: warning" \
+            -d "GitHub fallo al publicar los datos de hoy. La pagina puede tener datos viejos. Avisale a Claude." \
+            "https://ntfy.sh/$TEMA" || true
