@@ -19,6 +19,20 @@ foreach ($t in $tareas) {
   Write-Host ("  Programada: " + $t.Nombre + " a las " + $t.Hora)
 }
 
+# Al prender o desbloquear la computadora: corre la rutina SOLO si se perdió la de 9:00 o la de 17:30
+# (rutina_auto.bat inicio lo revisa). Ventana minimizada.
+$accionI = New-ScheduledTaskAction -Execute "cmd.exe" -Argument ('/c start "" /min "' + $dir + '\rutina_auto.bat" inicio') -WorkingDirectory $dir
+$alEntrar = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
+$alEntrar.Delay = "PT2M"
+$cls = Get-CimClass -Namespace ROOT\Microsoft\Windows\TaskScheduler -ClassName MSFT_TaskSessionStateChangeTrigger
+$alDesbloquear = New-CimInstance -CimClass $cls -ClientOnly
+$alDesbloquear.StateChange = 8
+$alDesbloquear.UserId = "$env:USERDOMAIN\$env:USERNAME"
+$alDesbloquear.Delay = "PT1M"
+$alDesbloquear.Enabled = $true
+Register-ScheduledTask -TaskName "NBA rutina al prender" -Action $accionI -Trigger @($alEntrar, $alDesbloquear) -Settings $ajustes -Force | Out-Null
+Write-Host "  Programada: NBA rutina al prender (si se perdio la de 9:00 o 17:30, corre al prender o desbloquear)"
+
 # Revisión de lesiones: pythonw no abre ninguna ventana
 $pyw = Join-Path (Split-Path -Parent $dir) ".venv\Scripts\pythonw.exe"
 if (Test-Path $pyw) {
@@ -32,7 +46,9 @@ if (Test-Path $pyw) {
   Write-Host "  Programada: NBA revisar lesiones (cada 30 min, 11:30 a 22:00)"
   $accionS = New-ScheduledTaskAction -Execute $pyw -Argument "src\resumen_semanal.py" -WorkingDirectory $dir
   $dispS = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At "10:00"
-  Register-ScheduledTask -TaskName "NBA resumen semanal" -Action $accionS -Trigger $dispS -Settings $ajustesL -Force | Out-Null
+  $ajustesS = New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries -StartWhenAvailable `
+              -ExecutionTimeLimit (New-TimeSpan -Minutes 20) -MultipleInstances IgnoreNew
+  Register-ScheduledTask -TaskName "NBA resumen semanal" -Action $accionS -Trigger $dispS -Settings $ajustesS -Force | Out-Null
   Write-Host "  Programada: NBA resumen semanal (domingos 10:00)"
 } else {
   Write-Host ("  (No encontre " + $pyw + "; la revision de lesiones no se programo)")
