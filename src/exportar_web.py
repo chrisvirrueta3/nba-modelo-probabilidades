@@ -83,6 +83,10 @@ def proximos() -> list:
         salida.append({
             "id": ev.EVENTO_ID, "inicio": ev.INICIO.isoformat(), "local": ev.LOCAL, "visita": ev.VISITA,
             "lados": lados, "puntos": puntos_,
+            "justo": [dict(x, prob=round(x["prob"], 4),
+                           minimo=_americano((1 + config.MARGEN_JUSTO) / x["prob"]),
+                           justo=_americano(1 / x["prob"]))
+                      for x in (pr.get("JUSTO") or [])],
             "proyeccion": {"margen_local": _num(pr["MU_MARGEN"]), "total": _num(pr["MU_TOTAL"]),
                            "margen_apuesta": _num(pr.get("MU_MARGEN_AP")), "total_apuesta": _num(pr.get("MU_TOTAL_AP")),
                            "pin_spread_local": _num(pr["PIN_SPREAD_LOCAL"]), "pin_total": _num(pr["PIN_TOTAL"]),
@@ -157,6 +161,13 @@ def historial():
         resumen["bankroll"] = round(config.BANKROLL + resumen["ganancia"], 2)
     h.sort(key=lambda x: str(x.get("registrada") or ""), reverse=True)
     return h, resumen
+
+
+def _americano(decimal: float) -> int:
+    """Momio americano mínimo que cumple el decimal pedido (redondeado hacia el lado exigente)."""
+    import math
+    m = math.ceil((decimal - 1) * 100) if decimal >= 2 else -math.floor(100 / (decimal - 1))
+    return m if abs(m) >= 100 else 100
 
 
 def comparacion_mercado() -> dict | None:
@@ -236,7 +247,7 @@ def main():
         "actualizado": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "config": {"bankroll": config.BANKROLL, "kelly": config.KELLY_FRACCION, "tope": config.TOPE_APUESTA,
                    "umbral_ev": config.UMBRAL_EV, "umbral_ev_puntos": config.UMBRAL_EV_PUNTOS,
-                   "dif_sospechosa": config.DIF_SOSPECHOSA, "peso_modelo": config.PESO_MODELO, "parlays": config.PARLAYS_ACTIVOS, "hca": params["HCA"]},
+                   "dif_sospechosa": config.DIF_SOSPECHOSA, "peso_modelo": config.PESO_MODELO, "parlays": config.PARLAYS_ACTIVOS, "margen_justo": config.MARGEN_JUSTO, "hca": params["HCA"]},
         "proximos": proximos(),
         "ratings": limpio(ratings.rename(columns={"RANK": "rank", "EQUIPO": "equipo", "ELO": "elo"})),
         "historial": hist,

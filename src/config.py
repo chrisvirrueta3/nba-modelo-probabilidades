@@ -68,6 +68,7 @@ CASAS_EXCLUIDAS = ["betfair_ex_eu", "betfair_ex_uk", "betfair_ex_au", "matchbook
 # exigimos más ventaja y desconfiamos antes que en el mercado de ganador.
 UMBRAL_EV_PUNTOS = 0.05         # EV mínimo para marcar valor en spreads/totales
 RESERVA_CREDITOS = 30           # con menos créditos ya no se bajan momios (se guardan para los resultados)
+MARGEN_JUSTO = 0.02             # 'precio justo': Draftea debe pagar al menos 2% más que el precio sin comisión de Pinnacle
 PESO_MODELO = 0.5               # la probabilidad para apostar mezcla 50% modelo + 50% Pinnacle (el mercado es muy preciso)
 MOMIO_TIPICO = True             # simular con el momio típico (mediana de las casas), no con el mejor: más realista para Draftea
 MOMIO_MAX_GANADOR = 300         # en "ganador" no se apuestan no favoritos que paguen más de +300 (ahí el modelo falla más)

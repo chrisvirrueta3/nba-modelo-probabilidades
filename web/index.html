@@ -146,6 +146,17 @@
   .respaldo .btn { margin-top: 0; font-size: 13px; padding: 8px 12px; }
   .log .patas-h { grid-column: 1 / -1; color: var(--dim); font-size: 12.5px; }
 
+  /* ---------- Comparar con Draftea (precio justo) ---------- */
+  .justo { margin-bottom: 10px; }
+  .justo-h { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 9px 14px; background: var(--surface2); border-bottom: 1px solid var(--line); font-size: 13px; font-weight: 650; }
+  .justo-h span { color: var(--dim); font-weight: 500; }
+  .justo-t { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .justo-t th { background: none; border: 0; padding: 8px 14px 2px; font-size: 11.5px; color: var(--faint); font-weight: 600; }
+  .justo-t td { border: 0; padding: 6px 14px; border-top: 1px solid var(--line); white-space: nowrap; }
+  .justo-t td.m { color: var(--dim); font-size: 12.5px; width: 1%; }
+  .justo-t .lado { color: var(--dim); font-size: 12.5px; }
+  .justo-t b { font: 700 16px/1 var(--num); color: var(--pos); margin-left: 4px; }
+
   /* ---------- Calculadora ---------- */
   .calc { margin-top: 12px; padding-top: 12px; border-top: 1px dashed var(--line2); display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; align-items: center; }
   .calc-l { font-size: 12.5px; color: var(--dim); font-weight: 600; grid-column: 1 / -1; }
@@ -312,6 +323,9 @@
     <div id="como"></div>
     <div id="conviene"></div>
     <div id="parlays"></div>
+    <div class="sec-h"><h2>Comparar con Draftea</h2></div>
+    <p class="intro">Precios de Pinnacle, la casa más precisa, ya sin su comisión. <b>Si Draftea paga igual o más que el número verde, con la misma línea, esa apuesta tiene valor</b> aunque nuestro modelo no la marque. Es la forma más comprobada de tener ventaja; no salen todos los días.</p>
+    <div id="justos"></div>
     <div class="sec-h"><h2>Todos los partidos</h2></div>
     <p class="intro">Aquí está todo, incluso lo que no conviene. Si solo quieres decidir, con la lista de arriba basta.</p>
     <div id="partidos"></div>
@@ -368,6 +382,7 @@
       <p><b>Sospechosa · no apostar:</b> el modelo y las casas están demasiado lejos (más de <span id="dif"></span> puntos de probabilidad). Casi siempre es porque las casas saben algo que el modelo no, como una lesión de último minuto. No se apuesta.</p>
       <p><b>Momio típico:</b> las apuestas de práctica se anotan con el momio que paga una casa típica (la mediana de todas), no con el mejor que exista. Así se parece a lo que de verdad te pagaría Draftea. En "ganador" no se apuestan no favoritos que paguen más de +300.</p>
       <p><b>Revisión de lesiones:</b> por la tarde, cada 30 minutos, el programa vuelve a revisar el reporte de lesiones. Si una apuesta deja de convenir, te llega un aviso para cancelarla.</p>
+      <p><b>Comparar con Draftea:</b> para cada partido, la página muestra el precio de Pinnacle sin comisión, más un 2% de margen. Si Draftea paga igual o más (con la misma línea), esa apuesta tiene valor frente al mercado, aunque nuestro modelo no la marque. Si la línea de Draftea es distinta, ese número no aplica.</p>
       <p><b>Punto medio:</b> para decidir no usamos solo nuestro modelo: lo promediamos con la probabilidad de Pinnacle (mitad y mitad). Las casas aciertan mucho, así que esto evita apostar cuando el modelo se emociona de más. Si no hay momios de Pinnacle todavía, la apuesta sale como "Sin referencia" y no se apuesta.</p>
       <p><b>Ganancia esperada:</b> cuánto ganarías en promedio por cada $100 si el modelo tuviera razón. Es un promedio a largo plazo, no lo que vas a ganar hoy.</p>
       <p><b>Monto sugerido:</b> lo calcula la fórmula de Kelly de forma conservadora (<span id="kelly"></span>) y nunca pasa del <span id="tope"></span> de tu dinero de práctica.</p>
@@ -716,6 +731,29 @@ function renderComparacion(d) {
       nota: "Arriba de la línea = el modelo predice mejor que las casas. Usa todos los partidos, por eso se aclara mucho antes que las apuestas."})}`;
 }
 
+function renderJustos(d) {
+  const ahora = Date.now();
+  const juegos = (d.proximos || []).filter(p => new Date(p.inicio).getTime() > ahora && (p.justo || []).length);
+  if (!juegos.length) { $("#justos").innerHTML = `<div class="vacio">Todavía no hay precios de Pinnacle para los próximos partidos. Se actualizan con cada corrida.</div>`; return; }
+  const celda = x => {
+    if (!x) return `<td>–</td>`;
+    const quien = x.mercado === "totals" ? (x.lado === "Over" ? "Más" : "Menos") : esc(x.lado);
+    const lin = x.mercado === "spreads" ? " " + fmtLinea(x.linea) : "";
+    return `<td><span class="lado">${quien}${lin}</span><b>${fmtMomio(x.minimo)}</b></td>`;
+  };
+  $("#justos").innerHTML = juegos.map(p => {
+    const de = (m, lado) => p.justo.find(x => x.mercado === m && x.lado === lado);
+    const tot = p.justo.find(x => x.mercado === "totals");
+    const filas = [
+      ["Ganador", de("h2h", p.visita), de("h2h", p.local)],
+      ["Hándicap", de("spreads", p.visita), de("spreads", p.local)],
+      [tot ? `Total ${tot.linea}` : "Total", de("totals", "Over"), de("totals", "Under")],
+    ].filter(f => f[1] || f[2]);
+    return `<div class="caja justo"><div class="justo-h">${esc(nombre(p.visita))} @ ${esc(nombre(p.local))}<span>${hora(p.inicio)}</span></div>
+      <table class="justo-t"><tbody>${filas.map(f => `<tr><td class="m">${f[0]}</td>${celda(f[1])}${celda(f[2])}</tr>`).join("")}</tbody></table></div>`;
+  }).join("");
+}
+
 function renderGraficas(d) {
   const h = [...(d.historial || [])].filter(x => x.resultado && x.resultado !== "PENDIENTE")
     .sort((a, b) => String(a.registrada || "").localeCompare(String(b.registrada || "")));
@@ -1013,6 +1051,7 @@ function render(d) {
   renderApuestas(d);
   renderGraficas(d);
   renderComparacion(d);
+  renderJustos(d);
   renderMias();
   renderRanking(d);
 }

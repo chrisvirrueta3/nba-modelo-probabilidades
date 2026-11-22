@@ -252,6 +252,32 @@ def linea_pinnacle(m: pd.DataFrame, evento: str, mercado: str, local: str | None
     return float(g["LINEA"].iloc[0]) if len(g) else np.nan
 
 
+def precios_justos(m: pd.DataFrame, eventos: pd.DataFrame) -> dict:
+    """
+    Precio justo de Pinnacle (sin comisión) para cada lado de cada partido, en la línea de Pinnacle.
+    No usa nuestro modelo: si otra casa paga más que esto, la apuesta tiene valor frente al mercado.
+    Devuelve {evento: [{mercado, lado, linea, prob}, ...]}.
+    """
+    salida = {}
+    for ev in eventos.itertuples(index=False):
+        g = m[(m["EVENTO_ID"] == ev.EVENTO_ID) & (m["CASA"] == "pinnacle")]
+        filas = []
+        for mercado in ("h2h", "spreads", "totals"):
+            pin = g[g["MERCADO"] == mercado]
+            if len(pin) != 2:
+                continue
+            impl = pin["MOMIO"].apply(prob_implicita).to_numpy()
+            justa = impl / impl.sum()
+            for (_, r), p in zip(pin.iterrows(), justa):
+                lado = r["RESULTADO"] if mercado == "totals" else r["EQUIPO"]   # Over/Under o equipo
+                filas.append({"mercado": mercado, "lado": lado,
+                              "linea": None if mercado == "h2h" or pd.isna(r["LINEA"]) else float(r["LINEA"]),
+                              "prob": float(p)})
+        if filas:
+            salida[ev.EVENTO_ID] = filas
+    return salida
+
+
 def analizar() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Devuelve (tabla de apuestas, eventos, proyección de puntos). Lo usan main() y exportar_web."""
     momios = pd.read_csv(config.MOMIOS / "momios_historico.csv")
@@ -278,6 +304,8 @@ def analizar() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     proy["MU_TOTAL_AP"] = np.where(proy["PIN_TOTAL"].notna(),
                                    w * proy["MU_TOTAL"] + (1 - w) * proy["PIN_TOTAL"], proy["MU_TOTAL"])
     proy["PROB_LOCAL"] = p_local
+    justos = precios_justos(m, eventos)
+    proy["JUSTO"] = [justos.get(e, []) for e in eventos["EVENTO_ID"]]
 
     ganador = analizar_ganador(m, eventos, p_local)
     sospechosos = {f["EVENTO_ID"] for f in ganador if f["ESTADO"] == "SOSPECHOSA"}
