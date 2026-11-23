@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-23T03:55+00:00",
+ "actualizado": "2026-11-23T16:32+00:00",
  "config": {
   "bankroll": 1000,
   "kelly": 0.25,
@@ -22,13 +22,13 @@
     {
      "equipo": "MEM",
      "local": false,
-     "modelo": 63.1,
-     "mercado": 59.4,
-     "momio": -167,
-     "casa": "típica (26 casas)",
-     "pinnacle": -158,
-     "ev": -2.1,
-     "prob": 61.2,
+     "modelo": 61.6,
+     "mercado": 57.4,
+     "momio": -150,
+     "casa": "típica (29 casas)",
+     "pinnacle": -143,
+     "ev": -0.8,
+     "prob": 59.5,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -39,7 +39,7 @@
       },
       {
        "jugador": "Jerami Grant",
-       "prob": 60,
+       "prob": 0,
        "valor": 7.65
       },
       {
@@ -52,13 +52,13 @@
     {
      "equipo": "CHA",
      "local": true,
-     "modelo": 36.9,
-     "mercado": 40.6,
-     "momio": 135,
-     "casa": "típica (26 casas)",
-     "pinnacle": 139,
+     "modelo": 38.4,
+     "mercado": 42.6,
+     "momio": 125,
+     "casa": "típica (29 casas)",
+     "pinnacle": 129,
      "ev": -8.9,
-     "prob": 38.8,
+     "prob": 40.5,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -79,48 +79,48 @@
     {
      "mercado": "spreads",
      "lado": "V",
-     "texto": "MEM -3.5",
-     "modelo": 49.0,
-     "mercado_pct": 48.4,
-     "momio": -110,
-     "casa": "típica (19 casas)",
-     "ev": -2.8,
+     "texto": "MEM -3",
+     "modelo": 51.7,
+     "mercado_pct": 51.4,
+     "momio": -105,
+     "casa": "típica (9 casas)",
+     "ev": -3.4,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
-     "texto": "CHA +3.5",
-     "modelo": 51.0,
-     "mercado_pct": 51.6,
-     "momio": -110,
-     "casa": "típica (19 casas)",
-     "ev": -6.3,
+     "texto": "CHA +3",
+     "modelo": 48.3,
+     "mercado_pct": 48.6,
+     "momio": -111,
+     "casa": "típica (9 casas)",
+     "ev": -3.8,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 216.5",
-     "modelo": 64.3,
-     "mercado_pct": 49.5,
+     "texto": "Over 215.5",
+     "modelo": 67.5,
+     "mercado_pct": 49.1,
      "momio": -110,
-     "casa": "típica (17 casas)",
-     "ev": 9.3,
+     "casa": "típica (9 casas)",
+     "ev": 10.3,
      "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 216.5",
-     "modelo": 35.7,
-     "mercado_pct": 50.5,
-     "momio": -110,
-     "casa": "típica (17 casas)",
-     "ev": -18.4,
+     "texto": "Under 215.5",
+     "modelo": 32.5,
+     "mercado_pct": 50.9,
+     "momio": -113,
+     "casa": "típica (9 casas)",
+     "ev": -20.4,
      "estado": "sospechosa",
      "monto": 0
     }
@@ -130,58 +130,58 @@
      "mercado": "h2h",
      "lado": "CHA",
      "linea": null,
-     "prob": 0.4059,
-     "minimo": 152,
-     "justo": 147
+     "prob": 0.426,
+     "minimo": 140,
+     "justo": 135
     },
     {
      "mercado": "h2h",
      "lado": "MEM",
      "linea": null,
-     "prob": 0.5941,
-     "minimo": -139,
-     "justo": -146
+     "prob": 0.574,
+     "minimo": -128,
+     "justo": -134
     },
     {
      "mercado": "spreads",
      "lado": "CHA",
-     "linea": 4.0,
-     "prob": 0.5161,
-     "minimo": -102,
-     "justo": -106
+     "linea": 2.5,
+     "prob": 0.4861,
+     "minimo": 110,
+     "justo": 106
     },
     {
      "mercado": "spreads",
      "lado": "MEM",
-     "linea": -4.0,
-     "prob": 0.4839,
-     "minimo": 111,
-     "justo": 107
+     "linea": -2.5,
+     "prob": 0.5139,
+     "minimo": -101,
+     "justo": -105
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "linea": 216.5,
-     "prob": 0.4955,
-     "minimo": 106,
-     "justo": 102
+     "linea": 215.0,
+     "prob": 0.4908,
+     "minimo": 108,
+     "justo": 104
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "linea": 216.5,
-     "prob": 0.5045,
-     "minimo": 103,
-     "justo": -101
+     "linea": 215.0,
+     "prob": 0.5092,
+     "minimo": 101,
+     "justo": -103
     }
    ],
    "proyeccion": {
-    "margen_local": -3.7,
+    "margen_local": -3.1,
     "total": 223.5,
-    "margen_apuesta": -3.8,
-    "total_apuesta": 220.0,
-    "pin_spread_local": 4.0,
-    "pin_total": 216.5,
+    "margen_apuesta": -2.8,
+    "total_apuesta": 219.2,
+    "pin_spread_local": 2.5,
+    "pin_total": 215.0,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -196,26 +196,26 @@
      "equipo": "POR",
      "local": false,
      "modelo": 48.8,
-     "mercado": 41.7,
+     "mercado": 42.0,
      "momio": 130,
-     "casa": "típica (26 casas)",
-     "pinnacle": 133,
-     "ev": 4.1,
-     "prob": 45.3,
+     "casa": "típica (30 casas)",
+     "pinnacle": 132,
+     "ev": 4.4,
+     "prob": 45.4,
      "estado": "valor",
-     "monto": 8,
+     "monto": 9,
      "bajas": []
     },
     {
      "equipo": "PHI",
      "local": true,
      "modelo": 51.2,
-     "mercado": 58.3,
-     "momio": -160,
-     "casa": "típica (26 casas)",
-     "pinnacle": -150,
-     "ev": -11.0,
-     "prob": 54.7,
+     "mercado": 58.0,
+     "momio": -157,
+     "casa": "típica (30 casas)",
+     "pinnacle": -147,
+     "ev": -10.8,
+     "prob": 54.6,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -237,47 +237,47 @@
      "mercado": "spreads",
      "lado": "V",
      "texto": "POR +3.5",
-     "modelo": 57.3,
-     "mercado_pct": 49.5,
-     "momio": -113,
-     "casa": "típica (13 casas)",
-     "ev": 3.6,
-     "estado": "nada",
+     "modelo": 58.5,
+     "mercado_pct": 51.4,
+     "momio": -114,
+     "casa": "típica (20 casas)",
+     "ev": 1.9,
+     "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
      "texto": "PHI -3.5",
-     "modelo": 42.7,
-     "mercado_pct": 50.5,
-     "momio": -110,
-     "casa": "típica (13 casas)",
-     "ev": -14.0,
-     "estado": "nada",
+     "modelo": 41.5,
+     "mercado_pct": 48.6,
+     "momio": -105,
+     "casa": "típica (20 casas)",
+     "ev": -10.9,
+     "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 229.5",
-     "modelo": 45.7,
-     "mercado_pct": 50.5,
-     "momio": -110,
-     "casa": "típica (16 casas)",
-     "ev": -8.7,
+     "texto": "Over 231.5",
+     "modelo": 40.4,
+     "mercado_pct": 48.9,
+     "momio": -113,
+     "casa": "típica (17 casas)",
+     "ev": -12.8,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 229.5",
-     "modelo": 54.3,
-     "mercado_pct": 49.5,
+     "texto": "Under 231.5",
+     "modelo": 59.6,
+     "mercado_pct": 51.1,
      "momio": -110,
-     "casa": "típica (16 casas)",
-     "ev": -0.4,
+     "casa": "típica (17 casas)",
+     "ev": 2.6,
      "estado": "nada",
      "monto": 0
     }
@@ -287,58 +287,58 @@
      "mercado": "h2h",
      "lado": "PHI",
      "linea": null,
-     "prob": 0.583,
-     "minimo": -133,
-     "justo": -139
+     "prob": 0.58,
+     "minimo": -131,
+     "justo": -138
     },
     {
      "mercado": "h2h",
      "lado": "POR",
      "linea": null,
-     "prob": 0.417,
-     "minimo": 145,
-     "justo": 140
+     "prob": 0.42,
+     "minimo": 143,
+     "justo": 139
     },
     {
      "mercado": "spreads",
      "lado": "PHI",
-     "linea": -3.0,
-     "prob": 0.5046,
-     "minimo": 103,
-     "justo": -101
+     "linea": -3.5,
+     "prob": 0.4861,
+     "minimo": 110,
+     "justo": 106
     },
     {
      "mercado": "spreads",
      "lado": "POR",
-     "linea": 3.0,
-     "prob": 0.4954,
-     "minimo": 106,
-     "justo": 102
+     "linea": 3.5,
+     "prob": 0.5139,
+     "minimo": -101,
+     "justo": -105
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "linea": 229.5,
-     "prob": 0.5045,
-     "minimo": 103,
-     "justo": -101
+     "linea": 232.0,
+     "prob": 0.4885,
+     "minimo": 109,
+     "justo": 105
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "linea": 229.5,
-     "prob": 0.4955,
-     "minimo": 106,
-     "justo": 102
+     "linea": 232.0,
+     "prob": 0.5115,
+     "minimo": -100,
+     "justo": -104
     }
    ],
    "proyeccion": {
     "margen_local": 0.5,
     "total": 227.4,
-    "margen_apuesta": 1.7,
-    "total_apuesta": 228.5,
-    "pin_spread_local": -3.0,
-    "pin_total": 229.5,
+    "margen_apuesta": 2.0,
+    "total_apuesta": 229.7,
+    "pin_spread_local": -3.5,
+    "pin_total": 232.0,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -353,12 +353,12 @@
      "equipo": "BKN",
      "local": false,
      "modelo": 11.4,
-     "mercado": 16.2,
-     "momio": 440,
-     "casa": "típica (26 casas)",
-     "pinnacle": 494,
-     "ev": -25.6,
-     "prob": 13.8,
+     "mercado": 17.7,
+     "momio": 432,
+     "casa": "típica (30 casas)",
+     "pinnacle": 446,
+     "ev": -22.5,
+     "prob": 14.6,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -373,12 +373,12 @@
      "equipo": "MIN",
      "local": true,
      "modelo": 88.6,
-     "mercado": 83.8,
-     "momio": -670,
-     "casa": "típica (26 casas)",
-     "pinnacle": -672,
-     "ev": -0.9,
-     "prob": 86.2,
+     "mercado": 82.3,
+     "momio": -609,
+     "casa": "típica (30 casas)",
+     "pinnacle": -562,
+     "ev": -0.5,
+     "prob": 85.4,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -394,48 +394,48 @@
     {
      "mercado": "spreads",
      "lado": "V",
-     "texto": "BKN +12.5",
-     "modelo": 41.5,
-     "mercado_pct": 51.4,
-     "momio": -110,
-     "casa": "típica (20 casas)",
-     "ev": -12.7,
+     "texto": "BKN +11.5",
+     "modelo": 38.7,
+     "mercado_pct": 49.3,
+     "momio": -105,
+     "casa": "típica (17 casas)",
+     "ev": -13.5,
      "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
-     "texto": "MIN -12.5",
-     "modelo": 58.5,
-     "mercado_pct": 48.6,
-     "momio": -110,
-     "casa": "típica (20 casas)",
-     "ev": 3.6,
+     "texto": "MIN -11.5",
+     "modelo": 61.3,
+     "mercado_pct": 50.7,
+     "momio": -112,
+     "casa": "típica (17 casas)",
+     "ev": 5.4,
      "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 223.5",
-     "modelo": 53.8,
-     "mercado_pct": 49.8,
-     "momio": -110,
-     "casa": "típica (9 casas)",
-     "ev": 1.0,
+     "texto": "Over 224.5",
+     "modelo": 52.6,
+     "mercado_pct": 48.9,
+     "momio": -109,
+     "casa": "típica (12 casas)",
+     "ev": -1.8,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 223.5",
-     "modelo": 46.2,
-     "mercado_pct": 50.2,
-     "momio": -110,
-     "casa": "típica (9 casas)",
-     "ev": -10.1,
+     "texto": "Under 224.5",
+     "modelo": 47.4,
+     "mercado_pct": 51.1,
+     "momio": -113,
+     "casa": "típica (12 casas)",
+     "ev": -8.4,
      "estado": "nada",
      "monto": 0
     }
@@ -445,58 +445,58 @@
      "mercado": "h2h",
      "lado": "BKN",
      "linea": null,
-     "prob": 0.1621,
-     "minimo": 530,
-     "justo": 518
+     "prob": 0.1775,
+     "minimo": 475,
+     "justo": 464
     },
     {
      "mercado": "h2h",
      "lado": "MIN",
      "linea": null,
-     "prob": 0.8379,
-     "minimo": -460,
-     "justo": -517
+     "prob": 0.8225,
+     "minimo": -416,
+     "justo": -463
     },
     {
      "mercado": "spreads",
      "lado": "BKN",
-     "linea": 12.5,
-     "prob": 0.5138,
-     "minimo": -101,
-     "justo": -105
+     "linea": 11.5,
+     "prob": 0.493,
+     "minimo": 107,
+     "justo": 103
     },
     {
      "mercado": "spreads",
      "lado": "MIN",
-     "linea": -12.5,
-     "prob": 0.4862,
-     "minimo": 110,
-     "justo": 106
+     "linea": -11.5,
+     "prob": 0.507,
+     "minimo": 102,
+     "justo": -102
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "linea": 224.0,
-     "prob": 0.4977,
-     "minimo": 105,
-     "justo": 101
+     "linea": 224.5,
+     "prob": 0.4885,
+     "minimo": 109,
+     "justo": 105
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "linea": 224.0,
-     "prob": 0.5023,
-     "minimo": 104,
-     "justo": -100
+     "linea": 224.5,
+     "prob": 0.5115,
+     "minimo": -100,
+     "justo": -104
     }
    ],
    "proyeccion": {
     "margen_local": 15.5,
     "total": 225.8,
-    "margen_apuesta": 14.0,
-    "total_apuesta": 224.9,
-    "pin_spread_local": -12.5,
-    "pin_total": 224.0,
+    "margen_apuesta": 13.5,
+    "total_apuesta": 225.1,
+    "pin_spread_local": -11.5,
+    "pin_total": 224.5,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -511,13 +511,13 @@
      "equipo": "OKC",
      "local": false,
      "modelo": 64.3,
-     "mercado": null,
-     "momio": -220,
-     "casa": "típica (21 casas)",
-     "pinnacle": null,
-     "ev": -6.5,
-     "prob": 64.3,
-     "estado": "sinref",
+     "mercado": 63.0,
+     "momio": -193,
+     "casa": "típica (30 casas)",
+     "pinnacle": -185,
+     "ev": -3.4,
+     "prob": 63.6,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -541,13 +541,13 @@
      "equipo": "IND",
      "local": true,
      "modelo": 35.7,
-     "mercado": null,
-     "momio": 170,
-     "casa": "típica (21 casas)",
-     "pinnacle": null,
-     "ev": -3.6,
-     "prob": 35.7,
-     "estado": "sinref",
+     "mercado": 37.0,
+     "momio": 160,
+     "casa": "típica (30 casas)",
+     "pinnacle": 162,
+     "ev": -5.5,
+     "prob": 36.4,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -562,60 +562,109 @@
     {
      "mercado": "spreads",
      "lado": "V",
-     "texto": "OKC -5.5",
-     "modelo": 43.4,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (15 casas)",
-     "ev": -17.2,
-     "estado": "sinref",
+     "texto": "OKC -4.5",
+     "modelo": 46.2,
+     "mercado_pct": 51.7,
+     "momio": -115,
+     "casa": "típica (22 casas)",
+     "ev": -10.1,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
-     "texto": "IND +5.5",
-     "modelo": 56.6,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (15 casas)",
-     "ev": 8.1,
-     "estado": "sinref",
+     "texto": "IND +4.5",
+     "modelo": 53.8,
+     "mercado_pct": 48.3,
+     "momio": -105,
+     "casa": "típica (22 casas)",
+     "ev": 1.4,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 222.5",
-     "modelo": 56.6,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (10 casas)",
-     "ev": 8.1,
-     "estado": "sinref",
+     "texto": "Over 221.5",
+     "modelo": 58.7,
+     "mercado_pct": 49.8,
+     "momio": -111,
+     "casa": "típica (19 casas)",
+     "ev": 3.3,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 222.5",
-     "modelo": 43.4,
-     "mercado_pct": null,
+     "texto": "Under 221.5",
+     "modelo": 41.3,
+     "mercado_pct": 50.2,
      "momio": -110,
-     "casa": "típica (10 casas)",
-     "ev": -17.2,
-     "estado": "sinref",
+     "casa": "típica (19 casas)",
+     "ev": -12.9,
+     "estado": "nada",
      "monto": 0
     }
    ],
-   "justo": [],
+   "justo": [
+    {
+     "mercado": "h2h",
+     "lado": "IND",
+     "linea": null,
+     "prob": 0.3703,
+     "minimo": 176,
+     "justo": 171
+    },
+    {
+     "mercado": "h2h",
+     "lado": "OKC",
+     "linea": null,
+     "prob": 0.6297,
+     "minimo": -161,
+     "justo": -170
+    },
+    {
+     "mercado": "spreads",
+     "lado": "IND",
+     "linea": 4.5,
+     "prob": 0.4829,
+     "minimo": 112,
+     "justo": 108
+    },
+    {
+     "mercado": "spreads",
+     "lado": "OKC",
+     "linea": -4.5,
+     "prob": 0.5171,
+     "minimo": -102,
+     "justo": -107
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "linea": 221.5,
+     "prob": 0.4977,
+     "minimo": 105,
+     "justo": 101
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "linea": 221.5,
+     "prob": 0.5023,
+     "minimo": 104,
+     "justo": -100
+    }
+   ],
    "proyeccion": {
     "margen_local": -3.1,
     "total": 225.7,
-    "margen_apuesta": -3.1,
-    "total_apuesta": 225.7,
-    "pin_spread_local": null,
-    "pin_total": null,
+    "margen_apuesta": -3.8,
+    "total_apuesta": 223.6,
+    "pin_spread_local": 4.5,
+    "pin_total": 221.5,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -630,12 +679,12 @@
      "equipo": "MIL",
      "local": false,
      "modelo": 24.1,
-     "mercado": 19.0,
-     "momio": 370,
-     "casa": "típica (26 casas)",
-     "pinnacle": 407,
-     "ev": 1.3,
-     "prob": 21.6,
+     "mercado": 21.1,
+     "momio": 340,
+     "casa": "típica (30 casas)",
+     "pinnacle": 360,
+     "ev": -0.6,
+     "prob": 22.6,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -650,12 +699,12 @@
      "equipo": "TOR",
      "local": true,
      "modelo": 75.9,
-     "mercado": 81.0,
-     "momio": -533,
-     "casa": "típica (26 casas)",
-     "pinnacle": -530,
-     "ev": -6.8,
-     "prob": 78.4,
+     "mercado": 78.9,
+     "momio": -462,
+     "casa": "típica (30 casas)",
+     "pinnacle": -437,
+     "ev": -5.8,
+     "prob": 77.4,
      "estado": "nada",
      "monto": 0,
      "bajas": [
@@ -676,48 +725,48 @@
     {
      "mercado": "spreads",
      "lado": "V",
-     "texto": "MIL +11.5",
-     "modelo": 58.1,
-     "mercado_pct": 50.0,
+     "texto": "MIL +10.5",
+     "modelo": 56.5,
+     "mercado_pct": 49.8,
      "momio": -110,
-     "casa": "típica (12 casas)",
-     "ev": 5.7,
-     "estado": "valor",
-     "monto": 16
+     "casa": "típica (22 casas)",
+     "ev": 1.7,
+     "estado": "nada",
+     "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
-     "texto": "TOR -11.5",
-     "modelo": 41.9,
-     "mercado_pct": 50.0,
+     "texto": "TOR -10.5",
+     "modelo": 43.5,
+     "mercado_pct": 50.2,
      "momio": -110,
-     "casa": "típica (12 casas)",
-     "ev": -15.0,
+     "casa": "típica (22 casas)",
+     "ev": -10.8,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 223.5",
-     "modelo": 56.9,
-     "mercado_pct": 50.0,
+     "texto": "Over 222.5",
+     "modelo": 59.0,
+     "mercado_pct": 48.9,
      "momio": -110,
-     "casa": "típica (11 casas)",
-     "ev": 3.9,
-     "estado": "nada",
-     "monto": 0
+     "casa": "típica (16 casas)",
+     "ev": 5.9,
+     "estado": "valor",
+     "monto": 16
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 223.5",
-     "modelo": 43.1,
-     "mercado_pct": 50.0,
+     "texto": "Under 222.5",
+     "modelo": 41.0,
+     "mercado_pct": 51.1,
      "momio": -110,
-     "casa": "típica (11 casas)",
-     "ev": -13.0,
+     "casa": "típica (16 casas)",
+     "ev": -15.0,
      "estado": "nada",
      "monto": 0
     }
@@ -727,58 +776,58 @@
      "mercado": "h2h",
      "lado": "MIL",
      "linea": null,
-     "prob": 0.1899,
-     "minimo": 438,
-     "justo": 427
+     "prob": 0.2108,
+     "minimo": 384,
+     "justo": 375
     },
     {
      "mercado": "h2h",
      "lado": "TOR",
      "linea": null,
-     "prob": 0.8101,
-     "minimo": -385,
-     "justo": -426
+     "prob": 0.7892,
+     "minimo": -341,
+     "justo": -374
     },
     {
      "mercado": "spreads",
      "lado": "MIL",
-     "linea": 11.0,
-     "prob": 0.5,
-     "minimo": 104,
-     "justo": 100
+     "linea": 10.5,
+     "prob": 0.4977,
+     "minimo": 105,
+     "justo": 101
     },
     {
      "mercado": "spreads",
      "lado": "TOR",
-     "linea": -11.0,
-     "prob": 0.5,
+     "linea": -10.5,
+     "prob": 0.5023,
      "minimo": 104,
-     "justo": 100
+     "justo": -100
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "linea": 224.0,
-     "prob": 0.5,
-     "minimo": 104,
-     "justo": 100
+     "linea": 223.0,
+     "prob": 0.4885,
+     "minimo": 109,
+     "justo": 105
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "linea": 224.0,
-     "prob": 0.5,
-     "minimo": 104,
-     "justo": 100
+     "linea": 223.0,
+     "prob": 0.5115,
+     "minimo": -100,
+     "justo": -104
     }
    ],
    "proyeccion": {
     "margen_local": 8.2,
     "total": 227.3,
-    "margen_apuesta": 9.6,
-    "total_apuesta": 225.6,
-    "pin_spread_local": -11.0,
-    "pin_total": 224.0,
+    "margen_apuesta": 9.3,
+    "total_apuesta": 225.1,
+    "pin_spread_local": -10.5,
+    "pin_total": 223.0,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -793,13 +842,13 @@
      "equipo": "CLE",
      "local": false,
      "modelo": 76.2,
-     "mercado": null,
-     "momio": -370,
-     "casa": "típica (21 casas)",
-     "pinnacle": null,
-     "ev": -3.2,
-     "prob": 76.2,
-     "estado": "sinref",
+     "mercado": 73.2,
+     "momio": -340,
+     "casa": "típica (30 casas)",
+     "pinnacle": -313,
+     "ev": -3.4,
+     "prob": 74.7,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -813,13 +862,13 @@
      "equipo": "CHI",
      "local": true,
      "modelo": 23.8,
-     "mercado": null,
+     "mercado": 26.8,
      "momio": 265,
-     "casa": "típica (21 casas)",
-     "pinnacle": null,
-     "ev": -13.2,
-     "prob": 23.8,
-     "estado": "sinref",
+     "casa": "típica (30 casas)",
+     "pinnacle": 260,
+     "ev": -7.6,
+     "prob": 25.3,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -841,11 +890,11 @@
      "lado": "V",
      "texto": "CLE -8.5",
      "modelo": 50.5,
-     "mercado_pct": null,
+     "mercado_pct": 48.4,
      "momio": -110,
-     "casa": "típica (14 casas)",
-     "ev": -3.9,
-     "estado": "sinref",
+     "casa": "típica (22 casas)",
+     "ev": -4.1,
+     "estado": "nada",
      "monto": 0
     },
     {
@@ -853,11 +902,11 @@
      "lado": "L",
      "texto": "CHI +8.5",
      "modelo": 49.5,
-     "mercado_pct": null,
+     "mercado_pct": 51.6,
      "momio": -110,
-     "casa": "típica (14 casas)",
-     "ev": -5.4,
-     "estado": "sinref",
+     "casa": "típica (22 casas)",
+     "ev": -5.0,
+     "estado": "nada",
      "monto": 0
     },
     {
@@ -865,11 +914,11 @@
      "lado": "Over",
      "texto": "Over 240.5",
      "modelo": 38.3,
-     "mercado_pct": null,
-     "momio": -118,
-     "casa": "típica (10 casas)",
-     "ev": -29.3,
-     "estado": "sinref",
+     "mercado_pct": 50.5,
+     "momio": -109,
+     "casa": "típica (11 casas)",
+     "ev": -15.5,
+     "estado": "sospechosa",
      "monto": 0
     },
     {
@@ -877,22 +926,71 @@
      "lado": "Under",
      "texto": "Under 240.5",
      "modelo": 61.7,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (10 casas)",
-     "ev": 17.6,
-     "estado": "sinref",
+     "mercado_pct": 49.5,
+     "momio": -111,
+     "casa": "típica (11 casas)",
+     "ev": 6.3,
+     "estado": "sospechosa",
      "monto": 0
     }
    ],
-   "justo": [],
+   "justo": [
+    {
+     "mercado": "h2h",
+     "lado": "CHI",
+     "linea": null,
+     "prob": 0.2682,
+     "minimo": 281,
+     "justo": 273
+    },
+    {
+     "mercado": "h2h",
+     "lado": "CLE",
+     "linea": null,
+     "prob": 0.7318,
+     "minimo": -253,
+     "justo": -272
+    },
+    {
+     "mercado": "spreads",
+     "lado": "CHI",
+     "linea": 8.5,
+     "prob": 0.5161,
+     "minimo": -102,
+     "justo": -106
+    },
+    {
+     "mercado": "spreads",
+     "lado": "CLE",
+     "linea": -8.5,
+     "prob": 0.4839,
+     "minimo": 111,
+     "justo": 107
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "linea": 240.5,
+     "prob": 0.5045,
+     "minimo": 103,
+     "justo": -101
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "linea": 240.5,
+     "prob": 0.4955,
+     "minimo": 106,
+     "justo": 102
+    }
+   ],
    "proyeccion": {
     "margen_local": -8.7,
     "total": 234.8,
-    "margen_apuesta": -8.7,
-    "total_apuesta": 234.8,
-    "pin_spread_local": null,
-    "pin_total": null,
+    "margen_apuesta": -8.6,
+    "total_apuesta": 237.7,
+    "pin_spread_local": 8.5,
+    "pin_total": 240.5,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -907,13 +1005,13 @@
      "equipo": "PHX",
      "local": false,
      "modelo": 68.5,
-     "mercado": null,
+     "mercado": 58.5,
      "momio": -155,
-     "casa": "típica (24 casas)",
-     "pinnacle": null,
-     "ev": 12.6,
-     "prob": 68.5,
-     "estado": "sinref",
+     "casa": "típica (30 casas)",
+     "pinnacle": -150,
+     "ev": 4.4,
+     "prob": 63.5,
+     "estado": "sospechosa",
      "monto": 0,
      "bajas": [
       {
@@ -927,13 +1025,13 @@
      "equipo": "NOP",
      "local": true,
      "modelo": 31.5,
-     "mercado": null,
-     "momio": 125,
-     "casa": "típica (24 casas)",
-     "pinnacle": null,
-     "ev": -29.2,
-     "prob": 31.5,
-     "estado": "sinref",
+     "mercado": 41.5,
+     "momio": 130,
+     "casa": "típica (30 casas)",
+     "pinnacle": 135,
+     "ev": -16.1,
+     "prob": 36.5,
+     "estado": "sospechosa",
      "monto": 0,
      "bajas": [
       {
@@ -950,11 +1048,11 @@
      "lado": "V",
      "texto": "PHX -3.5",
      "modelo": 58.6,
-     "mercado_pct": null,
+     "mercado_pct": 49.5,
      "momio": -110,
-     "casa": "típica (15 casas)",
-     "ev": 11.9,
-     "estado": "sinref",
+     "casa": "típica (16 casas)",
+     "ev": 3.7,
+     "estado": "sospechosa",
      "monto": 0
     },
     {
@@ -962,46 +1060,95 @@
      "lado": "L",
      "texto": "NOP +3.5",
      "modelo": 41.4,
-     "mercado_pct": null,
+     "mercado_pct": 50.5,
      "momio": -110,
-     "casa": "típica (15 casas)",
-     "ev": -21.0,
-     "estado": "sinref",
+     "casa": "típica (16 casas)",
+     "ev": -12.8,
+     "estado": "sospechosa",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 232.5",
-     "modelo": 47.2,
-     "mercado_pct": null,
+     "texto": "Over 233.5",
+     "modelo": 46.0,
+     "mercado_pct": 51.8,
      "momio": -110,
-     "casa": "típica (10 casas)",
-     "ev": -10.0,
-     "estado": "sinref",
+     "casa": "típica (12 casas)",
+     "ev": -10.2,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 232.5",
-     "modelo": 52.8,
-     "mercado_pct": null,
+     "texto": "Under 233.5",
+     "modelo": 54.0,
+     "mercado_pct": 48.2,
      "momio": -110,
-     "casa": "típica (10 casas)",
-     "ev": 0.9,
-     "estado": "sinref",
+     "casa": "típica (12 casas)",
+     "ev": 1.1,
+     "estado": "nada",
      "monto": 0
     }
    ],
-   "justo": [],
+   "justo": [
+    {
+     "mercado": "h2h",
+     "lado": "NOP",
+     "linea": null,
+     "prob": 0.4149,
+     "minimo": 146,
+     "justo": 141
+    },
+    {
+     "mercado": "h2h",
+     "lado": "PHX",
+     "linea": null,
+     "prob": 0.5851,
+     "minimo": -134,
+     "justo": -140
+    },
+    {
+     "mercado": "spreads",
+     "lado": "NOP",
+     "linea": 3.5,
+     "prob": 0.5046,
+     "minimo": 103,
+     "justo": -101
+    },
+    {
+     "mercado": "spreads",
+     "lado": "PHX",
+     "linea": -3.5,
+     "prob": 0.4954,
+     "minimo": 106,
+     "justo": 102
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "linea": 233.0,
+     "prob": 0.5183,
+     "minimo": -103,
+     "justo": -107
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "linea": 233.0,
+     "prob": 0.4817,
+     "minimo": 112,
+     "justo": 108
+    }
+   ],
    "proyeccion": {
     "margen_local": -6.6,
     "total": 231.1,
-    "margen_apuesta": -6.6,
-    "total_apuesta": 231.1,
-    "pin_spread_local": null,
-    "pin_total": null,
+    "margen_apuesta": -5.0,
+    "total_apuesta": 232.1,
+    "pin_spread_local": 3.5,
+    "pin_total": 233.0,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -1016,12 +1163,12 @@
      "equipo": "LAC",
      "local": false,
      "modelo": 20.8,
-     "mercado": 16.0,
-     "momio": 472,
-     "casa": "típica (26 casas)",
-     "pinnacle": 501,
-     "ev": 5.4,
-     "prob": 18.4,
+     "mercado": 16.8,
+     "momio": 465,
+     "casa": "típica (30 casas)",
+     "pinnacle": 478,
+     "ev": 6.1,
+     "prob": 18.8,
      "estado": "nada",
      "monto": 0,
      "bajas": []
@@ -1030,12 +1177,12 @@
      "equipo": "HOU",
      "local": true,
      "modelo": 79.2,
-     "mercado": 84.0,
-     "momio": -699,
-     "casa": "típica (26 casas)",
-     "pinnacle": -684,
-     "ev": -6.7,
-     "prob": 81.6,
+     "mercado": 83.2,
+     "momio": -650,
+     "casa": "típica (30 casas)",
+     "pinnacle": -610,
+     "ev": -6.3,
+     "prob": 81.2,
      "estado": "nada",
      "monto": 0,
      "bajas": []
@@ -1047,10 +1194,10 @@
      "lado": "V",
      "texto": "LAC +12.5",
      "modelo": 56.9,
-     "mercado_pct": 50.2,
-     "momio": -109,
-     "casa": "típica (21 casas)",
-     "ev": 2.5,
+     "mercado_pct": 50.5,
+     "momio": -110,
+     "casa": "típica (17 casas)",
+     "ev": 2.0,
      "estado": "nada",
      "monto": 0
     },
@@ -1059,9 +1206,9 @@
      "lado": "L",
      "texto": "HOU -12.5",
      "modelo": 43.1,
-     "mercado_pct": 49.8,
+     "mercado_pct": 49.5,
      "momio": -110,
-     "casa": "típica (21 casas)",
+     "casa": "típica (17 casas)",
      "ev": -11.1,
      "estado": "nada",
      "monto": 0
@@ -1069,24 +1216,24 @@
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 225.5",
+     "texto": "Over 224.5",
      "modelo": 58.2,
-     "mercado_pct": 50.9,
-     "momio": -111,
-     "casa": "típica (10 casas)",
-     "ev": -1.1,
+     "mercado_pct": 48.1,
+     "momio": -110,
+     "casa": "típica (13 casas)",
+     "ev": 3.3,
      "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 225.5",
+     "texto": "Under 224.5",
      "modelo": 41.8,
-     "mercado_pct": 49.1,
-     "momio": -115,
-     "casa": "típica (10 casas)",
-     "ev": -10.5,
+     "mercado_pct": 51.9,
+     "momio": -114,
+     "casa": "típica (13 casas)",
+     "ev": -13.9,
      "estado": "nada",
      "monto": 0
     }
@@ -1096,49 +1243,49 @@
      "mercado": "h2h",
      "lado": "HOU",
      "linea": null,
-     "prob": 0.8398,
-     "minimo": -466,
-     "justo": -524
+     "prob": 0.8324,
+     "minimo": -443,
+     "justo": -496
     },
     {
      "mercado": "h2h",
      "lado": "LAC",
      "linea": null,
-     "prob": 0.1602,
-     "minimo": 537,
-     "justo": 525
+     "prob": 0.1676,
+     "minimo": 509,
+     "justo": 497
     },
     {
      "mercado": "spreads",
      "lado": "HOU",
      "linea": -12.5,
-     "prob": 0.4977,
-     "minimo": 105,
-     "justo": 101
+     "prob": 0.4954,
+     "minimo": 106,
+     "justo": 102
     },
     {
      "mercado": "spreads",
      "lado": "LAC",
      "linea": 12.5,
-     "prob": 0.5023,
-     "minimo": 104,
-     "justo": -100
+     "prob": 0.5046,
+     "minimo": 103,
+     "justo": -101
     },
     {
      "mercado": "totals",
      "lado": "Over",
      "linea": 224.5,
-     "prob": 0.509,
-     "minimo": 101,
-     "justo": -103
+     "prob": 0.4807,
+     "minimo": 113,
+     "justo": 109
     },
     {
      "mercado": "totals",
      "lado": "Under",
      "linea": 224.5,
-     "prob": 0.491,
-     "minimo": 108,
-     "justo": 104
+     "prob": 0.5193,
+     "minimo": -103,
+     "justo": -108
     }
    ],
    "proyeccion": {
@@ -1162,13 +1309,13 @@
      "equipo": "UTA",
      "local": false,
      "modelo": 14.3,
-     "mercado": null,
-     "momio": 525,
-     "casa": "típica (23 casas)",
-     "pinnacle": null,
-     "ev": -10.4,
-     "prob": 14.3,
-     "estado": "sinref",
+     "mercado": 13.8,
+     "momio": 550,
+     "casa": "típica (30 casas)",
+     "pinnacle": 596,
+     "ev": -8.4,
+     "prob": 14.1,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -1182,13 +1329,13 @@
      "equipo": "LAL",
      "local": true,
      "modelo": 85.7,
-     "mercado": null,
-     "momio": -909,
-     "casa": "típica (23 casas)",
-     "pinnacle": null,
-     "ev": -4.9,
-     "prob": 85.7,
-     "estado": "sinref",
+     "mercado": 86.2,
+     "momio": -835,
+     "casa": "típica (30 casas)",
+     "pinnacle": -852,
+     "ev": -3.8,
+     "prob": 85.9,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
       {
@@ -1204,59 +1351,108 @@
      "mercado": "spreads",
      "lado": "V",
      "texto": "UTA +13.5",
-     "modelo": 48.9,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (12 casas)",
-     "ev": -6.9,
-     "estado": "sinref",
+     "modelo": 50.3,
+     "mercado_pct": 49.5,
+     "momio": -106,
+     "casa": "típica (16 casas)",
+     "ev": -5.3,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
      "texto": "LAL -13.5",
-     "modelo": 51.1,
-     "mercado_pct": null,
-     "momio": -110,
-     "casa": "típica (12 casas)",
-     "ev": -2.4,
-     "estado": "sinref",
+     "modelo": 49.7,
+     "mercado_pct": 50.5,
+     "momio": -115,
+     "casa": "típica (16 casas)",
+     "ev": -4.1,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 229.5",
-     "modelo": 48.2,
-     "mercado_pct": null,
-     "momio": -112,
-     "casa": "típica (8 casas)",
-     "ev": -8.8,
-     "estado": "sinref",
+     "texto": "Over 224.5",
+     "modelo": 58.5,
+     "mercado_pct": 49.8,
+     "momio": -110,
+     "casa": "típica (23 casas)",
+     "ev": 3.7,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 229.5",
-     "modelo": 51.8,
-     "mercado_pct": null,
-     "momio": -112,
-     "casa": "típica (8 casas)",
-     "ev": -2.1,
-     "estado": "sinref",
+     "texto": "Under 224.5",
+     "modelo": 41.5,
+     "mercado_pct": 50.2,
+     "momio": -110,
+     "casa": "típica (23 casas)",
+     "ev": -12.7,
+     "estado": "nada",
      "monto": 0
     }
    ],
-   "justo": [],
+   "justo": [
+    {
+     "mercado": "h2h",
+     "lado": "LAL",
+     "linea": null,
+     "prob": 0.8617,
+     "minimo": -544,
+     "justo": -622
+    },
+    {
+     "mercado": "h2h",
+     "lado": "UTA",
+     "linea": null,
+     "prob": 0.1383,
+     "minimo": 638,
+     "justo": 623
+    },
+    {
+     "mercado": "spreads",
+     "lado": "LAL",
+     "linea": -14.0,
+     "prob": 0.5046,
+     "minimo": 103,
+     "justo": -101
+    },
+    {
+     "mercado": "spreads",
+     "lado": "UTA",
+     "linea": 14.0,
+     "prob": 0.4954,
+     "minimo": 106,
+     "justo": 102
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "linea": 224.5,
+     "prob": 0.4977,
+     "minimo": 105,
+     "justo": 101
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "linea": 224.5,
+     "prob": 0.5023,
+     "minimo": 104,
+     "justo": -100
+    }
+   ],
    "proyeccion": {
     "margen_local": 13.9,
     "total": 228.6,
-    "margen_apuesta": 13.9,
-    "total_apuesta": 228.6,
-    "pin_spread_local": null,
-    "pin_total": null,
+    "margen_apuesta": 14.0,
+    "total_apuesta": 226.6,
+    "pin_spread_local": -14.0,
+    "pin_total": 224.5,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -1270,16 +1466,21 @@
     {
      "equipo": "SAS",
      "local": false,
-     "modelo": 83.8,
-     "mercado": null,
-     "momio": -530,
-     "casa": "típica (23 casas)",
-     "pinnacle": null,
-     "ev": -0.4,
-     "prob": 83.8,
-     "estado": "sinref",
+     "modelo": 81.0,
+     "mercado": 79.5,
+     "momio": -500,
+     "casa": "típica (30 casas)",
+     "pinnacle": -471,
+     "ev": -3.7,
+     "prob": 80.2,
+     "estado": "nada",
      "monto": 0,
      "bajas": [
+      {
+       "jugador": "Victor Wembanyama",
+       "prob": 50,
+       "valor": 29.19
+      },
       {
        "jugador": "Dylan Harper",
        "prob": 0,
@@ -1300,14 +1501,14 @@
     {
      "equipo": "SAC",
      "local": true,
-     "modelo": 16.2,
-     "mercado": null,
-     "momio": 365,
-     "casa": "típica (23 casas)",
-     "pinnacle": null,
-     "ev": -24.8,
-     "prob": 16.2,
-     "estado": "sinref",
+     "modelo": 19.0,
+     "mercado": 20.5,
+     "momio": 368,
+     "casa": "típica (30 casas)",
+     "pinnacle": 369,
+     "ev": -7.5,
+     "prob": 19.8,
+     "estado": "nada",
      "monto": 0,
      "bajas": []
     }
@@ -1317,59 +1518,108 @@
      "mercado": "spreads",
      "lado": "V",
      "texto": "SAS -10.5",
-     "modelo": 56.1,
-     "mercado_pct": null,
+     "modelo": 49.8,
+     "mercado_pct": 49.1,
      "momio": -115,
-     "casa": "típica (9 casas)",
-     "ev": 4.8,
-     "estado": "sinref",
+     "casa": "típica (18 casas)",
+     "ev": -4.1,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "spreads",
      "lado": "L",
      "texto": "SAC +10.5",
-     "modelo": 43.9,
-     "mercado_pct": null,
+     "modelo": 50.2,
+     "mercado_pct": 50.9,
      "momio": -105,
-     "casa": "típica (9 casas)",
-     "ev": -14.2,
-     "estado": "sinref",
+     "casa": "típica (18 casas)",
+     "ev": -4.9,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Over",
-     "texto": "Over 224.5",
-     "modelo": 51.9,
-     "mercado_pct": null,
-     "momio": -110,
+     "texto": "Over 223.5",
+     "modelo": 54.0,
+     "mercado_pct": 49.5,
+     "momio": -114,
      "casa": "típica (12 casas)",
-     "ev": -1.0,
-     "estado": "sinref",
+     "ev": -2.4,
+     "estado": "nada",
      "monto": 0
     },
     {
      "mercado": "totals",
      "lado": "Under",
-     "texto": "Under 224.5",
-     "modelo": 48.1,
-     "mercado_pct": null,
-     "momio": -111,
+     "texto": "Under 223.5",
+     "modelo": 46.0,
+     "mercado_pct": 50.5,
+     "momio": -109,
      "casa": "típica (12 casas)",
-     "ev": -8.5,
-     "estado": "sinref",
+     "ev": -8.1,
+     "estado": "nada",
      "monto": 0
     }
    ],
-   "justo": [],
+   "justo": [
+    {
+     "mercado": "h2h",
+     "lado": "SAC",
+     "linea": null,
+     "prob": 0.2054,
+     "minimo": 397,
+     "justo": 387
+    },
+    {
+     "mercado": "h2h",
+     "lado": "SAS",
+     "linea": null,
+     "prob": 0.7946,
+     "minimo": -352,
+     "justo": -386
+    },
+    {
+     "mercado": "spreads",
+     "lado": "SAC",
+     "linea": 11.0,
+     "prob": 0.5092,
+     "minimo": 101,
+     "justo": -103
+    },
+    {
+     "mercado": "spreads",
+     "lado": "SAS",
+     "linea": -11.0,
+     "prob": 0.4908,
+     "minimo": 108,
+     "justo": 104
+    },
+    {
+     "mercado": "totals",
+     "lado": "Over",
+     "linea": 223.5,
+     "prob": 0.4955,
+     "minimo": 106,
+     "justo": 102
+    },
+    {
+     "mercado": "totals",
+     "lado": "Under",
+     "linea": 223.5,
+     "prob": 0.5045,
+     "minimo": 103,
+     "justo": -101
+    }
+   ],
    "proyeccion": {
-    "margen_local": -12.7,
+    "margen_local": -10.9,
     "total": 225.4,
-    "margen_apuesta": -12.7,
-    "total_apuesta": 225.4,
-    "pin_spread_local": null,
-    "pin_total": null,
+    "margen_apuesta": -11.0,
+    "total_apuesta": 224.5,
+    "pin_spread_local": 11.0,
+    "pin_total": 223.5,
     "sigma_margen": 14.1,
     "sigma_total": 19.1
    }
@@ -1384,7 +1634,7 @@
   {
    "rank": 2,
    "equipo": "BOS",
-   "elo": 1629
+   "elo": 1630
   },
   {
    "rank": 3,
@@ -1468,13 +1718,13 @@
   },
   {
    "rank": 19,
-   "equipo": "GSW",
+   "equipo": "DAL",
    "elo": 1475
   },
   {
    "rank": 20,
-   "equipo": "DAL",
-   "elo": 1475
+   "equipo": "GSW",
+   "elo": 1474
   },
   {
    "rank": 21,
@@ -1528,6 +1778,20 @@
   }
  ],
  "historial": [
+  {
+   "registrada": "2026-11-23T16:32+00:00",
+   "fecha": "23/11 18:40",
+   "partido": "MIL @ TOR",
+   "mercado": "totals",
+   "apuesta": "Over 222.5",
+   "momio": -110,
+   "casa": "típica (16 casas)",
+   "monto": 16.0,
+   "ev": 5.9,
+   "resultado": "PENDIENTE",
+   "ganancia": 0.0,
+   "clv": null
+  },
   {
    "registrada": "2026-11-23T03:55+00:00",
    "fecha": "23/11 18:10",
@@ -2558,7 +2822,7 @@
   }
  ],
  "resumen": {
-  "apuestas": 66,
+  "apuestas": 67,
   "liquidadas": 64,
   "ganadas": 34,
   "perdidas": 30,
@@ -3100,6 +3364,12 @@
    "visita": "IND",
    "pts_local": 113,
    "pts_visita": 106
+  },
+  "b8c5bdb50209c7d050400c7d28c32e30": {
+   "local": "GSW",
+   "visita": "BOS",
+   "pts_local": 88,
+   "pts_visita": 87
   }
  },
  "cierres": {
@@ -3617,18 +3887,18 @@
   }
  },
  "creditos": {
-  "restantes": 366,
-  "usados": 134,
-  "fecha": "2026-11-23T03:55+00:00"
+  "restantes": 358,
+  "usados": 142,
+  "fecha": "2026-11-23T16:32+00:00"
  },
  "comparacion": {
-  "partidos": 62,
-  "brier_modelo": 0.2363,
-  "brier_mercado": 0.2206,
-  "brier_cierre": 0.2206,
-  "acierto_modelo": 62.9,
-  "acierto_mercado": 66.1,
-  "prob_modelo_mejor": 0.014,
+  "partidos": 63,
+  "brier_modelo": 0.2407,
+  "brier_mercado": 0.2256,
+  "brier_cierre": 0.2256,
+  "acierto_modelo": 61.9,
+  "acierto_mercado": 65.1,
+  "prob_modelo_mejor": 0.013,
   "serie": [
    {
     "dia": "2026-11-14",
@@ -3672,8 +3942,8 @@
    },
    {
     "dia": "2026-11-22",
-    "dif": 0.0157,
-    "n": 62
+    "dif": 0.01511,
+    "n": 63
    }
   ]
  }
