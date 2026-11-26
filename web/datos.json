@@ -1,5 +1,5 @@
 {
- "actualizado": "2026-11-26T01:12+00:00",
+ "actualizado": "2026-11-26T01:14+00:00",
  "config": {
   "bankroll": 1000,
   "kelly": 0.25,
@@ -3050,7 +3050,7 @@
   "brier_cierre": 0.2281,
   "acierto_modelo": 63.6,
   "acierto_mercado": 63.6,
-  "prob_modelo_mejor": 0.072,
+  "prob_modelo_mejor": 0.064,
   "serie": [
    {
     "dia": "2026-11-14",
