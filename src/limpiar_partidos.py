@@ -28,6 +28,13 @@ def cargar_crudos() -> pd.DataFrame:
 
 def a_una_fila_por_partido(log: pd.DataFrame) -> pd.DataFrame:
     log = log.copy()
+    # Partidos en curso: stats.nba.com a veces los publica antes de terminar
+    # (p. ej. 71-71 al final del 3er cuarto). Un partido completo suma al menos
+    # 240 minutos por equipo; si alguno trae menos, se descarta por ahora.
+    en_curso = log.groupby("GAME_ID")["MIN"].transform("min") < 240
+    if en_curso.any():
+        print(f"  {log.loc[en_curso, 'GAME_ID'].nunique()} partidos en curso se omitieron (aún no terminan).")
+        log = log[~en_curso]
     log["ES_LOCAL"] = log["MATCHUP"].str.contains(" vs. ", regex=False)
 
     # Partidos en sede neutral (México, Europa, semis de la NBA Cup en Las Vegas):
@@ -55,6 +62,10 @@ def a_una_fila_por_partido(log: pd.DataFrame) -> pd.DataFrame:
 
     partidos["FECHA"] = pd.to_datetime(partidos.pop("GAME_DATE"))
     partidos["MARGEN"] = partidos["L_PTS"] - partidos["V_PTS"]           # >0 ganó el local
+    empatados = partidos["MARGEN"] == 0                                   # en tiempo extra todavía
+    if empatados.any():
+        print(f"  {empatados.sum()} partidos empatados (en curso) se omitieron.")
+        partidos = partidos[~empatados].copy()
     partidos["TOTAL"] = partidos["L_PTS"] + partidos["V_PTS"]
     partidos["GANO_LOCAL"] = (partidos["MARGEN"] > 0).astype(int)
     partidos["TIEMPO_EXTRA"] = (partidos["MIN"] > 240).astype(int)        # 240 min = partido normal por equipo
